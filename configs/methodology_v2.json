@@ -1,0 +1,50 @@
+{
+  "schema_version": 2,
+  "seed": 20260828,
+  "bootstrap_repetitions": 10000,
+  "permutation_repetitions": 10000,
+  "bbox_convention": "xyxy_half_open",
+  "yolov7": {
+    "repository": "https://github.com/WongKinYiu/yolov7.git",
+    "checkpoint": "yolov7_training.pt",
+    "image_size": 640,
+    "physical_batch": 32,
+    "accumulate": 2,
+    "epochs": 300,
+    "optimizer": "SGD_Nesterov",
+    "lr0": 0.005,
+    "momentum": 0.9,
+    "weight_decay": 0.0005,
+    "warmup_epochs": 3,
+    "lrf": 0.1,
+    "confidence_threshold": 0.25,
+    "nms_iou_threshold": 0.45,
+    "multi_scale": false,
+    "freeze_layers": 0
+  },
+  "hair": {
+    "line_length_fraction": 0.035,
+    "line_thickness_fraction": 0.002,
+    "orientations_degrees": [0, 45, 90, 135],
+    "response_percentile": 90.0,
+    "minimum_elongation": 2.5,
+    "maximum_component_thickness_fraction": 0.025,
+    "dilation_fraction": 0.003,
+    "maximum_coverage_fraction": 0.18
+  },
+  "highlight": {"channel_minimum": 248, "channel_spread_maximum": 22},
+  "minimum_clean_skin": {"pixels": 256, "area_fraction": 0.005},
+  "ranking": {
+    "primary": "thresholded_jaccard_0.65",
+    "top_k": 3,
+    "tie_breakers": ["jaccard", "dice", "boundary_f1", "negative_hd95_normalized"]
+  },
+  "mst": [
+    ["MST_01", 246, 237, 228], ["MST_02", 243, 231, 219],
+    ["MST_03", 247, 234, 208], ["MST_04", 234, 218, 186],
+    ["MST_05", 215, 189, 150], ["MST_06", 160, 126, 86],
+    ["MST_07", 130, 92, 67], ["MST_08", 96, 65, 52],
+    ["MST_09", 58, 49, 42], ["MST_10", 41, 36, 32]
+  ]
+}
+
