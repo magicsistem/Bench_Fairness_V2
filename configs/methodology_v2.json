@@ -6,7 +6,9 @@
   "bbox_convention": "xyxy_half_open",
   "yolov7": {
     "repository": "https://github.com/WongKinYiu/yolov7.git",
+    "revision": "a207844b1ce82d204ab36d87d496728d3d2348e7",
     "checkpoint": "yolov7_training.pt",
+    "checkpoint_url": "https://github.com/WongKinYiu/yolov7/releases/download/v0.1/yolov7_training.pt",
     "image_size": 640,
     "physical_batch": 32,
     "accumulate": 2,
@@ -47,4 +49,3 @@
     ["MST_09", 58, 49, 42], ["MST_10", 41, 36, 32]
   ]
 }
-

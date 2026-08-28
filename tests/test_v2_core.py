@@ -1,4 +1,5 @@
 import json
+import sys
 import tempfile
 import unittest
 from pathlib import Path
@@ -14,10 +15,15 @@ from thesis_fitzpatrick.v2 import (
     q95,
     required_symmetric_margin,
 )
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
+from roi import expanded  # noqa: E402
 from scripts.prepare_data import assert_development_path, folds
 
 
 class V2CoreTest(unittest.TestCase):
+    def test_roi_margin_expands_symmetrically_and_clips(self):
+        self.assertEqual(expanded([10, 20, 30, 40], 0.5, 35, 45), [0, 10, 35, 45])
     def test_margin_is_minimum_symmetric_fraction(self):
         self.assertEqual(required_symmetric_margin(BBox(10, 10, 30, 50), BBox(8, 9, 34, 55)), 0.2)
         self.assertEqual(q95([0.0] * 19 + [1.0]), 0.05000000000000071)

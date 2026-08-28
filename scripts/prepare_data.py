@@ -110,19 +110,58 @@ def folds(manifest_path: Path, output: Path, metadata_dir: Path | None, seed: in
 def yolo(manifest_path: Path, folds_path: Path, output: Path) -> None:
     manifest_value = json.loads(manifest_path.read_text(encoding="utf-8"))
     fold_value = json.loads(folds_path.read_text(encoding="utf-8"))
-    labels = output / "labels"
-    labels.mkdir(parents=True, exist_ok=True)
     rows = []
+    records = {record["image_id"]: record for record in manifest_value["records"]}
     for record in manifest_value["records"]:
         x0, y0, x1, y1 = record["bbox_xyxy_half_open"]
         width, height = record["width"], record["height"]
         line = f"0 {(x0+x1)/(2*width):.10f} {(y0+y1)/(2*height):.10f} {(x1-x0)/width:.10f} {(y1-y0)/height:.10f}\n"
-        target = labels / f"{record['image_id']}.txt"
-        target.write_text(line, encoding="ascii")
-        rows.append({"image_id": record["image_id"], "fold": fold_value["assignments"][record["image_id"]], "label_sha256": sha256_file(target)})
+        rows.append({"image_id": record["image_id"], "fold": fold_value["assignments"][record["image_id"]], "line": line})
+    for fold in range(5):
+        fold_root = output / f"fold-{fold}"
+        for subset in ("train", "val"):
+            (fold_root / "images" / subset).mkdir(parents=True, exist_ok=True)
+            (fold_root / "labels" / subset).mkdir(parents=True, exist_ok=True)
+        for row in rows:
+            subset = "val" if row["fold"] == fold else "train"
+            record = records[row["image_id"]]
+            source = Path(record["image"])
+            image_target = fold_root / "images" / subset / source.name
+            if image_target.exists() or image_target.is_symlink():
+                if image_target.resolve() != source.resolve():
+                    raise SystemExit(f"conflicting YOLO image link: {image_target}")
+            else:
+                image_target.symlink_to(source.resolve())
+            label_target = fold_root / "labels" / subset / f"{row['image_id']}.txt"
+            label_target.write_text(row["line"], encoding="ascii")
+            row[f"fold_{fold}_label_sha256"] = sha256_file(label_target)
+        (fold_root / "dataset.yaml").write_text(
+            f"train: {fold_root.resolve() / 'images/train'}\nval: {fold_root.resolve() / 'images/val'}\nnc: 1\nnames: ['lesion']\n",
+            encoding="utf-8",
+        )
     with (output / "index.csv").open("w", newline="", encoding="utf-8") as stream:
-        writer = csv.DictWriter(stream, fieldnames=["image_id", "fold", "label_sha256"])
+        writer = csv.DictWriter(stream, fieldnames=["image_id", "fold", *[f"fold_{fold}_label_sha256" for fold in range(5)]], extrasaction="ignore")
         writer.writeheader(); writer.writerows(rows)
+
+
+def yolo_final(training_path: Path, validation_path: Path, output: Path) -> None:
+    output.mkdir(parents=True, exist_ok=True)
+    for subset, path in (("train", training_path), ("val", validation_path)):
+        value = json.loads(path.read_text(encoding="utf-8"))
+        images, labels = output / "images" / subset, output / "labels" / subset
+        images.mkdir(parents=True, exist_ok=True); labels.mkdir(parents=True, exist_ok=True)
+        for record in value["records"]:
+            source = Path(record["image"])
+            target = images / source.name
+            if not target.exists(): target.symlink_to(source.resolve())
+            x0, y0, x1, y1 = record["bbox_xyxy_half_open"]
+            width, height = record["width"], record["height"]
+            (labels / f"{record['image_id']}.txt").write_text(
+                f"0 {(x0+x1)/(2*width):.10f} {(y0+y1)/(2*height):.10f} {(x1-x0)/width:.10f} {(y1-y0)/height:.10f}\n",
+                encoding="ascii")
+    (output / "dataset.yaml").write_text(
+        f"train: {output.resolve() / 'images/train'}\nval: {output.resolve() / 'images/val'}\nnc: 1\nnames: ['lesion']\n",
+        encoding="utf-8")
 
 
 def main() -> None:
@@ -136,12 +175,14 @@ def main() -> None:
     make_folds.add_argument("--metadata", type=Path); make_folds.add_argument("--seed", type=int, default=20260828)
     make_yolo = sub.add_parser("yolo")
     make_yolo.add_argument("--manifest", type=Path, required=True); make_yolo.add_argument("--folds", type=Path, required=True); make_yolo.add_argument("--output", type=Path, required=True)
+    make_final = sub.add_parser("yolo-final")
+    make_final.add_argument("--training", type=Path, required=True); make_final.add_argument("--validation", type=Path, required=True); make_final.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if args.command == "manifest": manifest(args.images, args.masks, args.output, args.split)
     elif args.command == "folds": folds(args.manifest, args.output, args.metadata, args.seed)
-    else: yolo(args.manifest, args.folds, args.output)
+    elif args.command == "yolo": yolo(args.manifest, args.folds, args.output)
+    else: yolo_final(args.training, args.validation, args.output)
 
 
 if __name__ == "__main__":
     main()
-
