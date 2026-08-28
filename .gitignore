@@ -1,0 +1,16 @@
+.unlazy/
+.unlazy-hook-state.json
+.claude/settings.local.json
+__pycache__/
+*.py[cod]
+.venv/
+.cedia/
+data/
+results/
+artifacts/
+logs/
+*.pt
+*.pth
+*.ckpt
+*.sif
+
