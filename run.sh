@@ -12,7 +12,8 @@ ssh_cmd=(ssh -p "$CEDIA_PORT" "$CEDIA_LOGIN")
 sync_code() {
     local commit
     commit=$(git rev-parse HEAD)
-    "${ssh_cmd[@]}" "cd \"$REMOTE_ROOT\" && git fetch origin main && git checkout main && git pull --ff-only origin main && test \"\$(git rev-parse HEAD)\" = '$commit'"
+    "${ssh_cmd[@]}" "cd \"$REMOTE_ROOT\" && git fetch origin '+refs/heads/main:refs/remotes/origin/main' && git checkout main && git merge --ff-only origin/main && test \"\$(git rev-parse HEAD)\" = '$commit'"
+    "${ssh_cmd[@]}" "cd \"$REMOTE_ROOT\" && scripts/hpc/fetch_dependencies.sh"
 }
 
 submit() {
