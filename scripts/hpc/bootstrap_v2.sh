@@ -3,13 +3,12 @@ set -Eeuo pipefail
 
 ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd -P)
 VENV=${VENV_PATH:-$ROOT/.cedia/venv}
+SITE_PACKAGES=$VENV/site-packages
 YOLO=$ROOT/vendor/yolov7
 REVISION=a207844b1ce82d204ab36d87d496728d3d2348e7
 
-if [[ ! -x "$VENV/bin/python" ]]; then
-    python3 -m venv --system-site-packages "$VENV"
-fi
-"$VENV/bin/python" -m pip install --disable-pip-version-check \
+mkdir -p "$SITE_PACKAGES"
+python3 -m pip install --disable-pip-version-check --target "$SITE_PACKAGES" --upgrade \
     --constraint "$ROOT/configs/hpc/core-constraints.txt" \
     --requirement "$ROOT/configs/hpc/requirements-cuda.txt"
 
@@ -28,7 +27,7 @@ if [[ ! -f "$ROOT/models/yolov7/yolov7_training.pt" ]]; then
 fi
 sha256sum "$ROOT/models/yolov7/yolov7_training.pt" > "$ROOT/models/yolov7/yolov7_training.pt.sha256"
 mkdir -p "$ROOT/artifacts/environment"
-"$VENV/bin/python" -m pip freeze > "$ROOT/artifacts/environment/pip-freeze.txt"
+PYTHONPATH="$SITE_PACKAGES" python3 -m pip freeze > "$ROOT/artifacts/environment/pip-freeze.txt"
 sha256sum "${SIF_PATH:-$HOME/pytorch_24.01-py3.sif}" > "$ROOT/artifacts/environment/container.sha256"
-"$VENV/bin/python" -m pip check
+PYTHONPATH="$SITE_PACKAGES" python3 -m pip check
 echo V2_BOOTSTRAP_COMPLETE

@@ -135,14 +135,14 @@ done
 
 path_value=$PATH
 python_value=python3
+pythonpath_value="$PROJECT_ROOT/src:$PROJECT_ROOT/scripts"
 if ((USE_VENV)); then
-    [[ -x "$VENV_PATH/bin/python" ]] || {
+    [[ -d "$VENV_PATH/site-packages" ]] || {
         echo "Persistent environment missing: $VENV_PATH" >&2
         echo "Run scripts/hpc/bootstrap_cedia.sh --execute first." >&2
         exit 2
     }
-    path_value="$VENV_PATH/bin:$PATH"
-    python_value="$VENV_PATH/bin/python"
+    pythonpath_value="$VENV_PATH/site-packages:$pythonpath_value"
 fi
 device=cpu
 ((USE_NV == 0)) || device=cuda
@@ -159,7 +159,7 @@ fi
 "$runtime" "${container_args[@]}" \
     --env "PATH=$path_value" \
     --env "VIRTUAL_ENV=$VENV_PATH" \
-    --env "PYTHONPATH=$PROJECT_ROOT/src:$PROJECT_ROOT/scripts" \
+    --env "PYTHONPATH=$pythonpath_value" \
     --env "THESIS_ADAPTER_PYTHON=$python_value" \
     --env "THESIS_DEVICE=$device" \
     --env "THESIS_DATA_ROOT=$DATA_ROOT" \

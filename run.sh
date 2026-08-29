@@ -32,9 +32,9 @@ wait_job() {
             [[ $recorded_phase == "$phase" ]] || continue
             state=$("${ssh_cmd[@]}" "sacct -j '$job' --format=State -n -X | head -1 | tr -d ' '" 2>/dev/null || true)
             case $state in
-                FAILED|CANCELLED|TIMEOUT|OUT_OF_MEMORY|NODE_FAIL)
+                FAILED*|CANCELLED*|TIMEOUT*|OUT_OF_MEMORY*|NODE_FAIL*)
                     echo "$stage job $job ended $state" >&2
-                    "${ssh_cmd[@]}" "scancel --state=PENDING $(awk -F '\t' -v p="$phase" '$1==p {print $3}' "$LEDGER" | tr '\n' ' ')" || true
+                    "${ssh_cmd[@]}" "scancel $(awk -F '\t' -v p="$phase" '$1==p {print $3}' "$LEDGER" | tr '\n' ' ')" || true
                     return 1 ;;
             esac
         done < "$LEDGER"
