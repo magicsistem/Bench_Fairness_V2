@@ -95,12 +95,18 @@ configure_runtime_paths() {
 }
 
 configure_runtime_paths || exit $?
+PAYLOAD_TMPDIR=$(mktemp -d /tmp/v2.XXXXXX)
+ensure_runtime_directory PAYLOAD_TMPDIR "$PAYLOAD_TMPDIR"
 cleanup_runtime() {
     local rc=$?
     trap - EXIT
     if [[ -n "${RUNTIME_DIAGNOSTICS_STARTED:-}" ]]; then runtime_diag_stop || true; fi
     if [[ -n "${RUNTIME_TMP_BASE:-}" && "$APPTAINER_TMPDIR" == "$RUNTIME_TMP_BASE"/invocation.* && -d "$APPTAINER_TMPDIR" ]]; then
         rm -rf -- "$APPTAINER_TMPDIR" || echo "Could not remove isolated Apptainer temporary directory: $APPTAINER_TMPDIR" >&2
+    fi
+    if [[ "${PAYLOAD_TMPDIR:-}" == /tmp/v2.* && -d "$PAYLOAD_TMPDIR" && ! -L "$PAYLOAD_TMPDIR" ]]; then
+        find "$PAYLOAD_TMPDIR" -mindepth 1 -delete || true
+        rmdir "$PAYLOAD_TMPDIR" || true
     fi
     exit "$rc"
 }
@@ -121,6 +127,7 @@ sif_metadata=$(stat -c 'bytes=%s mtime_epoch=%Y owner=%u:%g' "$SIF_PATH")
 mkdir -p "$PROJECT_ROOT/.cedia" "$DATA_ROOT" "$PROJECT_ROOT/results"
 
 binds=(--bind "$PROJECT_ROOT:$PROJECT_ROOT")
+binds+=(--bind "$PAYLOAD_TMPDIR:$PAYLOAD_TMPDIR")
 if [[ "$DATA_ROOT" != "$PROJECT_ROOT" && "$DATA_ROOT" != "$PROJECT_ROOT"/* ]]; then
     mkdir -p "$DATA_ROOT"
     binds+=(--bind "$DATA_ROOT:$DATA_ROOT")
@@ -149,7 +156,7 @@ device=cpu
 container_host_started_epoch=$(date +%s)
 
 printf 'container_stage utc=%s host=%s git=%s sif_identity=%s device=%s apptainer_tmp=%s apptainer_cache=%s tmpdir=%s\n' \
-    "$(date -u +%FT%TZ)" "$(hostname)" "$(git --git-dir="$PROJECT_ROOT/.git" --work-tree="$PROJECT_ROOT" rev-parse HEAD)" "not-computed:$sif_metadata" "$device" "$APPTAINER_TMPDIR" "$APPTAINER_CACHEDIR" "$TMPDIR"
+    "$(date -u +%FT%TZ)" "$(hostname)" "$(git --git-dir="$PROJECT_ROOT/.git" --work-tree="$PROJECT_ROOT" rev-parse HEAD)" "not-computed:$sif_metadata" "$device" "$APPTAINER_TMPDIR" "$APPTAINER_CACHEDIR" "$PAYLOAD_TMPDIR"
 printf 'container_runtime_choice path=%s kind=%s version=%s sif=%s %s\n' "$runtime" "$runtime_kind" "$runtime_version" "$SIF_PATH" "$sif_metadata"
 if [[ -n "${RUNTIME_DIAGNOSTICS_LOG:-}" ]]; then
     mkdir -p "$(dirname -- "$RUNTIME_DIAGNOSTICS_LOG")"
@@ -166,6 +173,7 @@ fi
     --env "THESIS_CONTAINER_HOST_STARTED_EPOCH=$container_host_started_epoch" \
     --env "THESIS_IN_CONTAINER=1" \
     --env "PYTHONNOUSERSITE=1" \
+    --env "TMPDIR=$PAYLOAD_TMPDIR" \
     "${thread_env[@]}" \
     "$SIF_PATH" "$@" &
 payload_pid=$!
