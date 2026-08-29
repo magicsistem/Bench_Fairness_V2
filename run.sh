@@ -6,6 +6,7 @@ CEDIA_LOGIN=${CEDIA_LOGIN:-miguel.benavides__yachaytech.edu.ec@hpc.cedia.edu.ec}
 CEDIA_PORT=${CEDIA_PORT:-22}
 REMOTE_ROOT=${REMOTE_ROOT:-/home/miguel.benavides__yachaytech.edu.ec/Bench_Fairness_V2}
 LEDGER=.cedia/jobs.tsv
+WHEEL_PYTHON=${WHEEL_PYTHON:-/home/miguel/miniforge3/envs/tesis-sam/bin/python}
 mkdir -p .cedia
 ssh_cmd=(ssh -p "$CEDIA_PORT" "$CEDIA_LOGIN")
 
@@ -13,6 +14,9 @@ sync_code() {
     local commit
     commit=$(git rev-parse HEAD)
     "${ssh_cmd[@]}" "cd \"$REMOTE_ROOT\" && git fetch origin '+refs/heads/main:refs/remotes/origin/main' && git checkout main && git merge --ff-only origin/main && test \"\$(git rev-parse HEAD)\" = '$commit'"
+    mkdir -p .cedia/wheelhouse
+    "$WHEEL_PYTHON" -m pip download --no-deps --dest .cedia/wheelhouse --requirement configs/hpc/requirements-cuda.txt
+    rsync -a --ignore-existing -e "ssh -p $CEDIA_PORT" .cedia/wheelhouse/ "$CEDIA_LOGIN:$REMOTE_ROOT/.cedia/wheelhouse/"
     "${ssh_cmd[@]}" "cd \"$REMOTE_ROOT\" && scripts/hpc/fetch_dependencies.sh"
 }
 
