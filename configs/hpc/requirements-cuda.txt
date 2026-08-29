@@ -11,3 +11,4 @@ tokenizers==0.19.1
 imageio==2.34.2
 tifffile==2024.7.2
 networkx==3.3
+seaborn==0.12.2

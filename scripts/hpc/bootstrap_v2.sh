@@ -24,5 +24,5 @@ mkdir -p "$ROOT/artifacts/environment"
 PYTHONPATH="$SITE_PACKAGES" python3 -m pip freeze > "$ROOT/artifacts/environment/pip-freeze.txt"
 sha256sum "${SIF_PATH:-$HOME/pytorch_24.01-py3.sif}" > "$ROOT/artifacts/environment/container.sha256"
 PYTHONPATH="$SITE_PACKAGES" python3 -m pip check
-PYTHONPATH="$SITE_PACKAGES" python3 -c 'import cv2,einops,numpy,scipy,segmentation_models_pytorch,skimage,timm,torch,transformers,yaml'
+PYTHONPATH="$SITE_PACKAGES" python3 -c 'import cv2,einops,matplotlib,numpy,pandas,scipy,seaborn,segmentation_models_pytorch,skimage,timm,torch,torchvision,transformers,yaml'
 echo V2_BOOTSTRAP_COMPLETE
