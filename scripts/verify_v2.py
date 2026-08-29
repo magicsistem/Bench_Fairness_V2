@@ -32,11 +32,38 @@ def repository() -> None:
     print("V2 repository gate passed")
 
 
-def artifact(stage: str, path: str, marker: str) -> None:
-    value = load(path)
-    require(value.get("schema_version") == 2, f"{stage}: wrong schema")
-    require(value.get("status") == "complete", f"{stage}: not complete")
-    print(marker)
+def detector() -> None:
+    margin, rois = load("artifacts/yolov7/roi_margin.json"), load("artifacts/yolov7/validation_rois.json")
+    require(margin.get("rule") == "D09_Q95_valid_OOF" and margin.get("valid_detection_count", 0) > 0, "invalid D09 calibration")
+    require(rois.get("count") == 100 and (ROOT/"artifacts/yolov7/final/weights/best.pt").is_file(), "incomplete final detector")
+    print("V2 detector gate passed")
+
+
+def selection() -> None:
+    value = load("artifacts/selection/top3.json")
+    require(value.get("method_count") == 16 and len(value.get("top3", [])) == 3, "invalid V2 TOP-3")
+    require(len(list((ROOT/"results/validation").glob("*/results.json"))) == 16, "missing 16-method validation results")
+    print("V2 selection gate passed")
+
+
+def freeze() -> None:
+    value = load("scientific_freeze.json")
+    require(value.get("status") == "frozen" and value.get("test_absent_at_freeze") is True, "invalid freeze")
+    print("V2 freeze gate passed")
+
+
+def mst() -> None:
+    value, analysis = load("artifacts/test/mst/manifest.json"), load("results/test_mst/analysis.json")
+    require(value.get("source_count") == 1000 and value.get("count") == 10000, "invalid MST census")
+    require(analysis.get("hypothesis_tests") is False and len(analysis.get("methods", [])) == 3, "invalid MST analysis")
+    print("V2 MST gate passed")
+
+
+def mskcc() -> None:
+    census, analysis = load("artifacts/mskcc/census.json"), load("results/mskcc_analysis.json")
+    require(census.get("count") == 4879 and census.get("patient_count") == 64, "invalid MSKCC census")
+    require(analysis.get("primary") == "absolute-agreement ICC for ITA" and len(analysis.get("methods", [])) == 3, "invalid MSKCC analysis")
+    print("V2 MSKCC gate passed")
 
 
 def pipeline() -> None:
@@ -63,15 +90,14 @@ def main() -> None:
     parser.add_argument("stage", choices=["repository", "detector", "selection", "freeze", "mst", "mskcc", "pipeline", "provenance"])
     stage = parser.parse_args().stage
     if stage == "repository": repository()
-    elif stage == "detector": artifact(stage, "artifacts/detector/manifest.json", "V2 detector gate passed")
-    elif stage == "selection": artifact(stage, "artifacts/selection/manifest.json", "V2 selection gate passed")
-    elif stage == "freeze": artifact(stage, "artifacts/freeze/scientific_freeze.json", "V2 freeze gate passed")
-    elif stage == "mst": artifact(stage, "artifacts/mst/manifest.json", "V2 MST gate passed")
-    elif stage == "mskcc": artifact(stage, "artifacts/mskcc/manifest.json", "V2 MSKCC gate passed")
+    elif stage == "detector": detector()
+    elif stage == "selection": selection()
+    elif stage == "freeze": freeze()
+    elif stage == "mst": mst()
+    elif stage == "mskcc": mskcc()
     elif stage == "pipeline": pipeline()
     else: provenance()
 
 
 if __name__ == "__main__":
     main()
-

@@ -221,3 +221,23 @@ def colour_metrics(rgb: np.ndarray, clean: np.ndarray) -> dict[str, Any]:
         "lab_median": lab.tolist(),
         "ita_degrees": float(np.degrees(np.arctan2(lab[0] - 50.0, lab[2]))),
     }
+
+
+def srgb_to_lab(rgb: np.ndarray) -> np.ndarray:
+    values = np.asarray(rgb)
+    if values.shape[-1] != 3: raise ValueError("sRGB input must end in three channels")
+    return _srgb_to_lab(values.reshape(-1, 3)).reshape(values.shape)
+
+
+def lab_to_srgb_unclipped(lab: np.ndarray) -> np.ndarray:
+    """Inverse D41 conversion, returning float64 sRGB before gamut clipping."""
+    values = np.asarray(lab, dtype=np.float64)
+    fy = (values[..., 0] + 16.0) / 116.0
+    fx, fz = fy + values[..., 1] / 500.0, fy - values[..., 2] / 200.0
+    delta = 6.0 / 29.0
+    inverse = lambda component: np.where(component > delta, component**3, 3*delta**2*(component-4.0/29.0))
+    xyz = np.stack((.95047*inverse(fx), inverse(fy), 1.08883*inverse(fz)), axis=-1)
+    linear = xyz @ np.array([[3.2404542, -1.5371385, -.4985314],
+                             [-.9692660, 1.8760108, .0415560],
+                             [.0556434, -.2040259, 1.0572252]], dtype=np.float64).T
+    return np.where(linear <= .0031308, 12.92*linear, 1.055*np.power(np.maximum(linear, 0), 1/2.4)-.055)

@@ -12,8 +12,10 @@ from thesis_fitzpatrick.v2 import (
     clean_skin_mask,
     colour_metrics,
     highlight_mask,
+    lab_to_srgb_unclipped,
     q95,
     required_symmetric_margin,
+    srgb_to_lab,
 )
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
@@ -22,6 +24,10 @@ from scripts.prepare_data import assert_development_path, folds
 
 
 class V2CoreTest(unittest.TestCase):
+    def test_d41_lab_inverse_round_trip(self):
+        rgb = np.array([[[32, 128, 224], [220, 180, 80]]], dtype=np.uint8)
+        restored = lab_to_srgb_unclipped(srgb_to_lab(rgb))
+        np.testing.assert_allclose(restored, rgb / 255.0, atol=2e-6)
     def test_roi_margin_expands_symmetrically_and_clips(self):
         self.assertEqual(expanded([10, 20, 30, 40], 0.5, 35, 45), [0, 10, 35, 45])
     def test_margin_is_minimum_symmetric_fraction(self):

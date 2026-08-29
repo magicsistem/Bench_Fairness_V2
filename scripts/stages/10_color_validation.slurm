@@ -16,4 +16,5 @@ cd "$PROJECT_ROOT"; [[ $(hostname -s) == compute-0-2 ]]
 base=(--rois artifacts/yolov7/validation_rois.json --selection artifacts/selection/top3.json --results results/validation)
 scripts/hpc/run_in_container.sh --cpu -- python scripts/colorimetry.py calibrate "${base[@]}" --output artifacts/color/lesion_margin.json
 scripts/hpc/run_in_container.sh --cpu -- python scripts/colorimetry.py measure "${base[@]}" --margin artifacts/color/lesion_margin.json --output results/color_validation
+scripts/hpc/run_in_container.sh --cpu -- python scripts/mst.py palette --config configs/methodology_v2.json --output artifacts/mst/palette.png
 echo V2_COLOR_VALIDATION_COMPLETE

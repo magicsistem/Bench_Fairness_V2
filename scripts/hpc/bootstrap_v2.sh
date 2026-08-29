@@ -27,6 +27,8 @@ if [[ ! -f "$ROOT/models/yolov7/yolov7_training.pt" ]]; then
     mv "$ROOT/models/yolov7/.yolov7_training.pt.tmp" "$ROOT/models/yolov7/yolov7_training.pt"
 fi
 sha256sum "$ROOT/models/yolov7/yolov7_training.pt" > "$ROOT/models/yolov7/yolov7_training.pt.sha256"
+mkdir -p "$ROOT/artifacts/environment"
+"$VENV/bin/python" -m pip freeze > "$ROOT/artifacts/environment/pip-freeze.txt"
+sha256sum "${SIF_PATH:-$HOME/pytorch_24.01-py3.sif}" > "$ROOT/artifacts/environment/container.sha256"
 "$VENV/bin/python" -m pip check
 echo V2_BOOTSTRAP_COMPLETE
-

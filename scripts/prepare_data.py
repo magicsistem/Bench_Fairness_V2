@@ -30,9 +30,10 @@ def files(directory: Path, suffixes: set[str]) -> dict[str, Path]:
     return {image_id(path): path for path in sorted(directory.iterdir()) if path.is_file() and path.suffix.lower() in suffixes}
 
 
-def manifest(images_dir: Path, masks_dir: Path, output: Path, split: str) -> None:
-    assert_development_path(images_dir)
-    assert_development_path(masks_dir)
+def manifest(images_dir: Path, masks_dir: Path, output: Path, split: str, *, sealed: bool = False) -> None:
+    if not sealed:
+        assert_development_path(images_dir)
+        assert_development_path(masks_dir)
     images, masks = files(images_dir, {".jpg", ".jpeg", ".png"}), files(masks_dir, {".png"})
     if set(images) != set(masks):
         raise SystemExit(f"unpaired data: images_only={len(set(images)-set(masks))} masks_only={len(set(masks)-set(images))}")
@@ -170,6 +171,9 @@ def main() -> None:
     make_manifest = sub.add_parser("manifest")
     make_manifest.add_argument("--images", type=Path, required=True); make_manifest.add_argument("--masks", type=Path, required=True)
     make_manifest.add_argument("--output", type=Path, required=True); make_manifest.add_argument("--split", choices=["training", "validation"], required=True)
+    sealed_manifest = sub.add_parser("sealed-manifest")
+    sealed_manifest.add_argument("--images", type=Path, required=True); sealed_manifest.add_argument("--masks", type=Path, required=True)
+    sealed_manifest.add_argument("--output", type=Path, required=True); sealed_manifest.add_argument("--freeze", type=Path, required=True)
     make_folds = sub.add_parser("folds")
     make_folds.add_argument("--manifest", type=Path, required=True); make_folds.add_argument("--output", type=Path, required=True)
     make_folds.add_argument("--metadata", type=Path); make_folds.add_argument("--seed", type=int, default=20260828)
@@ -179,6 +183,9 @@ def main() -> None:
     make_final.add_argument("--training", type=Path, required=True); make_final.add_argument("--validation", type=Path, required=True); make_final.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
     if args.command == "manifest": manifest(args.images, args.masks, args.output, args.split)
+    elif args.command == "sealed-manifest":
+        from freeze import verify
+        verify(Path.cwd(), args.freeze); manifest(args.images, args.masks, args.output, "test", sealed=True)
     elif args.command == "folds": folds(args.manifest, args.output, args.metadata, args.seed)
     elif args.command == "yolo": yolo(args.manifest, args.folds, args.output)
     else: yolo_final(args.training, args.validation, args.output)

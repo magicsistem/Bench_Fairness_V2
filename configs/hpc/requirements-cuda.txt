@@ -4,4 +4,4 @@ segmentation-models-pytorch==0.5.0
 timm==0.9.16
 transformers==4.40.2
 PyYAML
-
+scikit-image==0.22.0
