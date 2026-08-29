@@ -4,17 +4,25 @@ ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)
 cd "$ROOT"
 CEDIA_LOGIN=${CEDIA_LOGIN:-miguel.benavides__yachaytech.edu.ec@hpc.cedia.edu.ec}
 CEDIA_PORT=${CEDIA_PORT:-22}
-REMOTE_ROOT=${REMOTE_ROOT:-\$HOME/Bench_Fairness_V2}
+REMOTE_ROOT=${REMOTE_ROOT:-/home/miguel.benavides__yachaytech.edu.ec/Bench_Fairness_V2}
 LEDGER=.cedia/jobs.tsv
 mkdir -p .cedia
 ssh_cmd=(ssh -p "$CEDIA_PORT" "$CEDIA_LOGIN")
+
+sync_code() {
+    local commit
+    commit=$(git rev-parse HEAD)
+    "${ssh_cmd[@]}" "cd \"$REMOTE_ROOT\" && git fetch origin main && git checkout main && git pull --ff-only origin main && test \"\$(git rev-parse HEAD)\" = '$commit'"
+}
 
 submit() {
     local phase=$1 stage=$2 dependency=${3:-} option=()
     [[ -z $dependency ]] || option=(--dependency="afterok:$dependency")
     local job
     job=$("${ssh_cmd[@]}" "cd \"$REMOTE_ROOT\" && mkdir -p logs && sbatch --parsable ${option[*]} --export=ALL,PROJECT_ROOT=\"$REMOTE_ROOT\" scripts/stages/$stage")
-    job=${job%%;*}; printf '%s\t%s\t%s\n' "$phase" "$stage" "$job" >> "$LEDGER"; printf '%s' "$job"
+    job=${job%%;*}
+    [[ $job =~ ^[0-9]+$ ]] || { echo "invalid sbatch id for $stage: $job" >&2; return 1; }
+    printf '%s\t%s\t%s\n' "$phase" "$stage" "$job" >> "$LEDGER"; printf '%s' "$job"
 }
 
 wait_job() {
@@ -105,9 +113,10 @@ status() {
 case ${1:-} in
     all)
         test -z "$(git status --porcelain --untracked-files=no)"
-        : > "$LEDGER"; pre_freeze; publish_freeze; post_freeze ;;
+        sync_code; : > "$LEDGER"; pre_freeze; publish_freeze; post_freeze ;;
     status) status ;;
     resume)
+        sync_code
         if [[ ! -f $LEDGER ]]; then "$0" all
         elif git describe --tags --exact-match HEAD 2>/dev/null | grep -q '^v2-scientific-freeze-'; then
             start=$(first_unfinished post); prune_phase post "$start"; post_freeze "$start"
