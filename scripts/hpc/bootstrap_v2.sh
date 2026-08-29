@@ -2,12 +2,14 @@
 set -Eeuo pipefail
 
 ROOT=$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd -P)
-VENV=${VENV_PATH:-$ROOT/.cedia/venv}
+VENV=$ROOT/.cedia/venv
 SITE_PACKAGES=$VENV/site-packages
 YOLO=$ROOT/vendor/yolov7
 REVISION=a207844b1ce82d204ab36d87d496728d3d2348e7
 
 mkdir -p "$SITE_PACKAGES"
+test ! -L "$SITE_PACKAGES"
+find "$SITE_PACKAGES" -mindepth 1 -delete
 python3 -m pip install --disable-pip-version-check --target "$SITE_PACKAGES" --upgrade --no-index --no-deps \
     --find-links "$ROOT/.cedia/wheelhouse" --requirement "$ROOT/configs/hpc/requirements-cuda.txt"
 
