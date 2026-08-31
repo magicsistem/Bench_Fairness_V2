@@ -129,9 +129,10 @@ case ${1:-} in
             start=$(first_unfinished pre); prune_phase pre "$start"; pre_freeze "$start"; publish_freeze; post_freeze
         fi ;;
     mst-resume)
+        phase="post-mst-$(date -u +%Y%m%dT%H%M%SZ)"
         test -z "$(git status --porcelain --untracked-files=no)"
         sync_code
         "${ssh_cmd[@]}" "cd \"$REMOTE_ROOT\" && test -f artifacts/test/rois.json && test -f artifacts/selection/top3.json && test -f artifacts/yolov7/final/weights/best.pt && test ! -e artifacts/test/mst/manifest.json && test ! -e artifacts/test/mst_rois.json && test ! -e results/test_mst && ! squeue -u \"\$USER\" -h -o '%j' | grep -q '^v2-'"
-        post_freeze 4 post-mst ;;
+        post_freeze 4 "$phase" ;;
     *) echo "Usage: ./run.sh {all|status|resume|mst-resume}" >&2; exit 2 ;;
 esac
