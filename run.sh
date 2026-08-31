@@ -77,16 +77,16 @@ publish_freeze() {
 }
 
 post_freeze() {
-    local start=${1:-0} dependency="" job stage index
+    local start=${1:-0} phase=${2:-post} dependency="" job stage index
     local stages=(11_open_test.slurm 12_yolov7_test.slurm 13_segment_test.slurm 14_analyze_test.slurm \
         15_generate_mst.slurm 16_yolov7_mst.slurm 16_segment_mst.slurm 17_analyze_mst.slurm 18_prepare_mskcc.slurm \
         19_yolov7_mskcc.slurm 20_segment_mskcc.slurm 21_color_mskcc.slurm 22_analyze_mskcc.slurm 24_finalize.slurm)
     ((start < ${#stages[@]})) || return 0
     for ((index=start; index<${#stages[@]}; index++)); do
         stage=${stages[index]}
-        job=$(submit post "$stage" "$dependency"); dependency=$job
+        job=$(submit "$phase" "$stage" "$dependency"); dependency=$job
     done
-    wait_job post "$dependency"
+    wait_job "$phase" "$dependency"
 }
 
 first_unfinished() {
@@ -132,6 +132,6 @@ case ${1:-} in
         test -z "$(git status --porcelain --untracked-files=no)"
         sync_code
         "${ssh_cmd[@]}" "cd \"$REMOTE_ROOT\" && test -f artifacts/test/rois.json && test -f artifacts/selection/top3.json && test -f artifacts/yolov7/final/weights/best.pt && test ! -e artifacts/test/mst && test ! -e artifacts/test/mst_rois.json && test ! -e results/test_mst && ! squeue -u \"\$USER\" -h -o '%j' | grep -q '^v2-'"
-        post_freeze 4 ;;
+        post_freeze 4 post-mst ;;
     *) echo "Usage: ./run.sh {all|status|resume|mst-resume}" >&2; exit 2 ;;
 esac
