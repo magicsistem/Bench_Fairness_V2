@@ -8,7 +8,6 @@ import concurrent.futures
 import hashlib
 import json
 import os
-import threading
 from pathlib import Path
 
 import cv2
@@ -25,6 +24,10 @@ def pixel_sha256(rgb: np.ndarray) -> str:
     return hashlib.sha256(np.ascontiguousarray(rgb).tobytes()).hexdigest()
 
 
+def configure_worker(opencv_threads: int) -> None:
+    cv2.setNumThreads(opencv_threads)
+
+
 def save_or_validate_png(path: Path, rgb: np.ndarray) -> bool:
     expected = pixel_sha256(rgb)
     if path.is_file():
@@ -34,7 +37,7 @@ def save_or_validate_png(path: Path, rgb: np.ndarray) -> bool:
                 return True
         except OSError:
             pass
-    temporary = path.with_name(f".{path.name}.{os.getpid()}.{threading.get_ident()}.tmp")
+    temporary = path.with_name(f".{path.name}.{os.getpid()}.tmp")
     Image.fromarray(rgb).save(temporary, format="PNG", compress_level=6)
     os.replace(temporary, path)
     with Image.open(path) as opened: decoded = np.asarray(opened.convert("RGB"), np.uint8)
@@ -92,9 +95,11 @@ def generate(rois_path: Path, config: Path, margin_path: Path, output: Path, wor
     margin = float(json.loads(margin_path.read_text(encoding="utf-8"))["lesion_safety_margin_fraction_q95"])
     targets = {name: srgb_to_lab(np.array(rgb, np.uint8)) for name, *rgb in colors}
     if workers < 1: raise SystemExit("workers must be positive")
-    (output/"images").mkdir(parents=True, exist_ok=True); cv2.setNumThreads(max(1, int(os.environ.get("SLURM_CPUS_PER_TASK", "1")) // workers))
+    (output/"images").mkdir(parents=True, exist_ok=True)
+    opencv_threads = max(1, int(os.environ.get("SLURM_CPUS_PER_TASK", "1")) // workers)
     records, unavailable = [], []
-    with concurrent.futures.ThreadPoolExecutor(max_workers=workers) as executor:
+    with concurrent.futures.ProcessPoolExecutor(max_workers=workers, initializer=configure_worker,
+                                                initargs=(opencv_threads,)) as executor:
         futures = [executor.submit(generate_source, item, colors, targets, minimum, margin, output) for item in rois["records"]]
         for future in concurrent.futures.as_completed(futures):
             complete, missing = future.result(); records.extend(complete); unavailable.extend(missing)
