@@ -100,7 +100,8 @@ class V2CoreTest(unittest.TestCase):
             original_detector = mst.detect_hair_mask
             try:
                 mst.detect_hair_mask = lambda rgb, _: (np.zeros(rgb.shape[:2], np.uint8), {})
-                mst.generate(rois, config, margin, root/"mst")
+                mst.generate(rois, config, margin, root/"mst", workers=2)
+                mst.generate(rois, config, margin, root/"mst", workers=2)
             finally: mst.detect_hair_mask = original_detector
             manifest = json.loads((root/"mst/manifest.json").read_text()); record = manifest["records"][0]
             with Image.open(record["image"]) as opened: result = np.asarray(opened.convert("RGB"))
@@ -108,6 +109,7 @@ class V2CoreTest(unittest.TestCase):
             self.assertFalse(np.array_equal(result[0, 0], image[0, 0]))
             self.assertEqual(manifest["synthesis_domain"], "full_image")
             self.assertEqual(manifest["png_compress_level"], 6)
+            self.assertTrue(record["reused_png"])
 
     def test_atomic_json_is_sorted_and_finite(self):
         with tempfile.TemporaryDirectory() as directory:

@@ -2,7 +2,7 @@
 
 OWNS: **
 
-Scope: implementar, ejecutar y verificar de extremo a extremo la metodología canónica D01–D59 sin abrir Test antes del scientific freeze.
+Scope: implementar, ejecutar y verificar de extremo a extremo la metodología canónica D01–D60 sin abrir Test antes del scientific freeze.
 
 - [ ] G1: el repositorio V2 y CEDIA tienen una revisión trazable y reproducible
   CHECK: python scripts/verify_v2.py repository
