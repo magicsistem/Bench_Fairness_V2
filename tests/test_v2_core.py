@@ -13,6 +13,7 @@ from thesis_fitzpatrick.v2 import (
     colour_metrics,
     highlight_mask,
     lab_to_srgb_unclipped,
+    minimum_support_pixels,
     q95,
     required_symmetric_margin,
     srgb_to_lab,
@@ -61,6 +62,10 @@ class V2CoreTest(unittest.TestCase):
         rgb[1, 1] = [248, 240, 242]
         mask = highlight_mask(rgb)
         self.assertEqual(int(mask.sum()), 1)
+
+    def test_d37_minimum_support(self):
+        self.assertEqual(minimum_support_pixels(8 * 8), 256)
+        self.assertEqual(minimum_support_pixels(100_001), 501)
 
     def test_atomic_json_is_sorted_and_finite(self):
         with tempfile.TemporaryDirectory() as directory:

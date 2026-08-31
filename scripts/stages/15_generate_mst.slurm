@@ -12,6 +12,7 @@
 #SBATCH --error=logs/slurm-%x-%j.err
 set -Eeuo pipefail
 : "${PROJECT_ROOT:?PROJECT_ROOT required}"; cd "$PROJECT_ROOT"; [[ $(hostname -s) == compute-0-2 ]]
+test ! -e artifacts/test/mst
 scripts/hpc/run_in_container.sh --cpu -- python scripts/mst.py generate --rois artifacts/test/rois.json \
   --config configs/methodology_v2.json --margin artifacts/color/lesion_margin.json --output artifacts/test/mst
 echo V2_MST_GENERATION_COMPLETE

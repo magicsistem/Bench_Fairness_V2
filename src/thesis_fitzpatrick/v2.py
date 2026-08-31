@@ -175,6 +175,10 @@ def _dilate(mask: np.ndarray, radius: int) -> np.ndarray:
     return distance <= radius
 
 
+def minimum_support_pixels(area: int, minimum_pixels: int = 256, minimum_fraction: float = 0.005) -> int:
+    return max(minimum_pixels, int(np.ceil(minimum_fraction * area)))
+
+
 def clean_skin_mask(
     rgb: np.ndarray,
     lesion_mask: np.ndarray,
@@ -190,7 +194,7 @@ def clean_skin_mask(
     radius = int(np.ceil(margin_fraction * min(lesion.shape)))
     highlights = highlight_mask(rgb).astype(bool)
     clean = ~_dilate(lesion, radius) & ~hair.astype(bool) & ~highlights
-    required = max(minimum_pixels, int(np.ceil(minimum_fraction * lesion.size)))
+    required = minimum_support_pixels(lesion.size, minimum_pixels, minimum_fraction)
     metadata = {
         "lesion_safety_margin_pixels": radius,
         "candidate_skin_pixel_count": int(clean.sum()),

@@ -12,7 +12,7 @@ import numpy as np
 from PIL import Image
 from skimage.color import deltaE_ciede2000
 
-from thesis_fitzpatrick.v2 import atomic_json, detect_hair_mask, highlight_mask, lab_to_srgb_unclipped, sha256_file, srgb_to_lab
+from thesis_fitzpatrick.v2 import atomic_json, detect_hair_mask, highlight_mask, lab_to_srgb_unclipped, minimum_support_pixels, sha256_file, srgb_to_lab
 
 from colorimetry import HAIR
 
@@ -27,10 +27,11 @@ def palette(config: Path, output: Path) -> None:
 
 def generate(rois_path: Path, config: Path, margin_path: Path, output: Path) -> None:
     if "test" not in str(rois_path).lower(): raise SystemExit("MST generation is restricted to sealed Test")
-    rois = json.loads(rois_path.read_text(encoding="utf-8")); colors = json.loads(config.read_text(encoding="utf-8"))["mst"]
+    rois = json.loads(rois_path.read_text(encoding="utf-8")); settings = json.loads(config.read_text(encoding="utf-8")); colors = settings["mst"]
+    minimum = settings["minimum_clean_skin"]
     margin = float(json.loads(margin_path.read_text(encoding="utf-8"))["lesion_safety_margin_fraction_q95"])
     targets = {name: srgb_to_lab(np.array(rgb, np.uint8)) for name, *rgb in colors}
-    records = []
+    records, unavailable = [], []
     for item in rois["records"]:
         x0, y0, x1, y1 = item["roi_bbox"]
         with Image.open(item["image"]) as opened: full = np.asarray(opened.convert("RGB"), np.uint8)
@@ -41,7 +42,14 @@ def generate(rois_path: Path, config: Path, margin_path: Path, output: Path) -> 
             distance = cv2.distanceTransform((~lesion).astype(np.uint8), cv2.DIST_L2, cv2.DIST_MASK_PRECISE)
             lesion = distance <= radius
         support = ~lesion & ~hair.astype(bool) & ~highlight_mask(roi).astype(bool)
-        if not support.any(): raise RuntimeError(f"empty D45 support: {item['image_id']}")
+        support_pixels = int(support.sum())
+        required_pixels = minimum_support_pixels(support.size, int(minimum["pixels"]), float(minimum["area_fraction"]))
+        if support_pixels < required_pixels:
+            unavailable.extend({"image_id": f"{item['image_id']}__{name}", "source_image_id": item["image_id"],
+                                "condition": name, "status": "unavailable_insufficient_d45_support",
+                                "support_pixels": support_pixels, "required_pixels": required_pixels}
+                               for name, *_ in colors)
+            continue
         lab = srgb_to_lab(roi); source = np.median(lab[support], axis=0)
         for name, target in targets.items():
             shifted = lab + (target-source); unclipped = lab_to_srgb_unclipped(shifted)
@@ -59,8 +67,12 @@ def generate(rois_path: Path, config: Path, margin_path: Path, output: Path) -> 
                             "ciede2000": float(deltaE_ciede2000(target[None, :], measured[None, :])[0]),
                             "clipped_channel_fraction": float(np.mean((unclipped <= 0) | (unclipped >= 1))),
                             "shape": list(result.shape), "gt_sha256": item["mask_sha256"]})
-    atomic_json(output/"manifest.json", {"schema_version": 2, "split": "test_mst", "count": len(records), "source_count": rois["count"],
-                                          "conditions": [name for name, *_ in colors], "records": records})
+    atomic_json(output/"manifest.json", {"schema_version": 2, "split": "test_mst", "count": len(records),
+                                          "unavailable_count": len(unavailable), "expected_count": rois["count"] * len(colors),
+                                          "source_count": rois["count"], "available_source_count": len(records) // len(colors),
+                                          "unavailable_source_count": len(unavailable) // len(colors),
+                                          "conditions": [name for name, *_ in colors], "records": records,
+                                          "unavailable_records": unavailable})
 
 
 def main() -> None:

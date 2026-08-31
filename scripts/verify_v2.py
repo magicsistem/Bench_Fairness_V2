@@ -54,7 +54,9 @@ def freeze() -> None:
 
 def mst() -> None:
     value, analysis = load("artifacts/test/mst/manifest.json"), load("results/test_mst/analysis.json")
-    require(value.get("source_count") == 1000 and value.get("count") == 10000, "invalid MST census")
+    require(value.get("source_count") == 1000 and value.get("expected_count") == 10000, "invalid MST census")
+    require(value.get("count", 0) + value.get("unavailable_count", 0) == 10000, "incomplete MST availability census")
+    require(value.get("unavailable_count", 0) == len(value.get("unavailable_records", [])), "invalid MST unavailable records")
     require(analysis.get("hypothesis_tests") is False and len(analysis.get("methods", [])) == 3, "invalid MST analysis")
     print("V2 MST gate passed")
 
