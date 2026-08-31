@@ -18,7 +18,7 @@ from colorimetry import HAIR
 
 
 def palette(config: Path, output: Path) -> None:
-    colors = json.loads(config.read_text(encoding="utf-8"))["mst_palette_srgb"]
+    colors = json.loads(config.read_text(encoding="utf-8"))["mst"]
     image = np.zeros((100, 1000, 3), np.uint8)
     for index, (_, red, green, blue) in enumerate(colors): image[:, index*100:(index+1)*100] = (red, green, blue)
     output.parent.mkdir(parents=True, exist_ok=True); Image.fromarray(image).save(output, compress_level=0)
@@ -27,7 +27,7 @@ def palette(config: Path, output: Path) -> None:
 
 def generate(rois_path: Path, config: Path, margin_path: Path, output: Path) -> None:
     if "test" not in str(rois_path).lower(): raise SystemExit("MST generation is restricted to sealed Test")
-    rois = json.loads(rois_path.read_text(encoding="utf-8")); colors = json.loads(config.read_text(encoding="utf-8"))["mst_palette_srgb"]
+    rois = json.loads(rois_path.read_text(encoding="utf-8")); colors = json.loads(config.read_text(encoding="utf-8"))["mst"]
     margin = float(json.loads(margin_path.read_text(encoding="utf-8"))["lesion_safety_margin_fraction_q95"])
     targets = {name: srgb_to_lab(np.array(rgb, np.uint8)) for name, *rgb in colors}
     records = []
