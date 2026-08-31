@@ -79,7 +79,7 @@ publish_freeze() {
 post_freeze() {
     local start=${1:-0} dependency="" job stage index
     local stages=(11_open_test.slurm 12_yolov7_test.slurm 13_segment_test.slurm 14_analyze_test.slurm \
-        15_generate_mst.slurm 16_segment_mst.slurm 17_analyze_mst.slurm 18_prepare_mskcc.slurm \
+        15_generate_mst.slurm 16_yolov7_mst.slurm 16_segment_mst.slurm 17_analyze_mst.slurm 18_prepare_mskcc.slurm \
         19_yolov7_mskcc.slurm 20_segment_mskcc.slurm 21_color_mskcc.slurm 22_analyze_mskcc.slurm 24_finalize.slurm)
     ((start < ${#stages[@]})) || return 0
     for ((index=start; index<${#stages[@]}; index++)); do

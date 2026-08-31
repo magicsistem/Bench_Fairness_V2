@@ -2,7 +2,7 @@
 
 OWNS: **
 
-Scope: implementar, ejecutar y verificar de extremo a extremo la metodología canónica D01–D58 sin abrir Test antes del scientific freeze.
+Scope: implementar, ejecutar y verificar de extremo a extremo la metodología canónica D01–D59 sin abrir Test antes del scientific freeze.
 
 - [ ] G1: el repositorio V2 y CEDIA tienen una revisión trazable y reproducible
   CHECK: python scripts/verify_v2.py repository
@@ -24,7 +24,7 @@ Scope: implementar, ejecutar y verificar de extremo a extremo la metodología ca
   EXPECT: V2 freeze gate passed
   EVIDENCE: pending
 
-- [ ] G5: Test sellado y experimento MST cumplen D43–D49 después del freeze
+- [ ] G5: Test sellado y experimento MST end-to-end de imagen completa cumplen D25 y D43–D49/D59 después del freeze, con PNG comprimido sin pérdida, YOLOv7 por condición y fallback verificable
   CHECK: python scripts/verify_v2.py mst
   EXPECT: V2 MST gate passed
   EVIDENCE: pending

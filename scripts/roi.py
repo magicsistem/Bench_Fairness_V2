@@ -8,6 +8,7 @@ import json
 from pathlib import Path
 
 import numpy as np
+from PIL import Image
 
 from thesis_fitzpatrick.v2 import atomic_json, sha256_file
 
@@ -84,8 +85,16 @@ def build(manifest_path: Path, labels_root: Path, margin_path: Path, output: Pat
             roi, status = expanded(box, margin, width, height), "detected"
         else:
             confidence, box, roi, status = None, None, [0, 0, width, height], "valid_no_detection"
+        gx0, gy0, gx1, gy1 = item["bbox_xyxy_half_open"]
+        bbox_containment = None if box is None else box[0] <= gx0 and box[1] <= gy0 and box[2] >= gx1 and box[3] >= gy1
+        with Image.open(item["mask"]) as opened: truth = np.asarray(opened.convert("L")) >= 128
+        lesion_pixels = int(truth.sum())
+        lesion_containment = float(truth[roi[1]:roi[3], roi[0]:roi[2]].sum() / lesion_pixels) if lesion_pixels else None
+        gt_bbox_area = max(1, (gx1-gx0) * (gy1-gy0))
         records.append({**item, "detector_status": status, "selected_bbox": box, "confidence": confidence,
-                        "roi_bbox": roi, "margin_fraction": margin})
+                        "roi_bbox": roi, "margin_fraction": margin, "bbox_containment": bbox_containment,
+                        "lesion_pixel_containment": lesion_containment,
+                        "roi_area_inflation": ((roi[2]-roi[0]) * (roi[3]-roi[1])) / gt_bbox_area})
     atomic_json(output, {"schema_version": 2, "split": manifest["split"], "count": len(records),
                          "manifest_sha256": sha256_file(manifest_path), "margin_sha256": sha256_file(margin_path),
                          "records": records})

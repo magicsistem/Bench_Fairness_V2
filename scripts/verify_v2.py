@@ -53,11 +53,15 @@ def freeze() -> None:
 
 
 def mst() -> None:
-    value, analysis = load("artifacts/test/mst/manifest.json"), load("results/test_mst/analysis.json")
+    value, rois, analysis = load("artifacts/test/mst/manifest.json"), load("artifacts/test/mst_rois.json"), load("results/test_mst/analysis.json")
     require(value.get("source_count") == 1000 and value.get("expected_count") == 10000, "invalid MST census")
+    require(value.get("synthesis_domain") == "full_image" and value.get("png_compress_level") == 6, "invalid MST image contract")
     require(value.get("count", 0) + value.get("unavailable_count", 0) == 10000, "incomplete MST availability census")
     require(value.get("unavailable_count", 0) == len(value.get("unavailable_records", [])), "invalid MST unavailable records")
+    require(rois.get("count") == value.get("count") and all(r.get("detector_status") in ("detected", "valid_no_detection") for r in rois.get("records", [])), "invalid per-condition YOLO census")
+    require(all("pixel_sha256" in r and r.get("shape") == [r.get("height"), r.get("width"), 3] for r in value.get("records", [])), "invalid lossless MST records")
     require(analysis.get("hypothesis_tests") is False and len(analysis.get("methods", [])) == 3, "invalid MST analysis")
+    require(all("detector" in c for m in analysis.get("methods", []) for c in m.get("conditions", [])), "missing MST detector analysis")
     print("V2 MST gate passed")
 
 

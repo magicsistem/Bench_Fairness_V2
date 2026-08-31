@@ -21,11 +21,23 @@ def run(original_root: Path, mst_root: Path, selection: Path, output: Path, seed
         for record in variants:
             source, condition = record["image_id"].rsplit("__", 1); base = original[source]
             by_condition.setdefault(condition, []).append({"source_image_id": source,
+                "detected": record["detector_status"] == "detected",
+                "detection_transition": f"{base['detector_status']}->{record['detector_status']}",
+                "bbox_containment": record.get("bbox_containment"),
+                "lesion_pixel_containment": record.get("lesion_pixel_containment"),
+                "roi_area_inflation": record.get("roi_area_inflation"),
                 **{f"delta_{metric}": record["metrics"][metric]-base["metrics"][metric]
                    for metric in ("jaccard", "threshold_jaccard", "dice", "boundary_f1")}})
         conditions = []
         for condition in sorted(by_condition):
-            rows = by_condition[condition]; item = {"condition": condition, "n": len(rows), "metrics": {}}
+            rows = by_condition[condition]; transitions = {}
+            for row in rows: transitions[row["detection_transition"]] = transitions.get(row["detection_transition"], 0) + 1
+            item = {"condition": condition, "n": len(rows), "metrics": {}, "detector": {
+                "detection_rate": float(np.mean([row["detected"] for row in rows])), "transitions": transitions}}
+            for key in ("bbox_containment", "lesion_pixel_containment", "roi_area_inflation"):
+                values = [row[key] for row in rows if row[key] is not None]
+                item["detector"][key] = {"n": len(values), "mean": float(np.mean(values)),
+                    "median": float(np.median(values))} if values else {"n": 0, "mean": None, "median": None}
             indices = generator.integers(0, len(rows), size=(10_000, len(rows)))
             for metric in ("jaccard", "threshold_jaccard", "dice", "boundary_f1"):
                 values = np.array([r[f"delta_{metric}"] for r in rows]); means = values[indices].mean(axis=1)

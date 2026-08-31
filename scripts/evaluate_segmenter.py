@@ -91,6 +91,10 @@ def run(args: argparse.Namespace) -> None:
             metrics = segmentation_metrics(restored, truth)
         records.append({"image_id": identifier, "method_id": model["id"], "status": "complete",
                         "roi_bbox": item["roi_bbox"], "detector_status": item["detector_status"],
+                        "selected_bbox": item.get("selected_bbox"), "confidence": item.get("confidence"),
+                        "bbox_containment": item.get("bbox_containment"),
+                        "lesion_pixel_containment": item.get("lesion_pixel_containment"),
+                        "roi_area_inflation": item.get("roi_area_inflation"),
                         "mask": str(mask_path.resolve()), "mask_sha256": sha256_file(mask_path),
                         "checkpoint_sha256": sha256_file(checkpoint) if checkpoint else None,
                         "elapsed_ms": (time.perf_counter()-started)*1000, "metrics": metrics})

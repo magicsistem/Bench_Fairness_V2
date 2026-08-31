@@ -15,6 +15,6 @@
 set -Eeuo pipefail
 : "${PROJECT_ROOT:?PROJECT_ROOT required}"; cd "$PROJECT_ROOT"; [[ $(hostname -s) == compute-0-2 ]]
 method=$(scripts/hpc/run_in_container.sh --cpu -- python -c 'import json,sys; print(json.load(open("artifacts/selection/top3.json"))["top3"][int(sys.argv[1])])' "$SLURM_ARRAY_TASK_ID" | tail -1)
-scripts/hpc/run_in_container.sh -- python scripts/evaluate_segmenter.py --rois artifacts/test/mst/manifest.json \
+scripts/hpc/run_in_container.sh -- python scripts/evaluate_segmenter.py --rois artifacts/test/mst_rois.json \
   --output results/test_mst --method-id "$method" --device cuda
 echo V2_SEGMENT_MST_COMPLETE=$method

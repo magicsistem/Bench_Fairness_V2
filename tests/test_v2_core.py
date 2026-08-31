@@ -1,6 +1,7 @@
 import json
 import sys
 import tempfile
+import types
 import unittest
 from pathlib import Path
 
@@ -20,7 +21,7 @@ from thesis_fitzpatrick.v2 import (
 )
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-from roi import expanded  # noqa: E402
+from roi import build, expanded  # noqa: E402
 from scripts.prepare_data import assert_development_path, folds
 
 
@@ -31,6 +32,18 @@ class V2CoreTest(unittest.TestCase):
         np.testing.assert_allclose(restored, rgb / 255.0, atol=2e-6)
     def test_roi_margin_expands_symmetrically_and_clips(self):
         self.assertEqual(expanded([10, 20, 30, 40], 0.5, 35, 45), [0, 10, 35, 45])
+
+    def test_no_detection_uses_full_condition_image(self):
+        from PIL import Image
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); labels = root/"labels"; labels.mkdir()
+            mask = root/"mask.png"; Image.fromarray(np.pad(np.ones((2, 2), np.uint8)*255, 1)).save(mask)
+            manifest = root/"manifest.json"; manifest.write_text(json.dumps({"split": "test_mst", "records": [{"image_id": "I__MST_01", "width": 4, "height": 4, "mask": str(mask), "bbox_xyxy_half_open": [1, 1, 3, 3]}]}))
+            margin = root/"margin.json"; margin.write_text(json.dumps({"margin_fraction": .1}))
+            output = root/"rois.json"; build(manifest, labels, margin, output)
+            record = json.loads(output.read_text())["records"][0]
+            self.assertEqual(record["detector_status"], "valid_no_detection")
+            self.assertEqual(record["roi_bbox"], [0, 0, 4, 4])
     def test_margin_is_minimum_symmetric_fraction(self):
         self.assertEqual(required_symmetric_margin(BBox(10, 10, 30, 50), BBox(8, 9, 34, 55)), 0.2)
         self.assertEqual(q95([0.0] * 19 + [1.0]), 0.05000000000000071)
@@ -66,6 +79,35 @@ class V2CoreTest(unittest.TestCase):
     def test_d37_minimum_support(self):
         self.assertEqual(minimum_support_pixels(8 * 8), 256)
         self.assertEqual(minimum_support_pixels(100_001), 501)
+
+    def test_mst_transforms_full_image_and_writes_lossless_png(self):
+        from PIL import Image
+        try:
+            import mst
+        except ModuleNotFoundError as error:
+            if error.name != "skimage": raise
+            color = types.ModuleType("skimage.color"); color.deltaE_ciede2000 = lambda a, b: np.linalg.norm(a-b, axis=-1)
+            package = types.ModuleType("skimage"); package.color = color
+            sys.modules["skimage"], sys.modules["skimage.color"] = package, color
+            import mst
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); image = np.full((12, 12, 3), 120, np.uint8); truth = np.zeros((12, 12), np.uint8); truth[5:7, 5:7] = 255
+            image_path, mask_path = root/"source.jpg", root/"mask.png"
+            Image.fromarray(image).save(image_path); Image.fromarray(truth).save(mask_path)
+            config = root/"config.json"; config.write_text(json.dumps({"mst": [["MST_01", 40, 35, 30]], "minimum_clean_skin": {"pixels": 1, "area_fraction": 0}}))
+            margin = root/"margin.json"; margin.write_text(json.dumps({"lesion_safety_margin_fraction_q95": 0}))
+            rois = root/"Test_rois.json"; rois.write_text(json.dumps({"count": 1, "records": [{"image_id": "I1", "image": str(image_path), "mask": str(mask_path), "mask_sha256": "x", "width": 12, "height": 12, "bbox_xyxy_half_open": [5, 5, 7, 7], "roi_bbox": [4, 4, 8, 8]}]}))
+            original_detector = mst.detect_hair_mask
+            try:
+                mst.detect_hair_mask = lambda rgb, _: (np.zeros(rgb.shape[:2], np.uint8), {})
+                mst.generate(rois, config, margin, root/"mst")
+            finally: mst.detect_hair_mask = original_detector
+            manifest = json.loads((root/"mst/manifest.json").read_text()); record = manifest["records"][0]
+            with Image.open(record["image"]) as opened: result = np.asarray(opened.convert("RGB"))
+            self.assertEqual(result.shape, image.shape)
+            self.assertFalse(np.array_equal(result[0, 0], image[0, 0]))
+            self.assertEqual(manifest["synthesis_domain"], "full_image")
+            self.assertEqual(manifest["png_compress_level"], 6)
 
     def test_atomic_json_is_sorted_and_finite(self):
         with tempfile.TemporaryDirectory() as directory:
