@@ -117,6 +117,18 @@ class V2CoreTest(unittest.TestCase):
             atomic_json(path, {"b": 2, "a": 1})
             self.assertEqual(json.loads(path.read_text()), {"a": 1, "b": 2})
 
+    def test_segmenter_progress_requires_matching_mask_hash(self):
+        from evaluate_segmenter import append_progress, load_progress
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); mask = root / "mask.png"; mask.write_bytes(b"valid")
+            progress = root / "progress.jsonl"
+            progress.write_text(json.dumps({"method_id": "m", "roi_manifest_sha256": "r", "schema_version": 2}) + "\n")
+            record = {"image_id": "I1", "mask": str(mask), "mask_sha256": __import__("hashlib").sha256(b"valid").hexdigest()}
+            append_progress(progress, record)
+            self.assertEqual(load_progress(progress, "m", "r")["I1"], record)
+            mask.write_bytes(b"partial")
+            self.assertEqual(load_progress(progress, "m", "r"), {})
+
     def test_test_paths_are_rejected_before_freeze(self):
         with self.assertRaises(SystemExit):
             assert_development_path(Path("/sealed/ISIC2018_Test_Input"))

@@ -21,6 +21,25 @@ from thesis_fitzpatrick.metrics import segmentation_metrics
 from thesis_fitzpatrick.v2 import atomic_json, sha256_file
 
 
+def load_progress(path: Path, method_id: str, roi_sha256: str) -> dict[str, dict]:
+    if not path.is_file(): return {}
+    lines = path.read_text(encoding="utf-8").splitlines()
+    if not lines: return {}
+    header = json.loads(lines[0])
+    if header != {"method_id": method_id, "roi_manifest_sha256": roi_sha256, "schema_version": 2}:
+        raise RuntimeError(f"progress provenance mismatch: {path}")
+    records = {}
+    for line in lines[1:]:
+        record = json.loads(line); mask = Path(record["mask"])
+        if mask.is_file() and sha256_file(mask) == record["mask_sha256"]: records[record["image_id"]] = record
+    return records
+
+
+def append_progress(path: Path, record: dict) -> None:
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(json.dumps(record, sort_keys=True, allow_nan=False) + "\n"); handle.flush(); os.fsync(handle.fileno())
+
+
 def roster(path: Path) -> list[dict]:
     models = json.loads(path.read_text(encoding="utf-8"))["models"]
     return [*models, {"id": "grabcut", "name": "GrabCut", "adapter_command": None}]
@@ -65,11 +84,17 @@ def run(args: argparse.Namespace) -> None:
     else:
         if args.method_index is None or not 0 <= args.method_index < len(methods): raise SystemExit("method-index outside 0..15")
         model = methods[args.method_index]
-    roi_manifest = json.loads(args.rois.read_text(encoding="utf-8"))
+    roi_manifest = json.loads(args.rois.read_text(encoding="utf-8")); roi_sha256 = sha256_file(args.rois)
     out = args.output / model["id"]; (out / "masks").mkdir(parents=True, exist_ok=True)
+    progress_path = out / "progress.jsonl"
+    if not progress_path.exists():
+        progress_path.write_text(json.dumps({"method_id": model["id"], "roi_manifest_sha256": roi_sha256, "schema_version": 2}, sort_keys=True) + "\n", encoding="utf-8")
+    completed = load_progress(progress_path, model["id"], roi_sha256)
     records = []; infer_adapter, checkpoint = (None, None) if model["id"] == "grabcut" else adapter(model, root, args.device)
     for item in roi_manifest["records"]:
-        identifier = item["image_id"]; started = time.perf_counter()
+        identifier = item["image_id"]
+        if identifier in completed: records.append(completed[identifier]); continue
+        started = time.perf_counter()
         with Image.open(item["image"]) as opened:
             rgb = np.asarray(opened.convert("RGB"), dtype=np.uint8)
         x0, y0, x1, y1 = item["roi_bbox"]; crop = rgb[y0:y1, x0:x1]
@@ -84,12 +109,13 @@ def run(args: argparse.Namespace) -> None:
                 with Image.open(native_path) as opened: native = (np.asarray(opened.convert("L")) >= 128).astype(np.uint8)
         if native.shape != crop.shape[:2]: raise RuntimeError(f"native shape mismatch: {identifier}")
         restored = np.zeros(rgb.shape[:2], np.uint8); restored[y0:y1, x0:x1] = native
-        mask_path = out / "masks" / f"{identifier}.png"; Image.fromarray(restored * 255).save(mask_path)
+        mask_path = out / "masks" / f"{identifier}.png"; temporary_mask = mask_path.with_suffix(".tmp")
+        Image.fromarray(restored * 255).save(temporary_mask, format="PNG"); os.replace(temporary_mask, mask_path)
         metrics = None
         if not args.no_ground_truth:
             with Image.open(item["mask"]) as opened: truth = np.asarray(opened.convert("L")) >= 128
             metrics = segmentation_metrics(restored, truth)
-        records.append({"image_id": identifier, "method_id": model["id"], "status": "complete",
+        record = {"image_id": identifier, "method_id": model["id"], "status": "complete",
                         "roi_bbox": item["roi_bbox"], "detector_status": item["detector_status"],
                         "selected_bbox": item.get("selected_bbox"), "confidence": item.get("confidence"),
                         "bbox_containment": item.get("bbox_containment"),
@@ -97,9 +123,10 @@ def run(args: argparse.Namespace) -> None:
                         "roi_area_inflation": item.get("roi_area_inflation"),
                         "mask": str(mask_path.resolve()), "mask_sha256": sha256_file(mask_path),
                         "checkpoint_sha256": sha256_file(checkpoint) if checkpoint else None,
-                        "elapsed_ms": (time.perf_counter()-started)*1000, "metrics": metrics})
+                        "elapsed_ms": (time.perf_counter()-started)*1000, "metrics": metrics}
+        append_progress(progress_path, record); records.append(record)
     atomic_json(out / "results.json", {"schema_version": 2, "method_id": model["id"], "count": len(records),
-                                        "roi_manifest_sha256": sha256_file(args.rois), "records": records})
+                                        "roi_manifest_sha256": roi_sha256, "records": records})
     print(f"V2_SEGMENTER_COMPLETE={model['id']} count={len(records)}")
 
 
