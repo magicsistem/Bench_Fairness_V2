@@ -14,8 +14,8 @@
 set -Eeuo pipefail
 : "${PROJECT_ROOT:?PROJECT_ROOT required}"; cd "$PROJECT_ROOT"; [[ $(hostname -s) == compute-0-2 ]]
 scripts/hpc/run_in_container.sh -- python vendor/yolov7/detect.py --weights artifacts/yolov7/final/weights/best.pt \
-  --source data/raw/mskcc --img-size 640 --conf-thres 0.25 --iou-thres 0.45 --device 0 --save-txt --save-conf --nosave \
+  --source data/raw/mskcc/images --img-size 640 --conf-thres 0.25 --iou-thres 0.45 --device 0 --save-txt --save-conf --nosave \
   --project artifacts/yolov7 --name mskcc --exist-ok
-scripts/hpc/run_in_container.sh --cpu -- python scripts/roi.py build --manifest artifacts/mskcc/census.json \
+scripts/hpc/run_in_container.sh --cpu -- python scripts/roi.py build-no-ground-truth --manifest artifacts/mskcc/census.json \
   --labels-root artifacts/yolov7/mskcc/labels --margin artifacts/yolov7/roi_margin.json --output artifacts/mskcc/rois.json
 echo V2_YOLO_MSKCC_COMPLETE

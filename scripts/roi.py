@@ -100,6 +100,28 @@ def build(manifest_path: Path, labels_root: Path, margin_path: Path, output: Pat
                          "records": records})
 
 
+def build_no_ground_truth(manifest_path: Path, labels_root: Path, margin_path: Path, output: Path) -> None:
+    """Build detector ROIs for a cohort without authorized lesion ground truth."""
+    manifest = load_manifest(manifest_path)
+    margin_value = json.loads(margin_path.read_text(encoding="utf-8"))
+    margin = float(margin_value["margin_fraction"])
+    records = []
+    for item in manifest["records"]:
+        identifier, width, height = item["image_id"], item["width"], item["height"]
+        boxes = detections(labels_root / f"{identifier}.txt", width, height)
+        if boxes:
+            confidence, box = boxes[0]
+            roi, status = expanded(box, margin, width, height), "detected"
+        else:
+            confidence, box, roi, status = None, None, [0, 0, width, height], "valid_no_detection"
+        records.append({**item, "detector_status": status, "selected_bbox": box, "confidence": confidence,
+                        "roi_bbox": roi, "margin_fraction": margin, "bbox_containment": None,
+                        "lesion_pixel_containment": None, "roi_area_inflation": None})
+    atomic_json(output, {"schema_version": 2, "split": manifest["split"], "count": len(records),
+                         "manifest_sha256": sha256_file(manifest_path), "margin_sha256": sha256_file(margin_path),
+                         "ground_truth_available": False, "records": records})
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     commands = parser.add_subparsers(dest="command", required=True)
@@ -109,9 +131,16 @@ def main() -> None:
     two = commands.add_parser("build")
     two.add_argument("--manifest", type=Path, required=True); two.add_argument("--labels-root", type=Path, required=True)
     two.add_argument("--margin", type=Path, required=True); two.add_argument("--output", type=Path, required=True)
+    three = commands.add_parser("build-no-ground-truth")
+    three.add_argument("--manifest", type=Path, required=True); three.add_argument("--labels-root", type=Path, required=True)
+    three.add_argument("--margin", type=Path, required=True); three.add_argument("--output", type=Path, required=True)
     args = parser.parse_args()
-    if args.command == "calibrate": calibrate(args.manifest, args.folds, args.labels_root, args.output)
-    else: build(args.manifest, args.labels_root, args.margin, args.output)
+    if args.command == "calibrate":
+        calibrate(args.manifest, args.folds, args.labels_root, args.output)
+    elif args.command == "build":
+        build(args.manifest, args.labels_root, args.margin, args.output)
+    else:
+        build_no_ground_truth(args.manifest, args.labels_root, args.margin, args.output)
 
 
 if __name__ == "__main__":

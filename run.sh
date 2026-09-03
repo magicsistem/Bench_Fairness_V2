@@ -140,5 +140,11 @@ case ${1:-} in
         sync_code
         "${ssh_cmd[@]}" "cd \"$REMOTE_ROOT\" && test -f artifacts/test/mst/manifest.json && test -f artifacts/test/mst_rois.json && test ! -e results/test_mst/analysis.json && ! squeue -u \"\$USER\" -h -o '%j' | grep -q '^v2-'"
         post_freeze 6 "$phase" ;;
-    *) echo "Usage: ./run.sh {all|status|resume|mst-resume|segment-mst-resume}" >&2; exit 2 ;;
+    mskcc-resume)
+        phase="post-mskcc-$(date -u +%Y%m%dT%H%M%SZ)"
+        test -z "$(git status --porcelain --untracked-files=no)"
+        sync_code
+        "${ssh_cmd[@]}" "cd \"$REMOTE_ROOT\" && test -f results/test_mst/analysis.json && test -f artifacts/mskcc/census.json && test ! -e artifacts/mskcc/rois.json && test ! -e results/mskcc && test ! -e results/mskcc_color/colorimetry.json && test ! -e results/mskcc_analysis.json && test \"\$(find artifacts/yolov7/mskcc/labels -maxdepth 1 -type f -name '*.txt' 2>/dev/null | wc -l)\" -eq 0 && ! squeue -u \"\$USER\" -h -o '%j' | grep -q '^v2-'"
+        post_freeze 9 "$phase" ;;
+    *) echo "Usage: ./run.sh {all|status|resume|mst-resume|segment-mst-resume|mskcc-resume}" >&2; exit 2 ;;
 esac

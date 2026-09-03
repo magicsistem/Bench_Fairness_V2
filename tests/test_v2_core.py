@@ -21,7 +21,7 @@ from thesis_fitzpatrick.v2 import (
 )
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "scripts"))
-from roi import build, expanded  # noqa: E402
+from roi import build, build_no_ground_truth, expanded  # noqa: E402
 from scripts.prepare_data import assert_development_path, folds
 
 
@@ -44,6 +44,40 @@ class V2CoreTest(unittest.TestCase):
             record = json.loads(output.read_text())["records"][0]
             self.assertEqual(record["detector_status"], "valid_no_detection")
             self.assertEqual(record["roi_bbox"], [0, 0, 4, 4])
+
+    def test_mskcc_no_ground_truth_detected_roi(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); labels = root/"labels"; labels.mkdir()
+            (labels/"MSK_DETECTED.txt").write_text("0 0.5 0.5 0.2 0.2 0.9\n", encoding="ascii")
+            manifest = root/"manifest.json"
+            manifest.write_text(json.dumps({"split": "mskcc_census", "records": [
+                {"image_id": "MSK_DETECTED", "image": "/tmp/MSK_DETECTED.jpg", "width": 100, "height": 100,
+                 "patient_id": "P1", "lesion_id": "L1"}]}))
+            margin = root/"margin.json"; margin.write_text(json.dumps({"margin_fraction": .1}))
+            output = root/"rois.json"; build_no_ground_truth(manifest, labels, margin, output)
+            value = json.loads(output.read_text()); record = value["records"][0]
+            self.assertEqual(record["detector_status"], "detected")
+            self.assertEqual(record["selected_bbox"], [40, 40, 60, 60])
+            self.assertEqual(record["roi_bbox"], [38, 38, 62, 62])
+            self.assertIsNone(record["bbox_containment"])
+            self.assertIsNone(record["lesion_pixel_containment"])
+            self.assertFalse(value["ground_truth_available"])
+
+    def test_mskcc_no_ground_truth_no_detection_uses_full_image(self):
+        with tempfile.TemporaryDirectory() as directory:
+            root = Path(directory); labels = root/"labels"; labels.mkdir()
+            manifest = root/"manifest.json"
+            manifest.write_text(json.dumps({"split": "mskcc_census", "records": [
+                {"image_id": "MSK_NO_DETECTION", "image": "/tmp/MSK_NO_DETECTION.jpg", "width": 80, "height": 60,
+                 "patient_id": "P2", "lesion_id": "L2"}]}))
+            margin = root/"margin.json"; margin.write_text(json.dumps({"margin_fraction": .1}))
+            output = root/"rois.json"; build_no_ground_truth(manifest, labels, margin, output)
+            value = json.loads(output.read_text()); record = value["records"][0]
+            self.assertEqual(record["detector_status"], "valid_no_detection")
+            self.assertIsNone(record["selected_bbox"])
+            self.assertEqual(record["roi_bbox"], [0, 0, 80, 60])
+            self.assertFalse(value["ground_truth_available"])
+
     def test_margin_is_minimum_symmetric_fraction(self):
         self.assertEqual(required_symmetric_margin(BBox(10, 10, 30, 50), BBox(8, 9, 34, 55)), 0.2)
         self.assertEqual(q95([0.0] * 19 + [1.0]), 0.05000000000000071)
