@@ -10,6 +10,13 @@ required = [
     "## Resultados reales",
     "## Interpretación de los resultados",
     "## Referencias",
+    "### Valores finales retenidos en cada etapa",
+    "### Calibración OOF del margen de ROI",
+    "### Colorimetría en Validation y margen D35",
+    "#### Detector YOLOv7 por condición MST",
+    "#### Detalle MST — AViT",
+    "#### Detalle MST — DeLightSAM-Dermoscopy",
+    "#### Detalle MST — VM-UNet ISIC17",
     "D01–D60",
     "0e61764577c2b2793e169fe8b64b8b530b362404",
     "V2_COMPLETE",
@@ -17,6 +24,8 @@ required = [
 missing = [item for item in required if item not in text]
 if missing:
     raise SystemExit(f"Missing report sections/evidence: {missing}")
-if text.count("|---") < 8 or text.count("\\[") < 20:
+if text.count("|---") < 15 or text.count("$$") < 40:
     raise SystemExit("Report lacks the expected result tables or mathematical notation")
+if any(delimiter in text for delimiter in ("\\[", "\\]", "\\(", "\\)")):
+    raise SystemExit("Report contains Markdown math delimiters unsupported by GitHub")
 print("V2 methodology report gate passed")

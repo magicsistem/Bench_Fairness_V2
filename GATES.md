@@ -48,3 +48,8 @@ Scope: implementar, ejecutar y verificar de extremo a extremo la metodología ca
   CHECK: python scripts/verify_methodology_report.py
   EXPECT: V2 methodology report gate passed
   EVIDENCE: docs/METODOLOGIA_Y_RESULTADOS_V2.md; cifras reconciliadas con los artefactos finales de CEDIA
+
+- [x] G10: el informe identifica los valores retenidos en cada etapa, muestra tablas completas por modelo y condición MST, y usa fórmulas renderizables con alternativa textual portable
+  CHECK: python scripts/verify_methodology_report.py
+  EXPECT: V2 methodology report gate passed
+  EVIDENCE: 16 tablas de resultados y definiciones; detalle detector + 3 modelos × 10 MST; 57 delimitadores matemáticos GitHub/MathJax; verificador aprobado

@@ -21,67 +21,83 @@ La fuente normativa es `10_METHODOLOGY_V2_FROM_ZERO.md`. Este informe no introdu
 | Bootstrap | 10 000 réplicas; semilla `20260828` |
 | Revisión manual de imágenes | Ninguna |
 
+### Cómo visualizar las fórmulas
+
+Las ecuaciones usan el formato matemático de GitHub/MathJax: un signo `$` para matemática dentro de una línea y `$$` para ecuaciones centradas. Si el visor Markdown no implementa matemática, la siguiente tabla conserva las expresiones principales como texto plano, por lo que ningún valor o definición depende del renderizado LaTeX.
+
+| Magnitud | Fórmula portable |
+|---|---|
+| Jaccard | `J = TP / (TP + FP + FN)` |
+| Dice | `Dice = 2TP / (2TP + FP + FN)` |
+| Jaccard umbralizado | `TJ = 0 si J < 0.65; en otro caso TJ = J` |
+| Margen ROI congelado | `m* = Q95(max(rL, rR, rT, rB))` |
+| Soporte limpio mínimo | `Nclean >= max(256, ceil(0.005 × área))` |
+| Cambio MST pareado | `ΔJ(i,k) = J(i,k) - J(i,ORIGINAL)` |
+| ITA | `ITA = (180/pi) × atan((L* - 50) / b*)` |
+| Error absoluto medio | `MAE = mean(abs(ITApipe - ITAref))` |
+| Error cuadrático medio | `RMSE = sqrt(mean((ITApipe - ITAref)^2))` |
+
 ## Metodología paso a paso
 
 ### Paso 1. Partición de datos y prevención de leakage
 
 Se utilizó ISIC 2018 Task 1 [1], [18]. Las 2594 imágenes de `Training` se dividieron en cinco folds disjuntos. Cada imagen fue predicha por un detector que no la había visto durante entrenamiento, generando predicciones *out-of-fold* (OOF). Las 100 imágenes de `Validation` se reservaron para evaluar los 16 segmentadores y elegir el TOP-3. Las 1000 imágenes de `Test` se mantuvieron selladas hasta completar el `scientific freeze` [19], [34].
 
-La caja de referencia de una máscara binaria de lesión \(M_{GT}\) fue:
+La caja de referencia de una máscara binaria de lesión $M_{GT}$ fue:
 
-\[
+$$
 B_{GT}=(x_{\min},y_{\min},x_{\max},y_{\max}),
-\]
+$$
 
-\[
+$$
 x_{\min}=\min\{x:M_{GT}(x,y)=1\},\qquad
 x_{\max}=\max\{x:M_{GT}(x,y)=1\},
-\]
+$$
 
-con una definición análoga para \(y\). Los identificadores relacionados se mantuvieron agrupados cuando los metadatos lo permitieron; no se inventaron identidades faltantes.
+con una definición análoga para $y$. Los identificadores relacionados se mantuvieron agrupados cuando los metadatos lo permitieron; no se inventaron identidades faltantes.
 
 ### Paso 2. Entrenamiento del detector YOLOv7
 
 YOLOv7 se eligió como localizador de lesión por su diseño *one-stage*, implementación pública y evidencia comparativa en dermatoscopia [2], [3]. Se utilizó una sola clase, `lesion`, entrada 640×640 con conservación de aspecto, checkpoint oficial `yolov7_training.pt`, ajuste completo de `backbone`, `neck` y `head`, minibatch físico 32 y acumulación de dos minibatches, es decir:
 
-\[
+$$
 B_{efectivo}=32\times 2=64.
-\]
+$$
 
-El optimizador fue SGD con Nesterov, \(lr_0=0.005\), momentum 0.900, `weight_decay=0.0005`, *warm-up* de tres epochs y calendario cosenoidal One-Cycle hasta \(lr_f=0.0005\). Cada fold se entrenó 300 epochs sin *early stopping*. El checkpoint se eligió con la *fitness* oficial [13]:
+El optimizador fue SGD con Nesterov, $lr_0=0.005$, momentum 0.900, `weight_decay=0.0005`, *warm-up* de tres epochs y calendario cosenoidal One-Cycle hasta $lr_f=0.0005$. Cada fold se entrenó 300 epochs sin *early stopping*. El checkpoint se eligió con la *fitness* oficial [13]:
 
-\[
+$$
 F=0.1\,mAP@0.5+0.9\,mAP@0.5{:}0.95.
-\]
+$$
 
 Las augmentations, `ComputeLossOTA`, AutoAnchor y demás hiperparámetros siguieron la configuración oficial congelada. En inferencia se usaron confianza 0.25 y NMS IoU 0.45. Si la ejecución era válida pero no había caja, se registró `valid_no_detection` y se utilizó la imagen completa; un fallo técnico no se convirtió en una no-detección.
 
 ### Paso 3. Calibración OOF de la ROI
 
-Para cada caja predicha OOF \(B_i^p\), de ancho \(w_i\) y alto \(h_i\), se midió el déficit relativo necesario para cubrir la caja GT:
+Para cada caja predicha OOF $B_i^p$, de ancho $w_i$ y alto $h_i$, se midió el déficit relativo necesario para cubrir la caja GT:
 
-\[
+$$
 r_{L,i}=\max\left(0,\frac{x^p_{\min}-x^{GT}_{\min}}{w_i}\right),\quad
 r_{R,i}=\max\left(0,\frac{x^{GT}_{\max}-x^p_{\max}}{w_i}\right),
-\]
+$$
 
-\[
+$$
 r_{T,i}=\max\left(0,\frac{y^p_{\min}-y^{GT}_{\min}}{h_i}\right),\quad
 r_{B,i}=\max\left(0,\frac{y^{GT}_{\max}-y^p_{\max}}{h_i}\right).
-\]
+$$
 
 El margen individual y el margen global fueron:
 
-\[
+$$
 r_i=\max(r_{L,i},r_{R,i},r_{T,i},r_{B,i}),\qquad
 m^*=Q_{0.95}(r_1,\ldots,r_N).
-\]
+$$
 
 También se cuantificó la fracción de lesión contenida por la ROI:
 
-\[
+$$
 C_i(m)=\frac{|M_i^{GT}\cap ROI_i(m)|}{|M_i^{GT}|}.
-\]
+$$
 
 Las no-detecciones se excluyeron de la estimación del percentil y se informaron por separado [4], [5].
 
@@ -91,76 +107,76 @@ Los candidatos fueron 15 checkpoints conservados más GrabCut. Todos recibieron 
 
 El Jaccard continuo y Dice fueron:
 
-\[
+$$
 J=\frac{TP}{TP+FP+FN},\qquad
 Dice=\frac{2TP}{2TP+FP+FN}.
-\]
+$$
 
 La métrica primaria oficial de ISIC 2018 fue el Jaccard umbralizado [1], [18]:
 
-\[
+$$
 TJ_i=\begin{cases}
 0,&J_i<0.65,\\
 J_i,&J_i\ge 0.65,
 \end{cases}
 \qquad
 \overline{TJ}=\frac{1}{N}\sum_{i=1}^{N}TJ_i.
-\]
+$$
 
 Se conservaron Jaccard, Dice, sensibilidad, especificidad, precisión, Boundary F1 y HD95 normalizado como métricas secundarias.
 
 ### Paso 5. Ranking, incertidumbre y TOP-3
 
-Solo fueron elegibles los métodos con cobertura completa de las 100 imágenes de `Validation`. En cada una de 10 000 réplicas bootstrap se remuestrearon imágenes completas con reemplazo y se utilizó el mismo vector de índices para todos los métodos. Para una métrica \(g\), la réplica \(b\) fue:
+Solo fueron elegibles los métodos con cobertura completa de las 100 imágenes de `Validation`. En cada una de 10 000 réplicas bootstrap se remuestrearon imágenes completas con reemplazo y se utilizó el mismo vector de índices para todos los métodos. Para una métrica $g$, la réplica $b$ fue:
 
-\[
+$$
 \hat g^{(b)}=\frac{1}{N}\sum_{j=1}^{N}g_{I_j^{(b)}},
 \qquad I_j^{(b)}\sim\text{Uniforme}\{1,\ldots,N\}.
-\]
+$$
 
-Los percentiles 2.5 y 97.5 de las 10 000 réplicas formaron el IC95%. El orden puntual siguió \(\overline{TJ}\); los desempates usaron Jaccard, Dice, Boundary F1 y menor HD95, en ese orden. Las distribuciones de posiciones se informaron porque los rankings biomédicos pueden depender fuertemente de los casos y de la métrica [21], [22].
+Los percentiles 2.5 y 97.5 de las 10 000 réplicas formaron el IC95%. El orden puntual siguió $\overline{TJ}$; los desempates usaron Jaccard, Dice, Boundary F1 y menor HD95, en ese orden. Las distribuciones de posiciones se informaron porque los rankings biomédicos pueden depender fuertemente de los casos y de la métrica [21], [22].
 
 ### Paso 6. Construcción de `clean_skin_mask`
 
 Cada método del TOP-3 produjo su propia máscara de piel limpia. No se fusionaron segmentadores. En la ROI, la piel candidata fue:
 
-\[
+$$
 M_{clean,m}=M_{ROI}\land \neg dilate(M_{lesion,m},r^*)
 \land \neg M_{hair}\land \neg M_{highlight}.
-\]
+$$
 
 El detector morfológico de pelo se utilizó solo como exclusión colorimétrica, nunca para modificar la entrada del segmentador. Esta elección evita tratar un píxel sintetizado mediante *inpainting* como una medición real, aunque reconoce las limitaciones de los detectores morfológicos frente a pelo claro y falsos positivos [6]–[12]. Una cobertura de pelo mayor que 0.18 se conservó y marcó como alta.
 
 El margen de lesión común se calibró como el Q95 de la distancia unilateral normalizada por el lado menor de la ROI. Las máscaras exactamente vacías o llenas produjeron colorimetría no disponible. Además, se exigió:
 
-\[
+$$
 N_{clean}\ge \max\left(256,\left\lceil0.005\,H_{ROI}W_{ROI}\right\rceil\right).
-\]
+$$
 
 Los reflejos saturados se excluyeron cuando:
 
-\[
+$$
 \max(R,G,B)\ge248
 \quad\land\quad
 \max(R,G,B)-\min(R,G,B)\le22.
-\]
+$$
 
 No se amplió el soporte, no se imputaron píxeles y no se revisaron imágenes manualmente.
 
 ### Paso 7. Conversión colorimétrica e ITA
 
-Los JPEG se interpretaron como sRGB IEC 61966-2-1 [28]. Para cada canal normalizado \(c_s\in[0,1]\), se aplicó la linealización:
+Los JPEG se interpretaron como sRGB IEC 61966-2-1 [28]. Para cada canal normalizado $c_s\in[0,1]$, se aplicó la linealización:
 
-\[
+$$
 c=\begin{cases}
 c_s/12.92,&c_s\le0.04045,\\
 \left(\frac{c_s+0.055}{1.055}\right)^{2.4},&c_s>0.04045.
 \end{cases}
-\]
+$$
 
 El RGB lineal se convirtió a XYZ D65 en `float64`:
 
-\[
+$$
 \begin{bmatrix}X\\Y\\Z\end{bmatrix}
 =100
 \begin{bmatrix}
@@ -169,24 +185,24 @@ El RGB lineal se convirtió a XYZ D65 en `float64`:
 0.0193339&0.1191920&0.9503041
 \end{bmatrix}
 \begin{bmatrix}R\\G\\B\end{bmatrix}.
-\]
+$$
 
-Con el blanco D65, \(f(t)=t^{1/3}\) si \(t>(6/29)^3\), y \(f(t)=t/[3(6/29)^2]+4/29\) en otro caso, se obtuvo CIELAB [24], [29]:
+Con el blanco D65, $f(t)=t^{1/3}$ si $t>(6/29)^3$, y $f(t)=t/[3(6/29)^2]+4/29$ en otro caso, se obtuvo CIELAB [24], [29]:
 
-\[
+$$
 L^*=116f(Y/Y_n)-16,\quad
 a^*=500[f(X/X_n)-f(Y/Y_n)],
-\]
+$$
 
-\[
+$$
 b^*=200[f(Y/Y_n)-f(Z/Z_n)].
-\]
+$$
 
 El Individual Typology Angle se mantuvo como variable continua:
 
-\[
+$$
 ITA=\frac{180}{\pi}\operatorname{atan2}(L^*-50,b^*).
-\]
+$$
 
 No se transformó automáticamente ITA en Fitzpatrick ni MST. Se conservaron también mediana RGB, media RGB recortada 10–90 y mediana CIELAB [25], [27].
 
@@ -204,21 +220,21 @@ YOLOv7 se ejecutó sobre las 1000 imágenes completas. Cada TOP-3 recibió la RO
 
 La paleta MST 01–10 se definió en un único artefacto sRGB protegido por hash. Para cada imagen original se estimó una mediana Lab sobre soporte independiente de los segmentadores:
 
-\[
+$$
 M_{support}=M_{imagen}\land\neg dilate(M_{GT},r^*)
 \land\neg M_{hair}\land\neg M_{highlight}.
-\]
+$$
 
-Se exigió el mismo mínimo de soporte, ahora respecto del área completa. Si no se cumplía, las diez condiciones se registraban `unavailable` sin lanzar excepción. Para el tono \(k\):
+Se exigió el mismo mínimo de soporte, ahora respecto del área completa. Si no se cumplía, las diez condiciones se registraban `unavailable` sin lanzar excepción. Para el tono $k$:
 
-\[
+$$
 \Delta Lab_k=Lab_{target,k}-Lab_{source},
-\]
+$$
 
-\[
+$$
 Lab'_k(x,y)=Lab_{original}(x,y)+\Delta Lab_k
 \quad\forall(x,y)\text{ de la imagen completa}.
-\]
+$$
 
 Después se convirtió nuevamente a sRGB, se aplicó *clipping* al dominio válido y se guardó PNG RGB de 8 bits, sin pérdida, con `compress_level=6`. Se verificaron dimensiones, GT idéntica, ausencia de NaN/Inf, hashes de píxeles decodificados y correspondencia fuente–condición. CIEDE2000 se calculó según Sharma, Wu y Dalal [32].
 
@@ -226,17 +242,17 @@ Después se convirtió nuevamente a sRGB, se aplicó *clipping* al dominio váli
 
 YOLOv7 se volvió a ejecutar independientemente en cada imagen MST completa. Cada segmentador recibió solo la ROI propia de esa condición, o la imagen completa ante no-detección válida. La variable primaria fue:
 
-\[
+$$
 \Delta J_{i,m,k}=J_{i,m,k}-J_{i,m,ORIGINAL}.
-\]
+$$
 
 Cada tono se mantuvo separado. Se calcularon media, mediana, IQR e IC95% por bootstrap pareado, además de la peor caída por fuente:
 
-\[
+$$
 \Delta J^{worst}_{i,m}=\min_{k\in\{1,\ldots,10\}}\Delta J_{i,m,k}.
-\]
+$$
 
-No se hicieron pruebas de hipótesis ni valores \(p\) para MST, porque las condiciones son medidas repetidas sintéticas y no observaciones demográficas independientes.
+No se hicieron pruebas de hipótesis ni valores $p$ para MST, porque las condiciones son medidas repetidas sintéticas y no observaciones demográficas independientes.
 
 ### Paso 12. Censo y procesamiento MSKCC
 
@@ -248,32 +264,32 @@ YOLOv7 produjo una ROI dinámica por imagen. Si no detectó, se aplicó el mismo
 
 La medida primaria fue ICC de acuerdo absoluto entre el ITA del pipeline y el ITA del colorímetro, con bootstrap por paciente. En forma general, para un modelo de dos vías de acuerdo absoluto:
 
-\[
+$$
 ICC(A,1)=\frac{MS_R-MS_E}
 {MS_R+(k-1)MS_E+\frac{k}{n}(MS_C-MS_E)},
-\]
+$$
 
-donde \(MS_R\), \(MS_C\) y \(MS_E\) son cuadrados medios de filas, columnas y error; \(n\) es el número de unidades y \(k\) el número de mediciones. Cada réplica remuestreó pacientes completos.
+donde $MS_R$, $MS_C$ y $MS_E$ son cuadrados medios de filas, columnas y error; $n$ es el número de unidades y $k$ el número de mediciones. Cada réplica remuestreó pacientes completos.
 
 Los errores secundarios fueron:
 
-\[
+$$
 Bias=\frac{1}{N}\sum_i(ITA_{pipe,i}-ITA_{ref,i}),
-\]
+$$
 
-\[
+$$
 MAE=\frac{1}{N}\sum_i|ITA_{pipe,i}-ITA_{ref,i}|,
 \quad
 RMSE=\sqrt{\frac{1}{N}\sum_i(ITA_{pipe,i}-ITA_{ref,i})^2}.
-\]
+$$
 
 Los límites de Bland–Altman fueron [35]:
 
-\[
+$$
 LoA=Bias\pm1.96\,SD(ITA_{pipe}-ITA_{ref}).
-\]
+$$
 
-Para la referencia MST ordinal se usaron Kendall \(\tau_b\) y Spearman \(\rho\), sin convertir ITA a una categoría MST [33], [36], [37].
+Para la referencia MST ordinal se usaron Kendall $\tau_b$ y Spearman $\rho$, sin convertir ITA a una categoría MST [33], [36], [37].
 
 ### Paso 14. Reanudación, hashes y cierre
 
@@ -281,15 +297,36 @@ Las etapas publicaron manifiestos atómicamente. Las inferencias MST mantuvieron
 
 ## Resultados reales
 
+### Valores finales retenidos en cada etapa
+
+Esta tabla responde explícitamente qué valor se adoptó —y no solo qué se calculó— antes de pasar a la etapa siguiente. Los valores congelados no se reajustaron después de abrir Test.
+
+| Etapa | Valor finalmente retenido | Uso posterior |
+|---|---|---|
+| Partición | Training = 2594; Validation = 100; Test = 1000 | Desarrollo OOF, selección y evaluación final, respectivamente |
+| Detector | YOLOv7, confianza 0.25, NMS IoU 0.45, entrada 640, batch efectivo 64 | Localización uniforme en Validation, Test, MST y MSKCC |
+| Margen dinámico de ROI (D09) | $m^*=0.1225400188$ (12.254% del ancho/alto de la caja) | Expandir cada caja detectada; imagen completa si no hay detección válida |
+| Candidatos de segmentación | 15 checkpoints preservados + GrabCut = 16 métodos | Evaluación completa sobre Validation |
+| TOP-3 congelado | AViT; DeLightSAM-Dermoscopy; VM-UNet ISIC17 | Únicos métodos evaluados en Test, MST y MSKCC |
+| Margen de exclusión de lesión (D35) | $r^*=0.1418421924$ del lado menor de la ROI | Dilatar por método su máscara antes de medir piel limpia |
+| Soporte colorimétrico (D37/D59) | $\max(256,\lceil0.005\,A\rceil)$ píxeles válidos | Menos soporte implica `unavailable`; nunca imputación |
+| Umbral de pelo alto | cobertura > 0.18 | Marca de calidad; no elimina la observación por sí sola |
+| Reflejo saturado | máximo RGB ≥ 248 y rango RGB ≤ 22 | Exclusión del soporte colorimétrico |
+| Scientific freeze | commit `1c6ddbe8838d0734e08cb5eaa5d009219212f28c`; semilla 20260828 | Autorizó la única apertura de Test |
+| Test original | 983 detecciones; 17 `valid_no_detection` | Las 17 usaron imagen completa |
+| Universo MST | 975 fuentes válidas; 25 no disponibles | 9750 variantes y 250 condiciones indisponibles |
+| Codificación MST | imagen completa, PNG sin pérdida, `compress_level=6` | Evita el parche rectangular y reduce tamaño sin cambiar píxeles |
+| Análisis MSKCC | censo completo de 4879 imágenes | Concordancia de ITA, no exactitud de segmentación |
+
 ### Tabla general del pipeline
 
 | Etapa | Universo/resultado | Evidencia principal |
 |---|---:|---|
 | ISIC Training | 2594 imágenes; 5 folds OOF | `roi_margin.json` |
-| OOF YOLOv7 | 2551 detecciones válidas; 43 no-detecciones | margen ROI \(m^*=0.122540\) |
+| OOF YOLOv7 | 2551 detecciones válidas; 43 no-detecciones | margen ROI $m^*=0.122540$ |
 | Validation | 100 imágenes; 16 métodos completos | `top3.json` |
 | TOP-3 V2 | AViT, DeLightSAM-Dermoscopy, VM-UNet ISIC17 | selección D28–D32 |
-| Margen de piel D35 | 300 observaciones método–imagen | \(r^*=0.141842\) |
+| Margen de piel D35 | 300 observaciones método–imagen | $r^*=0.141842$ |
 | Test original | 1000 imágenes por cada TOP-3 | 983 detecciones y 17 fallbacks |
 | Síntesis MST | 975 fuentes disponibles × 10 tonos = 9750 variantes | 25 fuentes/250 condiciones `unavailable` |
 | Segmentación MST | 9750 resultados por cada TOP-3 | 29 250 inferencias completas |
@@ -309,9 +346,24 @@ La tabla muestra el epoch con mayor fitness oficial, no el último epoch. Todos 
 | Fold 4 | 140 | 0.9474 | 0.9054 | 0.9613 | 0.7011 | 0.7271 |
 | Reajuste final | 70 | 0.9223 | 0.9499 | 0.9504 | 0.6464 | 0.6768 |
 
+### Calibración OOF del margen de ROI
+
+El valor retenido fue $m^*=0.1225400188$. Se estimó exclusivamente con las 2551 detecciones OOF válidas; las 43 no-detecciones se informaron pero no entraron en el percentil.
+
+| Fold OOF | Imágenes | Detectadas | `valid_no_detection` | Mediana del margen mínimo individual |
+|---:|---:|---:|---:|---:|
+| 0 | 519 | 511 | 8 | 0.011719 |
+| 1 | 519 | 507 | 12 | 0.011362 |
+| 2 | 519 | 511 | 8 | 0.011734 |
+| 3 | 519 | 513 | 6 | 0.009328 |
+| 4 | 518 | 509 | 9 | 0.012522 |
+| **Total** | **2594** | **2551** | **43** | **$m^*=Q_{0.95}=0.122540$** |
+
+En Validation, el margen congelado produjo 95 detecciones y cinco `valid_no_detection`. No se recalibró con esas 100 imágenes.
+
 ### Ranking completo de los 16 métodos en Validation
 
-Todas las medias corresponden a \(N=100\). `P(TOP-3)` es la proporción de réplicas bootstrap en que el método ocupó una de las tres primeras posiciones.
+Todas las medias corresponden a $N=100$. `P(TOP-3)` es la proporción de réplicas bootstrap en que el método ocupó una de las tres primeras posiciones.
 
 | Rank | Método | Jaccard umbralizado | Jaccard | Dice | Boundary F1 | HD95 norm. | P(TOP-3) |
 |---:|---|---:|---:|---:|---:|---:|---:|
@@ -332,17 +384,36 @@ Todas las medias corresponden a \(N=100\). `P(TOP-3)` es la proporción de répl
 | 15 | SkinMamba ISIC17 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | NA | 0.0000 |
 | 16 | SkinMamba ISIC18 | 0.0000 | 0.0000 | 0.0000 | 0.0000 | NA | 0.0000 |
 
-### TOP-3 en Test original
+### Colorimetría en Validation y margen D35
 
-| Método | Jaccard umbralizado | Jaccard | Dice | Boundary F1 | Tiempo medio por imagen |
+El margen finalmente congelado fue $r^*=0.1418421924$. Se obtuvo de 300 observaciones (100 por cada método TOP-3), aplicando primero el Q95 de distancia unilateral por par método–imagen y después el Q95 global.
+
+| Método | N para D35 | Media de distancia Q95 normalizada | Mediana | Mínimo | Máximo |
 |---|---:|---:|---:|---:|---:|
-| AViT | 0.7667 | 0.8092 | 0.8806 | 0.4989 | 2.573 s |
-| DeLightSAM-Dermoscopy | 0.7425 | 0.7914 | 0.8691 | 0.4357 | 2.368 s |
-| VM-UNet ISIC17 | 0.7545 | 0.7983 | 0.8694 | 0.5293 | 4.264 s |
+| AViT | 100 | 0.033568 | 0.011699 | 0.000000 | 0.581813 |
+| DeLightSAM-Dermoscopy | 100 | 0.032283 | 0.009861 | 0.000000 | 0.390625 |
+| VM-UNet ISIC17 | 100 | 0.040222 | 0.015740 | 0.000000 | 0.341411 |
+| **Regla común retenida** | **300** | — | — | — | **$r^*=0.141842$** |
 
-El análisis de robustez frente al ITA continuo tuvo \(N=966\) pares disponibles por método:
+| Método | Color disponible | No disponible | Pelo alto | Cobertura limpia media disponible |
+|---|---:|---:|---:|---:|
+| AViT | 100 | 0 | 0 | 0.183971 |
+| DeLightSAM-Dermoscopy | 100 | 0 | 0 | 0.187691 |
+| VM-UNet ISIC17 | 99 | 1 | 0 | 0.204212 |
 
-| Método | \(\rho\) ITA–Jaccard (IC95%) | \(\rho\) ITA–Dice (IC95%) | \(\rho\) ITA–Boundary F1 (IC95%) |
+La única ausencia fue `unavailable_insufficient_clean_skin` en VM-UNet ISIC17. Se mantuvo como no disponible y no se sustituyó por otra máscara.
+
+### TOP-3 en Test original — métricas completas
+
+| Método | N | TJ | Jaccard | Dice | Sensibilidad | Especificidad | Precisión | Exactitud | Boundary F1 | HD95 norm. | Tiempo medio |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| AViT | 1000 | 0.766669 | 0.809185 | 0.880602 | 0.938563 | 0.932968 | 0.858766 | 0.935530 | 0.498894 | 0.062209 | 2.573 s |
+| DeLightSAM-Dermoscopy | 1000 | 0.742512 | 0.791406 | 0.869111 | 0.923753 | 0.936752 | 0.853147 | 0.929580 | 0.435713 | 0.062970 | 2.368 s |
+| VM-UNet ISIC17 | 1000 | 0.754465 | 0.798340 | 0.869385 | 0.907274 | 0.947366 | 0.874426 | 0.929293 | 0.529279 | 0.060656 | 4.264 s |
+
+El análisis de robustez frente al ITA continuo tuvo $N=966$ pares disponibles por método:
+
+| Método | $\rho$ ITA–Jaccard (IC95%) | $\rho$ ITA–Dice (IC95%) | $\rho$ ITA–Boundary F1 (IC95%) |
 |---|---:|---:|---:|
 | AViT | 0.0479 [−0.0178, 0.1128] | 0.0479 [−0.0178, 0.1128] | 0.0621 [−0.0016, 0.1281] |
 | DeLightSAM-Dermoscopy | 0.0022 [−0.0642, 0.0693] | 0.0022 [−0.0642, 0.0693] | 0.0004 [−0.0636, 0.0633] |
@@ -350,9 +421,9 @@ El análisis de robustez frente al ITA continuo tuvo \(N=966\) pares disponibles
 
 ### Sensibilidad MST end-to-end
 
-Cada celda de método muestra la media de \(\Delta J\) y su IC95% bootstrap. Todas las condiciones tienen \(N=975\) fuentes disponibles. La tasa de detección corresponde a YOLOv7 y es común a los tres segmentadores porque el detector se ejecutó una vez por condición completa.
+Cada celda de método muestra la media de $\Delta J$ y su IC95% bootstrap. Todas las condiciones tienen $N=975$ fuentes disponibles. La tasa de detección corresponde a YOLOv7 y es común a los tres segmentadores porque el detector se ejecutó una vez por condición completa.
 
-| Condición | Detección YOLOv7 | AViT \(\Delta J\) | DeLightSAM \(\Delta J\) | VM-UNet ISIC17 \(\Delta J\) |
+| Condición | Detección YOLOv7 | AViT $\Delta J$ | DeLightSAM $\Delta J$ | VM-UNet ISIC17 $\Delta J$ |
 |---|---:|---:|---:|---:|
 | MST 01 | 0.9641 | −0.0229 [−0.0315, −0.0148] | −0.0338 [−0.0431, −0.0249] | −0.0404 [−0.0508, −0.0299] |
 | MST 02 | 0.9723 | −0.0178 [−0.0257, −0.0103] | −0.0305 [−0.0389, −0.0223] | −0.0397 [−0.0496, −0.0301] |
@@ -365,9 +436,79 @@ Cada celda de método muestra la media de \(\Delta J\) y su IC95% bootstrap. Tod
 | MST 09 | 0.9959 | −0.0256 [−0.0327, −0.0184] | 0.0056 [−0.0019, 0.0132] | −0.2604 [−0.2820, −0.2391] |
 | MST 10 | 0.9990 | −0.0266 [−0.0346, −0.0182] | 0.0037 [−0.0052, 0.0123] | −0.3405 [−0.3644, −0.3175] |
 
+#### Detector YOLOv7 por condición MST
+
+Cada fila contiene las 975 fuentes válidas. `N caja` es el número de detecciones usado para resumir las métricas geométricas; las restantes son `valid_no_detection` y pasan la imagen completa al segmentador.
+
+| Condición | N | Tasa detección | N caja | Contención media de caja GT | Contención media de lesión | Inflación media de ROI |
+|---|---:|---:|---:|---:|---:|---:|
+| MST 01 | 975 | 0.964103 | 940 | 0.604255 | 0.961709 | 2.156717 |
+| MST 02 | 975 | 0.972308 | 948 | 0.603376 | 0.964221 | 2.110710 |
+| MST 03 | 975 | 0.978462 | 954 | 0.593291 | 0.968598 | 2.100615 |
+| MST 04 | 975 | 0.981538 | 957 | 0.584117 | 0.969107 | 1.911922 |
+| MST 05 | 975 | 0.979487 | 955 | 0.557068 | 0.967432 | 1.872984 |
+| MST 06 | 975 | 0.984615 | 960 | 0.563542 | 0.966527 | 1.761722 |
+| MST 07 | 975 | 0.989744 | 965 | 0.583420 | 0.972613 | 1.780593 |
+| MST 08 | 975 | 0.989744 | 965 | 0.624870 | 0.981345 | 1.922265 |
+| MST 09 | 975 | 0.995897 | 971 | 0.613800 | 0.980822 | 1.935901 |
+| MST 10 | 975 | 0.998974 | 974 | 0.644764 | 0.986669 | 2.049716 |
+
+#### Detalle MST — AViT
+
+| Condición | N | ΔJ media [IC95%] | ΔDice | ΔBoundary F1 | ΔTJ |
+|---|---:|---:|---:|---:|---:|
+| MST 01 | 975 | −0.022882 [−0.031531, −0.014775] | −0.019648 | −0.052024 | −0.031826 |
+| MST 02 | 975 | −0.017845 [−0.025727, −0.010333] | −0.015594 | −0.037939 | −0.023931 |
+| MST 03 | 975 | −0.014838 [−0.022340, −0.007350] | −0.011546 | −0.042188 | −0.019985 |
+| MST 04 | 975 | −0.012481 [−0.019438, −0.005825] | −0.010079 | −0.035986 | −0.019098 |
+| MST 05 | 975 | −0.013679 [−0.019955, −0.007690] | −0.011028 | −0.035316 | −0.021365 |
+| MST 06 | 975 | −0.007745 [−0.013856, −0.001877] | −0.006884 | −0.023159 | −0.006248 |
+| MST 07 | 975 | −0.006698 [−0.012819, −0.000528] | −0.004394 | −0.034398 | −0.007994 |
+| MST 08 | 975 | −0.014831 [−0.021029, −0.008348] | −0.007247 | −0.086698 | −0.025813 |
+| MST 09 | 975 | −0.025631 [−0.032665, −0.018441] | −0.015823 | −0.119767 | −0.039558 |
+| MST 10 | 975 | −0.026562 [−0.034581, −0.018226] | −0.014700 | −0.126327 | −0.044903 |
+
+#### Detalle MST — DeLightSAM-Dermoscopy
+
+| Condición | N | ΔJ media [IC95%] | ΔDice | ΔBoundary F1 | ΔTJ |
+|---|---:|---:|---:|---:|---:|
+| MST 01 | 975 | −0.033805 [−0.043147, −0.024939] | −0.030103 | −0.063705 | −0.042266 |
+| MST 02 | 975 | −0.030490 [−0.038936, −0.022270] | −0.026347 | −0.065257 | −0.038430 |
+| MST 03 | 975 | −0.031022 [−0.039107, −0.023163] | −0.025329 | −0.070856 | −0.041648 |
+| MST 04 | 975 | −0.022234 [−0.029655, −0.014978] | −0.017589 | −0.049367 | −0.031574 |
+| MST 05 | 975 | −0.014885 [−0.021772, −0.008351] | −0.013292 | −0.032496 | −0.011807 |
+| MST 06 | 975 | −0.005955 [−0.012322, 0.000110] | −0.006653 | 0.004652 | 0.000115 |
+| MST 07 | 975 | −0.000645 [−0.006977, 0.005573] | −0.001370 | 0.018466 | 0.001717 |
+| MST 08 | 975 | 0.005681 [−0.000563, 0.012252] | 0.004991 | 0.034300 | 0.005050 |
+| MST 09 | 975 | 0.005619 [−0.001895, 0.013157] | 0.003283 | 0.056487 | 0.004203 |
+| MST 10 | 975 | 0.003739 [−0.005161, 0.012335] | 0.002948 | 0.060826 | 0.000381 |
+
+#### Detalle MST — VM-UNet ISIC17
+
+| Condición | N | ΔJ media [IC95%] | ΔDice | ΔBoundary F1 | ΔTJ |
+|---|---:|---:|---:|---:|---:|
+| MST 01 | 975 | −0.040355 [−0.050752, −0.029927] | −0.035970 | −0.055639 | −0.057704 |
+| MST 02 | 975 | −0.039681 [−0.049614, −0.030104] | −0.034641 | −0.062296 | −0.054891 |
+| MST 03 | 975 | −0.039563 [−0.049376, −0.029984] | −0.032498 | −0.073543 | −0.055502 |
+| MST 04 | 975 | −0.037811 [−0.047498, −0.028610] | −0.030898 | −0.075903 | −0.051744 |
+| MST 05 | 975 | −0.040447 [−0.049989, −0.031316] | −0.033035 | −0.077094 | −0.057564 |
+| MST 06 | 975 | −0.148655 [−0.163792, −0.134061] | −0.122562 | −0.167150 | −0.224608 |
+| MST 07 | 975 | −0.137717 [−0.153115, −0.122971] | −0.112267 | −0.162476 | −0.214829 |
+| MST 08 | 975 | −0.151778 [−0.169755, −0.134439] | −0.131652 | −0.157149 | −0.213033 |
+| MST 09 | 975 | −0.260425 [−0.281997, −0.239121] | −0.239934 | −0.234469 | −0.346870 |
+| MST 10 | 975 | −0.340518 [−0.364386, −0.317536] | −0.323244 | −0.269811 | −0.437189 |
+
+En estas tablas, el valor conservado para interpretar robustez es el cambio pareado respecto de la misma fuente ORIGINAL. No se comparan grupos distintos: cada una de las 975 imágenes contribuye con su propio control.
+
 ### Concordancia cromática MSKCC
 
 Los denominadores difieren porque D36–D37 conservan como `NA` los casos sin soporte válido y porque no todas las imágenes tienen la referencia requerida. Los IC95% del ICC remuestrean pacientes completos.
+
+| Flujo MSKCC | Imágenes |
+|---|---:|
+| Censo íntegro | 4879 |
+| YOLOv7 detectó lesión | 2825 |
+| `valid_no_detection`, imagen completa | 2054 |
 
 | Método | N continuo | Pacientes | ICC absoluto (IC95%) | Bias ITA | MAE | RMSE | Bland–Altman LoA |
 |---|---:|---:|---:|---:|---:|---:|---:|
@@ -375,7 +516,7 @@ Los denominadores difieren porque D36–D37 conservan como `NA` los casos sin so
 | DeLightSAM-Dermoscopy | 699 | 46 | 0.4490 [0.3590, 0.5216] | 14.7545 | 47.9649 | 61.3627 | [−102.0714, 131.5804] |
 | VM-UNet ISIC17 | 1396 | 46 | 0.5145 [0.4146, 0.5894] | 11.5159 | 47.6528 | 59.8357 | [−103.6108, 126.6426] |
 
-| Método | N con MST | Kendall \(\tau_b\) | Spearman \(\rho\) |
+| Método | N con MST | Kendall $\tau_b$ | Spearman $\rho$ |
 |---|---:|---:|---:|
 | AViT | 3735 | −0.5500 | −0.6793 |
 | DeLightSAM-Dermoscopy | 3092 | −0.6237 | −0.7786 |
