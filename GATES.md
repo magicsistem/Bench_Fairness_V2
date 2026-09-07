@@ -43,3 +43,8 @@ Scope: implementar, ejecutar y verificar de extremo a extremo la metodología ca
   CHECK: python scripts/verify_v2.py provenance
   EXPECT: V2 provenance gate passed
   EVIDENCE: job 25037, `V2 provenance gate passed` y artifacts/final/provenance.json
+
+- [x] G9: un informe Markdown autocontenido explica la metodología, fórmulas, referencias y resultados reales por etapa
+  CHECK: python scripts/verify_methodology_report.py
+  EXPECT: V2 methodology report gate passed
+  EVIDENCE: docs/METODOLOGIA_Y_RESULTADOS_V2.md; cifras reconciliadas con los artefactos finales de CEDIA
