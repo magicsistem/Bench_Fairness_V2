@@ -22,7 +22,11 @@ required = [
     "#### Detalle MST — AViT",
     "#### Detalle MST — DeLightSAM-Dermoscopy",
     "#### Detalle MST — VM-UNet ISIC17",
-    "D01–D60",
+    "D01–D61",
+    "#### Concordancia MSKCC por sitio anatómico",
+    "#### Acuerdo absoluto frente a consistencia",
+    "#### Tabla C — Diagnóstico ICC y bootstrap",
+    "25663",
     "0e61764577c2b2793e169fe8b64b8b530b362404",
     "V2_COMPLETE",
 ]
@@ -35,10 +39,10 @@ if any(delimiter in text for delimiter in ("\\[", "\\]", "\\(", "\\)")):
     raise SystemExit("Report contains Markdown math delimiters unsupported by GitHub")
 
 # The report must cover every canonical decision and every canonical reference.
-for decision in (f"D{i:02d}" for i in range(1, 61)):
+for decision in (f"D{i:02d}" for i in range(1, 62)):
     if not re.search(rf"^\| {decision} \|", text, re.MULTILINE):
         raise SystemExit(f"Missing canonical decision row: {decision}")
-for reference in range(1, 38):
+for reference in range(1, 40):
     if not re.search(rf"^\[{reference}\] ", text, re.MULTILINE):
         raise SystemExit(f"Missing canonical reference: [{reference}]")
 
@@ -52,7 +56,7 @@ canonical_values = [
 for value in canonical_values:
     if str(value).lower() not in text.lower():
         raise SystemExit(f"Missing executable canonical value: {value}")
-if guide.count("| FIJADA |") < 60:
+if guide.count("| FIJADA |") < 61:
     raise SystemExit("Canonical guide no longer exposes all fixed decisions")
 
 # Reconcile the report with the immutable CEDIA evidence manifest.
@@ -72,7 +76,7 @@ checks = {
 expected = {"validation model rows": 16, "paired comparisons": 120, "MST model-condition rows": 30}
 if checks != expected:
     raise SystemExit(f"Result-table cardinality mismatch: {checks} != {expected}")
-for token in ("Matriz completa D01–D60", "Matriz de ramas operativas", "Matriz de lectura y uso de las 37 referencias", "Resumen destacado de cada etapa y rama"):
+for token in ("Matriz completa D01–D61", "Matriz de ramas operativas", "Matriz de lectura y uso de las 39 referencias", "Resumen destacado de cada etapa y rama"):
     if token not in text:
         raise SystemExit(f"Missing exhaustive-report section: {token}")
 print("V2 methodology report gate passed")

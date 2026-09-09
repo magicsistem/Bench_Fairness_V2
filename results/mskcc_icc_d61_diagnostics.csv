@@ -1,0 +1,118 @@
+Method,Scope,Anatomical site,ICC type,Point estimate,CI low,CI high,Bootstrap valid,Bootstrap invalid,Status,Reason,Bootstrap invalid reasons
+avit,global,NA,"ICC(1,1)",0.3351956566,0.2350508157,0.4232311813,10000,0,complete,NA,{}
+avit,global,NA,"ICC(2,1)/ICC(A,1)",0.3356501649,0.2365827747,0.4243468490,10000,0,complete,NA,{}
+avit,global,NA,"ICC(3,1)/ICC(C,1)",0.3361097427,0.2374298485,0.4259380319,10000,0,complete,NA,{}
+delightsam-dermoscopy,global,NA,"ICC(1,1)",0.4402596310,0.3473354383,0.5133723461,10000,0,complete,NA,{}
+delightsam-dermoscopy,global,NA,"ICC(2,1)/ICC(A,1)",0.4489675700,0.3593652071,0.5206821653,10000,0,complete,NA,{}
+delightsam-dermoscopy,global,NA,"ICC(3,1)/ICC(C,1)",0.4633854409,0.3728352808,0.5410931713,10000,0,complete,NA,{}
+vmunet-isic17,global,NA,"ICC(1,1)",0.5101523937,0.4034831541,0.5863831678,10000,0,complete,NA,{}
+vmunet-isic17,global,NA,"ICC(2,1)/ICC(A,1)",0.5144750358,0.4156898974,0.5888051177,10000,0,complete,NA,{}
+vmunet-isic17,global,NA,"ICC(3,1)/ICC(C,1)",0.5237180978,0.4307146313,0.5954117833,10000,0,complete,NA,{}
+avit,by_anatomical_site,abdomen,"ICC(1,1)",0.5260814618,0.3546587089,0.6592997428,10000,0,complete,NA,{}
+avit,by_anatomical_site,abdomen,"ICC(2,1)/ICC(A,1)",0.5362669986,0.3692911667,0.6686376380,10000,0,complete,NA,{}
+avit,by_anatomical_site,abdomen,"ICC(3,1)/ICC(C,1)",0.5603534181,0.3825044501,0.7217050378,10000,0,complete,NA,{}
+avit,by_anatomical_site,dorsal forearm,"ICC(1,1)",0.4008057517,0.2353297130,0.5812877300,10000,0,complete,NA,{}
+avit,by_anatomical_site,dorsal forearm,"ICC(2,1)/ICC(A,1)",0.3992157629,0.2350256085,0.5828779318,10000,0,complete,NA,{}
+avit,by_anatomical_site,dorsal forearm,"ICC(3,1)/ICC(C,1)",0.3971082736,0.2352310669,0.5853562525,10000,0,complete,NA,{}
+avit,by_anatomical_site,head/neck,"ICC(1,1)",0.2398238814,0.0556017397,0.4036761618,10000,0,complete,NA,{}
+avit,by_anatomical_site,head/neck,"ICC(2,1)/ICC(A,1)",0.2517034163,0.0910181854,0.4080407155,10000,0,complete,NA,{}
+avit,by_anatomical_site,head/neck,"ICC(3,1)/ICC(C,1)",0.2598241395,0.0976288289,0.4186295424,10000,0,complete,NA,{}
+avit,by_anatomical_site,lateral torso,"ICC(1,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+avit,by_anatomical_site,lateral torso,"ICC(2,1)/ICC(A,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+avit,by_anatomical_site,lateral torso,"ICC(3,1)/ICC(C,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+avit,by_anatomical_site,lower back,"ICC(1,1)",0.6679632502,0.5181239011,0.7548874247,10000,0,complete,NA,{}
+avit,by_anatomical_site,lower back,"ICC(2,1)/ICC(A,1)",0.6802780687,0.5559613696,0.7599758969,10000,0,complete,NA,{}
+avit,by_anatomical_site,lower back,"ICC(3,1)/ICC(C,1)",0.7347823440,0.6364606156,0.8059813402,10000,0,complete,NA,{}
+avit,by_anatomical_site,lower leg,"ICC(1,1)",0.3737400494,0.2059944198,0.5214997073,10000,0,complete,NA,{}
+avit,by_anatomical_site,lower leg,"ICC(2,1)/ICC(A,1)",0.3729025701,0.2093269068,0.5218502156,10000,0,complete,NA,{}
+avit,by_anatomical_site,lower leg,"ICC(3,1)/ICC(C,1)",0.3719078867,0.2119270742,0.5255001629,10000,0,complete,NA,{}
+avit,by_anatomical_site,palms/soles,"ICC(1,1)",0.0163579036,-0.1096844431,0.1104829588,10000,0,complete,NA,{}
+avit,by_anatomical_site,palms/soles,"ICC(2,1)/ICC(A,1)",0.0594193448,-0.0148658517,0.1293004571,10000,0,complete,NA,{}
+avit,by_anatomical_site,palms/soles,"ICC(3,1)/ICC(C,1)",0.0651210225,-0.0171534639,0.1371562785,10000,0,complete,NA,{}
+avit,by_anatomical_site,upper arm,"ICC(1,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+avit,by_anatomical_site,upper arm,"ICC(2,1)/ICC(A,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+avit,by_anatomical_site,upper arm,"ICC(3,1)/ICC(C,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+avit,by_anatomical_site,upper back,"ICC(1,1)",0.4907439167,0.3238490212,0.6399022907,10000,0,complete,NA,{}
+avit,by_anatomical_site,upper back,"ICC(2,1)/ICC(A,1)",0.4896217302,0.3259006148,0.6403161864,10000,0,complete,NA,{}
+avit,by_anatomical_site,upper back,"ICC(3,1)/ICC(C,1)",0.4874733574,0.3262956015,0.6398077239,10000,0,complete,NA,{}
+avit,by_anatomical_site,upper chest,"ICC(1,1)",0.4452813447,0.2980481812,0.5507370708,10000,0,complete,NA,{}
+avit,by_anatomical_site,upper chest,"ICC(2,1)/ICC(A,1)",0.4440717895,0.3018150723,0.5523043674,10000,0,complete,NA,{}
+avit,by_anatomical_site,upper chest,"ICC(3,1)/ICC(C,1)",0.4421436152,0.3044813198,0.5577468824,10000,0,complete,NA,{}
+avit,by_anatomical_site,upper leg,"ICC(1,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+avit,by_anatomical_site,upper leg,"ICC(2,1)/ICC(A,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+avit,by_anatomical_site,upper leg,"ICC(3,1)/ICC(C,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+avit,by_anatomical_site,ventral forearm,"ICC(1,1)",0.2574997739,0.1161578426,0.4030865012,10000,0,complete,NA,{}
+avit,by_anatomical_site,ventral forearm,"ICC(2,1)/ICC(A,1)",0.2605477110,0.1309201028,0.4038143503,10000,0,complete,NA,{}
+avit,by_anatomical_site,ventral forearm,"ICC(3,1)/ICC(C,1)",0.2627044962,0.1354170332,0.4048421160,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,abdomen,"ICC(1,1)",0.5493797987,0.3315944244,0.7049336852,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,abdomen,"ICC(2,1)/ICC(A,1)",0.5543499789,0.3340423964,0.7133379000,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,abdomen,"ICC(3,1)/ICC(C,1)",0.5668543824,0.3339597788,0.7841293588,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,dorsal forearm,"ICC(1,1)",0.3480803791,0.0645601689,0.6221369013,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,dorsal forearm,"ICC(2,1)/ICC(A,1)",0.3446875634,0.0744550801,0.6278470669,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,dorsal forearm,"ICC(3,1)/ICC(C,1)",0.3411367754,0.0764330430,0.6516309931,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,head/neck,"ICC(1,1)",0.3362696372,0.1650684570,0.5269126783,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,head/neck,"ICC(2,1)/ICC(A,1)",0.3331577271,0.1680466616,0.5272690270,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,head/neck,"ICC(3,1)/ICC(C,1)",0.3300627187,0.1685107049,0.5285115217,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,lateral torso,"ICC(1,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+delightsam-dermoscopy,by_anatomical_site,lateral torso,"ICC(2,1)/ICC(A,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+delightsam-dermoscopy,by_anatomical_site,lateral torso,"ICC(3,1)/ICC(C,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+delightsam-dermoscopy,by_anatomical_site,lower back,"ICC(1,1)",0.6080582909,0.3371431234,0.7141562827,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,lower back,"ICC(2,1)/ICC(A,1)",0.6340938423,0.4189052411,0.7286849426,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,lower back,"ICC(3,1)/ICC(C,1)",0.7312424779,0.5332081073,0.8501299750,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,lower leg,"ICC(1,1)",0.4588472854,0.3202196364,0.5869349872,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,lower leg,"ICC(2,1)/ICC(A,1)",0.4673310073,0.3299887835,0.5962499398,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,lower leg,"ICC(3,1)/ICC(C,1)",0.4824581255,0.3372815772,0.6319095530,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,palms/soles,"ICC(1,1)",0.2395572865,0.0867692713,0.3611322850,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,palms/soles,"ICC(2,1)/ICC(A,1)",0.2738865200,0.1404044382,0.3903800537,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,palms/soles,"ICC(3,1)/ICC(C,1)",0.3010693139,0.1509670150,0.4530334881,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,upper arm,"ICC(1,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+delightsam-dermoscopy,by_anatomical_site,upper arm,"ICC(2,1)/ICC(A,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+delightsam-dermoscopy,by_anatomical_site,upper arm,"ICC(3,1)/ICC(C,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+delightsam-dermoscopy,by_anatomical_site,upper back,"ICC(1,1)",0.6647196044,0.5265830079,0.7466682250,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,upper back,"ICC(2,1)/ICC(A,1)",0.6716034924,0.5397769055,0.7509807293,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,upper back,"ICC(3,1)/ICC(C,1)",0.7003628191,0.5628673239,0.7961893272,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,upper chest,"ICC(1,1)",0.5201823059,0.3917876336,0.6180351392,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,upper chest,"ICC(2,1)/ICC(A,1)",0.5259434457,0.3944641909,0.6265205619,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,upper chest,"ICC(3,1)/ICC(C,1)",0.5388841393,0.3955913113,0.6721101538,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,upper leg,"ICC(1,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+delightsam-dermoscopy,by_anatomical_site,upper leg,"ICC(2,1)/ICC(A,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+delightsam-dermoscopy,by_anatomical_site,upper leg,"ICC(3,1)/ICC(C,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+delightsam-dermoscopy,by_anatomical_site,ventral forearm,"ICC(1,1)",0.4469466451,0.1640731039,0.6550564547,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,ventral forearm,"ICC(2,1)/ICC(A,1)",0.4551145879,0.1835443792,0.6603334896,10000,0,complete,NA,{}
+delightsam-dermoscopy,by_anatomical_site,ventral forearm,"ICC(3,1)/ICC(C,1)",0.4689667545,0.1896313287,0.6988889046,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,abdomen,"ICC(1,1)",0.6655581599,0.5680753788,0.7178719269,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,abdomen,"ICC(2,1)/ICC(A,1)",0.6725362505,0.5897727007,0.7211759666,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,abdomen,"ICC(3,1)/ICC(C,1)",0.7018231702,0.6370095073,0.7539417621,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,dorsal forearm,"ICC(1,1)",0.5303836185,0.3785509435,0.6635029536,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,dorsal forearm,"ICC(2,1)/ICC(A,1)",0.5332204680,0.3830175031,0.6665339988,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,dorsal forearm,"ICC(3,1)/ICC(C,1)",0.5397413865,0.3873525708,0.6828322515,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,head/neck,"ICC(1,1)",0.2738759542,0.1625667858,0.3917068640,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,head/neck,"ICC(2,1)/ICC(A,1)",0.2783398087,0.1724880439,0.3963311572,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,head/neck,"ICC(3,1)/ICC(C,1)",0.2818046017,0.1754405828,0.4053094341,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,lateral torso,"ICC(1,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+vmunet-isic17,by_anatomical_site,lateral torso,"ICC(2,1)/ICC(A,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+vmunet-isic17,by_anatomical_site,lateral torso,"ICC(3,1)/ICC(C,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+vmunet-isic17,by_anatomical_site,lower back,"ICC(1,1)",0.7144536461,0.5882448483,0.7838868801,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,lower back,"ICC(2,1)/ICC(A,1)",0.7200989173,0.6075360834,0.7857824449,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,lower back,"ICC(3,1)/ICC(C,1)",0.7497438950,0.6622660126,0.8110037744,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,lower leg,"ICC(1,1)",0.4545913999,0.3199647943,0.5710797681,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,lower leg,"ICC(2,1)/ICC(A,1)",0.4574339625,0.3252589596,0.5732998560,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,lower leg,"ICC(3,1)/ICC(C,1)",0.4622522990,0.3306994004,0.5794633088,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,palms/soles,"ICC(1,1)",0.2688025313,0.1233167540,0.3893592426,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,palms/soles,"ICC(2,1)/ICC(A,1)",0.2890229091,0.1492950393,0.4149857057,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,palms/soles,"ICC(3,1)/ICC(C,1)",0.3059439243,0.1550360830,0.4667925176,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,upper arm,"ICC(1,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+vmunet-isic17,by_anatomical_site,upper arm,"ICC(2,1)/ICC(A,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+vmunet-isic17,by_anatomical_site,upper arm,"ICC(3,1)/ICC(C,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+vmunet-isic17,by_anatomical_site,upper back,"ICC(1,1)",0.7128426339,0.6169342536,0.7693639954,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,upper back,"ICC(2,1)/ICC(A,1)",0.7152828732,0.6251849415,0.7705833344,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,upper back,"ICC(3,1)/ICC(C,1)",0.7276498892,0.6454643426,0.7844349308,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,upper chest,"ICC(1,1)",0.5588543693,0.4435198253,0.6399347931,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,upper chest,"ICC(2,1)/ICC(A,1)",0.5609856846,0.4468797025,0.6430625362,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,upper chest,"ICC(3,1)/ICC(C,1)",0.5664591745,0.4513951859,0.6543397489,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,upper leg,"ICC(1,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+vmunet-isic17,by_anatomical_site,upper leg,"ICC(2,1)/ICC(A,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+vmunet-isic17,by_anatomical_site,upper leg,"ICC(3,1)/ICC(C,1)",NA,NA,NA,0,10000,not_estimable,insufficient_patients,"{""insufficient_patients"": 10000}"
+vmunet-isic17,by_anatomical_site,ventral forearm,"ICC(1,1)",0.5456368961,0.4035980816,0.6419649601,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,ventral forearm,"ICC(2,1)/ICC(A,1)",0.5524092981,0.4220902742,0.6461178181,10000,0,complete,NA,{}
+vmunet-isic17,by_anatomical_site,ventral forearm,"ICC(3,1)/ICC(C,1)",0.5693829029,0.4474464654,0.6650843281,10000,0,complete,NA,{}

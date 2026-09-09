@@ -16,6 +16,7 @@ ROOT = Path(__file__).resolve().parents[1]
 GUIDE = ROOT.parent / "Guia" / "10_METHODOLOGY_V2_FROM_ZERO.md"
 ICC_KEYS = ("icc_1_1_oneway", "icc_2_1_absolute_agreement", "icc_3_1_consistency")
 METHODS = {"avit", "delightsam-dermoscopy", "vmunet-isic17"}
+DISPLAY_NAMES = {"avit": "AViT", "delightsam-dermoscopy": "DeLightSAM-Dermoscopy", "vmunet-isic17": "VM-UNet ISIC17"}
 SITES = {"abdomen", "dorsal forearm", "head/neck", "lateral torso", "lower back", "lower leg",
          "palms/soles", "upper arm", "upper back", "upper chest", "upper leg", "ventral forearm"}
 
@@ -42,6 +43,17 @@ def digest(path: Path) -> str:
 def csv_rows(relative: str) -> list[dict]:
     with (ROOT / relative).open(encoding="utf-8", newline="") as stream:
         return list(csv.DictReader(stream))
+
+
+def display_number(value: str) -> str:
+    return "NA" if value in {"", "NA"} else f"{float(value):.6f}"
+
+
+def display_ci(value: str) -> str:
+    if value in {"", "NA"}:
+        return "NA"
+    low, high = value.strip("[]").split(", ")
+    return f"[{float(low):.6f}, {float(high):.6f}]"
 
 
 def verify_scope(value: dict, label: str) -> None:
@@ -124,8 +136,34 @@ def main() -> None:
         require(token in guide, f"guide missing {token}")
         require(token in report, f"report missing {token}")
     for token in ("Concordancia MSKCC por sitio anatómico", "Acuerdo absoluto frente a consistencia", "D01–D61",
-                  "0.3357", "0.4490", "0.5145"):
+                  "0.3356501648804588", "0.44896757002331095", "0.5144750357866749"):
         require(token in report, f"report missing {token}")
+    for row in global_rows:
+        rendered = (f"| {DISPLAY_NAMES[row['Method']]} | {row['N images']} | {row['N patients']} | "
+                    f"{display_number(row['ICC(1,1)'])} {display_ci(row['95% CI ICC(1,1)'])} | "
+                    f"{display_number(row['ICC(2,1) absolute agreement'])} {display_ci(row['95% CI ICC(2,1)'])} | "
+                    f"{display_number(row['ICC(3,1) consistency'])} {display_ci(row['95% CI ICC(3,1)'])} | "
+                    f"{display_number(row['Delta ICC3-ICC2'])} | {display_number(row['Bias ITA'])} | "
+                    f"{display_number(row['MAE ITA'])} | {display_number(row['RMSE ITA'])} | "
+                    f"{display_number(row['SD differences'])} | "
+                    f"[{display_number(row['Lower LoA'])}, {display_number(row['Upper LoA'])}] |")
+        require(rendered in report, f"report/global mismatch: {row['Method']}")
+    for row in site_rows:
+        rendered = (f"| {DISPLAY_NAMES[row['Method']]} | {row['Anatomical site']} | {row['N images']} | {row['N patients']} | "
+                    f"{display_number(row['ICC(1,1)'])}" + ("" if row['ICC(1,1)'] == "NA" else f" {display_ci(row['95% CI ICC(1,1)'])}") + " | "
+                    f"{display_number(row['ICC(2,1) absolute agreement'])}" + ("" if row['ICC(2,1) absolute agreement'] == "NA" else f" {display_ci(row['95% CI ICC(2,1)'])}") + " | "
+                    f"{display_number(row['ICC(3,1) consistency'])}" + ("" if row['ICC(3,1) consistency'] == "NA" else f" {display_ci(row['95% CI ICC(3,1)'])}") + " | "
+                    f"{display_number(row['Delta ICC3-ICC2'])} | {display_number(row['Bias ITA'])} | "
+                    f"{display_number(row['MAE ITA'])} | {display_number(row['RMSE ITA'])} | "
+                    f"{display_number(row['Lower LoA'])} | {display_number(row['Upper LoA'])} |")
+        require(rendered in report, f"report/site mismatch: {row['Method']}/{row['Anatomical site']}")
+    for row in diagnostics:
+        scope = "global" if row["Scope"] == "global" else "sitio"
+        rendered = (f"| {DISPLAY_NAMES[row['Method']]} | {scope} | {row['Anatomical site']} | {row['ICC type']} | "
+                    f"{display_number(row['Point estimate'])} | {display_number(row['CI low'])} | "
+                    f"{display_number(row['CI high'])} | {row['Bootstrap valid']} | {row['Bootstrap invalid']} | "
+                    f"{row['Status']} | {row['Reason']} |")
+        require(rendered in report, f"report/diagnostic mismatch: {row['Method']}/{scope}/{row['Anatomical site']}/{row['ICC type']}")
     environment = dict(os.environ); environment["PYTHONPATH"] = str(ROOT / "src")
     check = subprocess.run([sys.executable, "-m", "unittest", "discover", "-s", "tests", "-p", "test_d61_icc.py", "-v"],
                            cwd=ROOT, env=environment, text=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT)

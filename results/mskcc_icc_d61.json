@@ -1,0 +1,2012 @@
+{
+  "anatomical_site_field": "anatomic_site",
+  "bootstrap_percentiles": [
+    2.5,
+    97.5
+  ],
+  "bootstrap_repetitions": 10000,
+  "bootstrap_unit": "patient_id",
+  "decision": "D61",
+  "exploratory": "icc_1_1_oneway",
+  "historical_invariants": {
+    "artifacts/selection/top3.json": "0cb2513bd59c231b40ce8c909f523e9ad2695005b7b3e388512531b26b262ecf",
+    "artifacts/yolov7/final/weights/best.pt": "193478997be3a81339e42a3dc3c185729111f48ed4756d7743060b4ab6204efc",
+    "results/mskcc_analysis.json": "4d3559ecaa93655f9298094bd6e2ddfc1cb9e8c0044842677f5e9def4177e542",
+    "results/test_mst/analysis.json": "9ec78ea56d2bc7e4315cc6fc70a9584fc7096c7173233175c208329a2fe59786",
+    "results/test_original/avit/results.json": "dfb072b3471d9adc8790b278ebd7fdb11ebe081c6f8f522c2b652bb6a022d6ba",
+    "results/test_original/delightsam-dermoscopy/results.json": "bbe6923f531fbad2ecf675e892998a877976cfc3a4f89c24db3e5a885ffbcf77",
+    "results/test_original/vmunet-isic17/results.json": "8cb6462c9a5a97fef073e4c86eb12252f7dc9a3ecd83a06b5051a7feeebd5e1b",
+    "scientific_freeze.json": "7a844c7c1909822db98d0ee15696e909cb6a8011bdf0dcb66457e1b5565eb41b"
+  },
+  "measurement_order": [
+    "ita_pipeline",
+    "ita_colorimeter"
+  ],
+  "methods": [
+    {
+      "by_anatomical_site": {
+        "abdomen": {
+          "bias": 18.995294039804886,
+          "bland_altman": {
+            "lower_loa": -92.31740534508965,
+            "upper_loa": 130.30799342469942
+          },
+          "delta_icc_3_1_minus_2_1": 0.024086419450479846,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.65929974279928,
+            "ci95_low": 0.3546587088743176,
+            "estimate": 0.5260814618449516,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.6686376379834077,
+            "ci95_low": 0.369291166688562,
+            "estimate": 0.5362669986215763,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.7217050378270363,
+            "ci95_low": 0.38250445008209916,
+            "estimate": 0.5603534180720562,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 48.86464602071309,
+          "n_effective_pairs": 103,
+          "n_images": 103,
+          "n_patients": 44,
+          "rmse": 59.6226495236225,
+          "sd_differences": 56.79219356372171,
+          "status": "complete"
+        },
+        "dorsal forearm": {
+          "bias": 1.591775672990465,
+          "bland_altman": {
+            "lower_loa": -126.90173930310537,
+            "upper_loa": 130.0852906490863
+          },
+          "delta_icc_3_1_minus_2_1": -0.002107489229091597,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.5812877299751876,
+            "ci95_low": 0.2353297129654441,
+            "estimate": 0.40080575168549293,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.5828779317731961,
+            "ci95_low": 0.23502560847001644,
+            "estimate": 0.3992157628735409,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.5853562524731417,
+            "ci95_low": 0.23523106690475645,
+            "estimate": 0.3971082736444493,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 50.79974657341491,
+          "n_effective_pairs": 107,
+          "n_images": 107,
+          "n_patients": 42,
+          "rmse": 65.27026384479502,
+          "sd_differences": 65.55791580413053,
+          "status": "complete"
+        },
+        "head/neck": {
+          "bias": -17.570242044686122,
+          "bland_altman": {
+            "lower_loa": -168.2867619714071,
+            "upper_loa": 133.14627788203484
+          },
+          "delta_icc_3_1_minus_2_1": 0.008120723244602002,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.40367616181344074,
+            "ci95_low": 0.05560173970410781,
+            "estimate": 0.2398238813565312,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.40804071553465043,
+            "ci95_low": 0.09101818540065017,
+            "estimate": 0.2517034162759034,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.4186295424078258,
+            "ci95_low": 0.09762882891942984,
+            "estimate": 0.2598241395205054,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 59.77788145121447,
+          "n_effective_pairs": 116,
+          "n_images": 116,
+          "n_patients": 43,
+          "rmse": 78.55419865670963,
+          "sd_differences": 76.89618363608213,
+          "status": "complete"
+        },
+        "lateral torso": {
+          "bias": null,
+          "bland_altman": {
+            "lower_loa": null,
+            "upper_loa": null
+          },
+          "delta_icc_3_1_minus_2_1": null,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "mae": null,
+          "n_effective_pairs": 0,
+          "n_images": 0,
+          "n_patients": 0,
+          "rmse": null,
+          "sd_differences": null,
+          "status": "not_estimable"
+        },
+        "lower back": {
+          "bias": 23.307235266117566,
+          "bland_altman": {
+            "lower_loa": -58.23450004590611,
+            "upper_loa": 104.84897057814123
+          },
+          "delta_icc_3_1_minus_2_1": 0.05450427533766744,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.7548874246838413,
+            "ci95_low": 0.5181239011225793,
+            "estimate": 0.6679632501784633,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.7599758968874142,
+            "ci95_low": 0.555961369600933,
+            "estimate": 0.6802780686967813,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.8059813402392687,
+            "ci95_low": 0.6364606155614094,
+            "estimate": 0.7347823440344488,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 41.85487617333299,
+          "n_effective_pairs": 85,
+          "n_images": 85,
+          "n_patients": 39,
+          "rmse": 47.47281631344173,
+          "sd_differences": 41.60292617960392,
+          "status": "complete"
+        },
+        "lower leg": {
+          "bias": -0.2310318874141548,
+          "bland_altman": {
+            "lower_loa": -155.75835663558544,
+            "upper_loa": 155.29629286075712
+          },
+          "delta_icc_3_1_minus_2_1": -0.0009946833190981885,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.5214997073448487,
+            "ci95_low": 0.2059944198439523,
+            "estimate": 0.373740049369375,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.5218502156475452,
+            "ci95_low": 0.2093269067782901,
+            "estimate": 0.37290257005186983,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.5255001628899018,
+            "ci95_low": 0.21192707422874132,
+            "estimate": 0.37190788673277164,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 63.363130008403125,
+          "n_effective_pairs": 235,
+          "n_images": 235,
+          "n_patients": 45,
+          "rmse": 79.18200172109471,
+          "sd_differences": 79.35067589192413,
+          "status": "complete"
+        },
+        "palms/soles": {
+          "bias": -34.3740000762781,
+          "bland_altman": {
+            "lower_loa": -237.61575059537168,
+            "upper_loa": 168.8677504428155
+          },
+          "delta_icc_3_1_minus_2_1": 0.005701677655603206,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.1104829587675319,
+            "ci95_low": -0.10968444314248153,
+            "estimate": 0.01635790363927663,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.1293004571047888,
+            "ci95_low": -0.0148658517384891,
+            "estimate": 0.05941934483852027,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.13715627848158876,
+            "ci95_low": -0.01715346386769507,
+            "estimate": 0.06512102249412348,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 97.95435262463717,
+          "n_effective_pairs": 138,
+          "n_images": 138,
+          "n_patients": 40,
+          "rmse": 108.88645423222393,
+          "sd_differences": 103.69477067300693,
+          "status": "complete"
+        },
+        "upper arm": {
+          "bias": null,
+          "bland_altman": {
+            "lower_loa": null,
+            "upper_loa": null
+          },
+          "delta_icc_3_1_minus_2_1": null,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "mae": null,
+          "n_effective_pairs": 0,
+          "n_images": 0,
+          "n_patients": 0,
+          "rmse": null,
+          "sd_differences": null,
+          "status": "not_estimable"
+        },
+        "upper back": {
+          "bias": -3.2789454424724394,
+          "bland_altman": {
+            "lower_loa": -114.4221395928785,
+            "upper_loa": 107.86424870793363
+          },
+          "delta_icc_3_1_minus_2_1": -0.0021483728792778822,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.6399022906857773,
+            "ci95_low": 0.32384902121556214,
+            "estimate": 0.4907439166620076,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.6403161864303344,
+            "ci95_low": 0.3259006147784864,
+            "estimate": 0.48962173024759825,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.6398077238758324,
+            "ci95_low": 0.32629560150255993,
+            "estimate": 0.48747335736832037,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 45.173566461059096,
+          "n_effective_pairs": 84,
+          "n_images": 84,
+          "n_patients": 40,
+          "rmse": 56.46245625854318,
+          "sd_differences": 56.70571130122758,
+          "status": "complete"
+        },
+        "upper chest": {
+          "bias": 1.122332863724531,
+          "bland_altman": {
+            "lower_loa": -107.08244837228797,
+            "upper_loa": 109.32711409973705
+          },
+          "delta_icc_3_1_minus_2_1": -0.001928174259209714,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.5507370708314133,
+            "ci95_low": 0.29804818116088044,
+            "estimate": 0.44528134470746633,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.5523043674321301,
+            "ci95_low": 0.30181507225383264,
+            "estimate": 0.4440717894912533,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.5577468823799635,
+            "ci95_low": 0.30448131976302023,
+            "estimate": 0.4421436152320436,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 45.863410116036114,
+          "n_effective_pairs": 122,
+          "n_images": 122,
+          "n_patients": 46,
+          "rmse": 54.99125346092234,
+          "sd_differences": 55.206521038781894,
+          "status": "complete"
+        },
+        "upper leg": {
+          "bias": null,
+          "bland_altman": {
+            "lower_loa": null,
+            "upper_loa": null
+          },
+          "delta_icc_3_1_minus_2_1": null,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "mae": null,
+          "n_effective_pairs": 0,
+          "n_images": 0,
+          "n_patients": 0,
+          "rmse": null,
+          "sd_differences": null,
+          "status": "not_estimable"
+        },
+        "ventral forearm": {
+          "bias": -10.72699116824265,
+          "bland_altman": {
+            "lower_loa": -172.71915188557796,
+            "upper_loa": 151.26516954909266
+          },
+          "delta_icc_3_1_minus_2_1": 0.002156785268195016,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.4030865012207362,
+            "ci95_low": 0.11615784258548299,
+            "estimate": 0.25749977387694106,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.40381435027824636,
+            "ci95_low": 0.13092010282224179,
+            "estimate": 0.26054771095520834,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.40484211599877146,
+            "ci95_low": 0.13541703318325893,
+            "estimate": 0.26270449622340336,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 65.43066533083012,
+          "n_effective_pairs": 178,
+          "n_images": 178,
+          "n_patients": 42,
+          "rmse": 83.11173239598494,
+          "sd_differences": 82.6490615904772,
+          "status": "complete"
+        }
+      },
+      "global": {
+        "bias": -4.089052685156594,
+        "bland_altman": {
+          "lower_loa": -152.44094214157275,
+          "upper_loa": 144.26283677125957
+        },
+        "delta_icc_3_1_minus_2_1": 0.00045957780887817545,
+        "icc_1_1_oneway": {
+          "bootstrap_invalid": 0,
+          "bootstrap_invalid_reasons": {},
+          "bootstrap_total": 10000,
+          "bootstrap_valid": 10000,
+          "ci95_high": 0.42323118133227594,
+          "ci95_low": 0.2350508157043507,
+          "estimate": 0.3351956565983892,
+          "icc_status": "complete",
+          "reason": null
+        },
+        "icc_2_1_absolute_agreement": {
+          "bootstrap_invalid": 0,
+          "bootstrap_invalid_reasons": {},
+          "bootstrap_total": 10000,
+          "bootstrap_valid": 10000,
+          "ci95_high": 0.42434684898891034,
+          "ci95_low": 0.23658277470668634,
+          "estimate": 0.3356501648804588,
+          "icc_status": "complete",
+          "reason": null
+        },
+        "icc_3_1_consistency": {
+          "bootstrap_invalid": 0,
+          "bootstrap_invalid_reasons": {},
+          "bootstrap_total": 10000,
+          "bootstrap_valid": 10000,
+          "ci95_high": 0.4259380318932129,
+          "ci95_low": 0.2374298485069195,
+          "estimate": 0.33610974268933697,
+          "icc_status": "complete",
+          "reason": null
+        },
+        "mae": 60.27837363571132,
+        "n_effective_pairs": 1168,
+        "n_images": 1168,
+        "n_patients": 46,
+        "rmse": 75.76775111299841,
+        "sd_differences": 75.68973951857967,
+        "status": "complete"
+      },
+      "historical_icc_2_1_reproduction": {
+        "difference": 0.0,
+        "historical": 0.3356501648804588,
+        "matched": true,
+        "recalculated": 0.3356501648804588,
+        "tolerance": 1e-12
+      },
+      "method_id": "avit"
+    },
+    {
+      "by_anatomical_site": {
+        "abdomen": {
+          "bias": 14.16186613840205,
+          "bland_altman": {
+            "lower_loa": -89.78429951060907,
+            "upper_loa": 118.10803178741317
+          },
+          "delta_icc_3_1_minus_2_1": 0.012504403512895279,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.7049336851777016,
+            "ci95_low": 0.33159442437921116,
+            "estimate": 0.5493797987262079,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.7133378999966231,
+            "ci95_low": 0.33404239636196587,
+            "estimate": 0.5543499789017472,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.7841293587990249,
+            "ci95_low": 0.333959778823233,
+            "estimate": 0.5668543824146425,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 43.88261835318621,
+          "n_effective_pairs": 52,
+          "n_images": 52,
+          "n_patients": 29,
+          "rmse": 54.397149478723215,
+          "sd_differences": 53.03375798418935,
+          "status": "complete"
+        },
+        "dorsal forearm": {
+          "bias": 1.688557786625274,
+          "bland_altman": {
+            "lower_loa": -118.50252595440504,
+            "upper_loa": 121.87964152765558
+          },
+          "delta_icc_3_1_minus_2_1": -0.0035507880058914254,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.6221369012977708,
+            "ci95_low": 0.06456016891839227,
+            "estimate": 0.3480803790570646,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.6278470669355579,
+            "ci95_low": 0.07445508007524425,
+            "estimate": 0.34468756342171164,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.6516309931036548,
+            "ci95_low": 0.07643304295743092,
+            "estimate": 0.3411367754158202,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 45.13556563093602,
+          "n_effective_pairs": 61,
+          "n_images": 61,
+          "n_patients": 30,
+          "rmse": 60.840701672532745,
+          "sd_differences": 61.32198150052567,
+          "status": "complete"
+        },
+        "head/neck": {
+          "bias": -1.9546799132556918,
+          "bland_altman": {
+            "lower_loa": -134.21882475803068,
+            "upper_loa": 130.3094649315193
+          },
+          "delta_icc_3_1_minus_2_1": -0.0030950083552003793,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.5269126783271113,
+            "ci95_low": 0.1650684570479192,
+            "estimate": 0.33626963718617436,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.5272690269947011,
+            "ci95_low": 0.16804666156691525,
+            "estimate": 0.3331577270824977,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.5285115217127613,
+            "ci95_low": 0.16851070489515213,
+            "estimate": 0.3300627187272973,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 48.88934547797702,
+          "n_effective_pairs": 68,
+          "n_images": 68,
+          "n_patients": 32,
+          "rmse": 67.0121938859639,
+          "sd_differences": 67.48170655345663,
+          "status": "complete"
+        },
+        "lateral torso": {
+          "bias": null,
+          "bland_altman": {
+            "lower_loa": null,
+            "upper_loa": null
+          },
+          "delta_icc_3_1_minus_2_1": null,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "mae": null,
+          "n_effective_pairs": 0,
+          "n_images": 0,
+          "n_patients": 0,
+          "rmse": null,
+          "sd_differences": null,
+          "status": "not_estimable"
+        },
+        "lower back": {
+          "bias": 27.99879794451195,
+          "bland_altman": {
+            "lower_loa": -43.307872752928574,
+            "upper_loa": 99.30546864195247
+          },
+          "delta_icc_3_1_minus_2_1": 0.09714863559391018,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.7141562827400728,
+            "ci95_low": 0.3371431234447023,
+            "estimate": 0.6080582908602807,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.7286849425952515,
+            "ci95_low": 0.4189052410642712,
+            "estimate": 0.6340938422861606,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.8501299750193477,
+            "ci95_low": 0.5332081072617908,
+            "estimate": 0.7312424778800708,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 40.19229279180251,
+          "n_effective_pairs": 45,
+          "n_images": 45,
+          "n_patients": 24,
+          "rmse": 45.58611389436894,
+          "sd_differences": 36.380954437469654,
+          "status": "complete"
+        },
+        "lower leg": {
+          "bias": 16.441610402829724,
+          "bland_altman": {
+            "lower_loa": -106.75209526893386,
+            "upper_loa": 139.6353160745933
+          },
+          "delta_icc_3_1_minus_2_1": 0.015127118246657523,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.5869349871559032,
+            "ci95_low": 0.32021963644539964,
+            "estimate": 0.4588472854275099,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.5962499398098153,
+            "ci95_low": 0.3299887834756508,
+            "estimate": 0.46733100729828525,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.6319095529558986,
+            "ci95_low": 0.3372815771670551,
+            "estimate": 0.4824581255449428,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 50.85329883405786,
+          "n_effective_pairs": 170,
+          "n_images": 170,
+          "n_patients": 44,
+          "rmse": 64.78969309620366,
+          "sd_differences": 62.853931465185504,
+          "status": "complete"
+        },
+        "palms/soles": {
+          "bias": 31.51614610773699,
+          "bland_altman": {
+            "lower_loa": -125.55709714408438,
+            "upper_loa": 188.58938935955837
+          },
+          "delta_icc_3_1_minus_2_1": 0.027182793896322388,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.3611322850056343,
+            "ci95_low": 0.0867692713084477,
+            "estimate": 0.2395572865483372,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.39038005366805845,
+            "ci95_low": 0.14040443820603432,
+            "estimate": 0.27388652003869907,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.45303348808734417,
+            "ci95_low": 0.15096701496970777,
+            "estimate": 0.30106931393502145,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 73.35674230252837,
+          "n_effective_pairs": 79,
+          "n_images": 79,
+          "n_patients": 32,
+          "rmse": 85.64051155213278,
+          "sd_differences": 80.13940982235785,
+          "status": "complete"
+        },
+        "upper arm": {
+          "bias": null,
+          "bland_altman": {
+            "lower_loa": null,
+            "upper_loa": null
+          },
+          "delta_icc_3_1_minus_2_1": null,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "mae": null,
+          "n_effective_pairs": 0,
+          "n_images": 0,
+          "n_patients": 0,
+          "rmse": null,
+          "sd_differences": null,
+          "status": "not_estimable"
+        },
+        "upper back": {
+          "bias": 14.928603276422747,
+          "bland_altman": {
+            "lower_loa": -57.89661938832222,
+            "upper_loa": 87.75382594116772
+          },
+          "delta_icc_3_1_minus_2_1": 0.02875932673689241,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.7466682250164081,
+            "ci95_low": 0.5265830078628717,
+            "estimate": 0.6647196043777388,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.7509807292601497,
+            "ci95_low": 0.5397769054799708,
+            "estimate": 0.6716034924016884,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.7961893271632526,
+            "ci95_low": 0.5628673239375191,
+            "estimate": 0.7003628191385808,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 35.323309959957975,
+          "n_effective_pairs": 54,
+          "n_images": 54,
+          "n_patients": 33,
+          "rmse": 39.72210286668875,
+          "sd_differences": 37.155725849359676,
+          "status": "complete"
+        },
+        "upper chest": {
+          "bias": 11.701711118328909,
+          "bland_altman": {
+            "lower_loa": -78.62702183784083,
+            "upper_loa": 102.03044407449863
+          },
+          "delta_icc_3_1_minus_2_1": 0.012940693571570128,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.6180351391758505,
+            "ci95_low": 0.3917876335793803,
+            "estimate": 0.5201823058912346,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.6265205618706421,
+            "ci95_low": 0.39446419091736173,
+            "estimate": 0.5259434457142658,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.6721101537543538,
+            "ci95_low": 0.3955913112567982,
+            "estimate": 0.5388841392858359,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 38.46148826651828,
+          "n_effective_pairs": 90,
+          "n_images": 90,
+          "n_patients": 37,
+          "rmse": 47.299665726732066,
+          "sd_differences": 46.08608824294374,
+          "status": "complete"
+        },
+        "upper leg": {
+          "bias": null,
+          "bland_altman": {
+            "lower_loa": null,
+            "upper_loa": null
+          },
+          "delta_icc_3_1_minus_2_1": null,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "mae": null,
+          "n_effective_pairs": 0,
+          "n_images": 0,
+          "n_patients": 0,
+          "rmse": null,
+          "sd_differences": null,
+          "status": "not_estimable"
+        },
+        "ventral forearm": {
+          "bias": 15.035136028628978,
+          "bland_altman": {
+            "lower_loa": -96.49345408714547,
+            "upper_loa": 126.56372614440343
+          },
+          "delta_icc_3_1_minus_2_1": 0.013852166612951078,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.655056454692267,
+            "ci95_low": 0.16407310392070446,
+            "estimate": 0.4469466451246483,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.6603334896117946,
+            "ci95_low": 0.18354437924242928,
+            "estimate": 0.4551145878882387,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.6988889046418938,
+            "ci95_low": 0.18963132866274837,
+            "estimate": 0.4689667545011898,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 44.37432260105295,
+          "n_effective_pairs": 80,
+          "n_images": 80,
+          "n_patients": 33,
+          "rmse": 58.51032705609268,
+          "sd_differences": 56.90234189580329,
+          "status": "complete"
+        }
+      },
+      "global": {
+        "bias": 14.7545143182285,
+        "bland_altman": {
+          "lower_loa": -102.07139837868696,
+          "upper_loa": 131.58042701514395
+        },
+        "delta_icc_3_1_minus_2_1": 0.014417870869615268,
+        "icc_1_1_oneway": {
+          "bootstrap_invalid": 0,
+          "bootstrap_invalid_reasons": {},
+          "bootstrap_total": 10000,
+          "bootstrap_valid": 10000,
+          "ci95_high": 0.51337234611874,
+          "ci95_low": 0.3473354382549317,
+          "estimate": 0.44025963096319237,
+          "icc_status": "complete",
+          "reason": null
+        },
+        "icc_2_1_absolute_agreement": {
+          "bootstrap_invalid": 0,
+          "bootstrap_invalid_reasons": {},
+          "bootstrap_total": 10000,
+          "bootstrap_valid": 10000,
+          "ci95_high": 0.5206821653235747,
+          "ci95_low": 0.3593652071105715,
+          "estimate": 0.44896757002331095,
+          "icc_status": "complete",
+          "reason": null
+        },
+        "icc_3_1_consistency": {
+          "bootstrap_invalid": 0,
+          "bootstrap_invalid_reasons": {},
+          "bootstrap_total": 10000,
+          "bootstrap_valid": 10000,
+          "ci95_high": 0.5410931712855656,
+          "ci95_low": 0.3728352807841037,
+          "estimate": 0.4633854408929262,
+          "icc_status": "complete",
+          "reason": null
+        },
+        "mae": 47.96491596507084,
+        "n_effective_pairs": 699,
+        "n_images": 699,
+        "n_patients": 46,
+        "rmse": 61.362659131643795,
+        "sd_differences": 59.60505749842626,
+        "status": "complete"
+      },
+      "historical_icc_2_1_reproduction": {
+        "difference": 0.0,
+        "historical": 0.44896757002331095,
+        "matched": true,
+        "recalculated": 0.44896757002331095,
+        "tolerance": 1e-12
+      },
+      "method_id": "delightsam-dermoscopy"
+    },
+    {
+      "by_anatomical_site": {
+        "abdomen": {
+          "bias": 17.37557734623458,
+          "bland_altman": {
+            "lower_loa": -69.44790635814397,
+            "upper_loa": 104.19906105061312
+          },
+          "delta_icc_3_1_minus_2_1": 0.02928691975823461,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.7178719268545944,
+            "ci95_low": 0.568075378820147,
+            "estimate": 0.6655581598847662,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.7211759665743959,
+            "ci95_low": 0.5897727007059478,
+            "estimate": 0.6725362504854585,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.753941762073932,
+            "ci95_low": 0.6370095073468498,
+            "estimate": 0.7018231702436931,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 41.46920291346121,
+          "n_effective_pairs": 128,
+          "n_images": 128,
+          "n_patients": 43,
+          "rmse": 47.42221188665649,
+          "sd_differences": 44.29769576754008,
+          "status": "complete"
+        },
+        "dorsal forearm": {
+          "bias": 9.951102715911933,
+          "bland_altman": {
+            "lower_loa": -95.68640292229539,
+            "upper_loa": 115.58860835411924
+          },
+          "delta_icc_3_1_minus_2_1": 0.006520918487509464,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.663502953569727,
+            "ci95_low": 0.378550943459082,
+            "estimate": 0.5303836185222671,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.6665339988404089,
+            "ci95_low": 0.3830175030699071,
+            "estimate": 0.5332204680030223,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.6828322515356895,
+            "ci95_low": 0.38735257080389385,
+            "estimate": 0.5397413864905317,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 42.76726652180436,
+          "n_effective_pairs": 133,
+          "n_images": 133,
+          "n_patients": 40,
+          "rmse": 54.60802383980072,
+          "sd_differences": 53.89668655010578,
+          "status": "complete"
+        },
+        "head/neck": {
+          "bias": -11.662832005823068,
+          "bland_altman": {
+            "lower_loa": -152.0676308433726,
+            "upper_loa": 128.74196683172644
+          },
+          "delta_icc_3_1_minus_2_1": 0.003464792973647879,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.3917068639774599,
+            "ci95_low": 0.1625667857981823,
+            "estimate": 0.2738759542141989,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.3963311571610993,
+            "ci95_low": 0.17248804390041356,
+            "estimate": 0.27833980873708886,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.40530943414546466,
+            "ci95_low": 0.17544058283205227,
+            "estimate": 0.28180460171073674,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 55.12735116785401,
+          "n_effective_pairs": 109,
+          "n_images": 109,
+          "n_patients": 40,
+          "rmse": 72.25323953317802,
+          "sd_differences": 71.63510144772935,
+          "status": "complete"
+        },
+        "lateral torso": {
+          "bias": null,
+          "bland_altman": {
+            "lower_loa": null,
+            "upper_loa": null
+          },
+          "delta_icc_3_1_minus_2_1": null,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "mae": null,
+          "n_effective_pairs": 0,
+          "n_images": 0,
+          "n_patients": 0,
+          "rmse": null,
+          "sd_differences": null,
+          "status": "not_estimable"
+        },
+        "lower back": {
+          "bias": 16.779978148670082,
+          "bland_altman": {
+            "lower_loa": -62.34548446471318,
+            "upper_loa": 95.90544076205335
+          },
+          "delta_icc_3_1_minus_2_1": 0.029644977729664568,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.7838868800898982,
+            "ci95_low": 0.5882448482582149,
+            "estimate": 0.7144536460705665,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.7857824448929458,
+            "ci95_low": 0.6075360834419219,
+            "estimate": 0.7200989173151684,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.8110037744115758,
+            "ci95_low": 0.6622660126447979,
+            "estimate": 0.749743895044833,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 37.30088308411783,
+          "n_effective_pairs": 121,
+          "n_images": 121,
+          "n_patients": 39,
+          "rmse": 43.564278891607046,
+          "sd_differences": 40.370133986420036,
+          "status": "complete"
+        },
+        "lower leg": {
+          "bias": 10.530905523390878,
+          "bland_altman": {
+            "lower_loa": -125.35553485413448,
+            "upper_loa": 146.41734590091625
+          },
+          "delta_icc_3_1_minus_2_1": 0.004818336512048216,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.5710797680857767,
+            "ci95_low": 0.31996479425711577,
+            "estimate": 0.45459139991698155,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.5732998560375745,
+            "ci95_low": 0.3252589596222988,
+            "estimate": 0.4574339624931124,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.5794633088486169,
+            "ci95_low": 0.3306994003961675,
+            "estimate": 0.4622522990051606,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 54.263379151267095,
+          "n_effective_pairs": 287,
+          "n_images": 287,
+          "n_patients": 44,
+          "rmse": 70.00553987215679,
+          "sd_differences": 69.3298165191456,
+          "status": "complete"
+        },
+        "palms/soles": {
+          "bias": 25.966931780657735,
+          "bland_altman": {
+            "lower_loa": -140.52823722101067,
+            "upper_loa": 192.46210078232616
+          },
+          "delta_icc_3_1_minus_2_1": 0.016921015151031227,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.3893592425870405,
+            "ci95_low": 0.12331675398019998,
+            "estimate": 0.26880253134609217,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.4149857056844413,
+            "ci95_low": 0.14929503929872717,
+            "estimate": 0.28902290910881584,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.4667925175917923,
+            "ci95_low": 0.15503608302812752,
+            "estimate": 0.30594392425984707,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 77.96349859430875,
+          "n_effective_pairs": 110,
+          "n_images": 110,
+          "n_patients": 38,
+          "rmse": 88.45672804813492,
+          "sd_differences": 84.9465147967696,
+          "status": "complete"
+        },
+        "upper arm": {
+          "bias": null,
+          "bland_altman": {
+            "lower_loa": null,
+            "upper_loa": null
+          },
+          "delta_icc_3_1_minus_2_1": null,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "mae": null,
+          "n_effective_pairs": 0,
+          "n_images": 0,
+          "n_patients": 0,
+          "rmse": null,
+          "sd_differences": null,
+          "status": "not_estimable"
+        },
+        "upper back": {
+          "bias": 10.509961345950252,
+          "bland_altman": {
+            "lower_loa": -66.60487086520268,
+            "upper_loa": 87.62479355710317
+          },
+          "delta_icc_3_1_minus_2_1": 0.012367015963139605,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.7693639954245188,
+            "ci95_low": 0.6169342536432106,
+            "estimate": 0.7128426338866299,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.7705833343846792,
+            "ci95_low": 0.6251849415097998,
+            "estimate": 0.7152828731992101,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.7844349307635853,
+            "ci95_low": 0.6454643425604223,
+            "estimate": 0.7276498891623497,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 35.413910648050624,
+          "n_effective_pairs": 127,
+          "n_images": 127,
+          "n_patients": 43,
+          "rmse": 40.573940238996045,
+          "sd_differences": 39.34430214854741,
+          "status": "complete"
+        },
+        "upper chest": {
+          "bias": 8.209835293686416,
+          "bland_altman": {
+            "lower_loa": -86.21446089108039,
+            "upper_loa": 102.63413147845321
+          },
+          "delta_icc_3_1_minus_2_1": 0.005473489938735865,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.639934793146038,
+            "ci95_low": 0.443519825301583,
+            "estimate": 0.5588543693276287,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.643062536229663,
+            "ci95_low": 0.44687970253630155,
+            "estimate": 0.560985684592318,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.6543397488632446,
+            "ci95_low": 0.45139518587881766,
+            "estimate": 0.5664591745310539,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 40.67082095001015,
+          "n_effective_pairs": 153,
+          "n_images": 153,
+          "n_patients": 46,
+          "rmse": 48.71474617581445,
+          "sd_differences": 48.17566131875857,
+          "status": "complete"
+        },
+        "upper leg": {
+          "bias": null,
+          "bland_altman": {
+            "lower_loa": null,
+            "upper_loa": null
+          },
+          "delta_icc_3_1_minus_2_1": null,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 10000,
+            "bootstrap_invalid_reasons": {
+              "insufficient_patients": 10000
+            },
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 0,
+            "ci95_high": null,
+            "ci95_low": null,
+            "estimate": null,
+            "icc_status": "not_estimable",
+            "reason": "insufficient_patients"
+          },
+          "mae": null,
+          "n_effective_pairs": 0,
+          "n_images": 0,
+          "n_patients": 0,
+          "rmse": null,
+          "sd_differences": null,
+          "status": "not_estimable"
+        },
+        "ventral forearm": {
+          "bias": 14.473365867023126,
+          "bland_altman": {
+            "lower_loa": -88.60354785387301,
+            "upper_loa": 117.55027958791928
+          },
+          "delta_icc_3_1_minus_2_1": 0.01697360485191235,
+          "icc_1_1_oneway": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.6419649601449317,
+            "ci95_low": 0.40359808158009863,
+            "estimate": 0.5456368960825687,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_2_1_absolute_agreement": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.6461178181143695,
+            "ci95_low": 0.422090274220755,
+            "estimate": 0.5524092980513136,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "icc_3_1_consistency": {
+            "bootstrap_invalid": 0,
+            "bootstrap_invalid_reasons": {},
+            "bootstrap_total": 10000,
+            "bootstrap_valid": 10000,
+            "ci95_high": 0.6650843281433362,
+            "ci95_low": 0.4474464654094055,
+            "estimate": 0.5693829029032259,
+            "icc_status": "complete",
+            "reason": null
+          },
+          "mae": 44.45217996936578,
+          "n_effective_pairs": 228,
+          "n_images": 228,
+          "n_patients": 42,
+          "rmse": 54.434213211303216,
+          "sd_differences": 52.59026210249803,
+          "status": "complete"
+        }
+      },
+      "global": {
+        "bias": 11.515923294072483,
+        "bland_altman": {
+          "lower_loa": -103.61079190807934,
+          "upper_loa": 126.6426384962243
+        },
+        "delta_icc_3_1_minus_2_1": 0.009243062000803604,
+        "icc_1_1_oneway": {
+          "bootstrap_invalid": 0,
+          "bootstrap_invalid_reasons": {},
+          "bootstrap_total": 10000,
+          "bootstrap_valid": 10000,
+          "ci95_high": 0.5863831677922369,
+          "ci95_low": 0.4034831540928013,
+          "estimate": 0.5101523936866331,
+          "icc_status": "complete",
+          "reason": null
+        },
+        "icc_2_1_absolute_agreement": {
+          "bootstrap_invalid": 0,
+          "bootstrap_invalid_reasons": {},
+          "bootstrap_total": 10000,
+          "bootstrap_valid": 10000,
+          "ci95_high": 0.5888051176836536,
+          "ci95_low": 0.41568989737112944,
+          "estimate": 0.5144750357866749,
+          "icc_status": "complete",
+          "reason": null
+        },
+        "icc_3_1_consistency": {
+          "bootstrap_invalid": 0,
+          "bootstrap_invalid_reasons": {},
+          "bootstrap_total": 10000,
+          "bootstrap_valid": 10000,
+          "ci95_high": 0.5954117833402098,
+          "ci95_low": 0.4307146313214778,
+          "estimate": 0.5237180977874785,
+          "icc_status": "complete",
+          "reason": null
+        },
+        "mae": 47.652769701471605,
+        "n_effective_pairs": 1396,
+        "n_images": 1396,
+        "n_patients": 46,
+        "rmse": 59.83570643379501,
+        "sd_differences": 58.73812000109787,
+        "status": "complete"
+      },
+      "historical_icc_2_1_reproduction": {
+        "difference": 0.0,
+        "historical": 0.5144750357866749,
+        "matched": true,
+        "recalculated": 0.5144750357866749,
+        "tolerance": 1e-12
+      },
+      "method_id": "vmunet-isic17"
+    }
+  ],
+  "primary": "icc_2_1_absolute_agreement",
+  "primary_alias": "icc_a_1",
+  "reference_validation": {
+    "automated_test": "tests/test_d61_icc.py::test_pingouin_0_5_5_reference_fixture",
+    "function": "intraclass_corr",
+    "library": "pingouin",
+    "mapping": {
+      "ICC1": "icc_1_1_oneway",
+      "ICC2": "icc_2_1_absolute_agreement",
+      "ICC3": "icc_3_1_consistency"
+    },
+    "version": "0.5.5"
+  },
+  "schema_version": 3,
+  "secondary": "icc_3_1_consistency",
+  "secondary_alias": "icc_c_1",
+  "seed": 20260828,
+  "source_hashes": {
+    "artifacts/mskcc/census.json": "d2c1b142755f8debd856d26dd40c95d82e32e813b0f314d5647c4f914bd9fa6a",
+    "results/mskcc_analysis.json": "4d3559ecaa93655f9298094bd6e2ddfc1cb9e8c0044842677f5e9def4177e542",
+    "results/mskcc_color/colorimetry.json": "8feb863d56a235f10cf54589e4ce0bafe564bae22225f643f62e90b2857db2d2"
+  },
+  "status": "complete"
+}

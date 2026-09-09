@@ -2,21 +2,23 @@
 
 ## Resumen ejecutivo
 
-Este documento explica de forma autocontenida la metodología V2 definida por las decisiones D01–D60 de la guía canónica y presenta los resultados científicos obtenidos en CEDIA. La pregunta central es cómo se comportan distintos métodos de segmentación de lesiones dermatoscópicas y qué tan robustos son ante cambios controlados de tono de piel. La V2 separa estrictamente desarrollo, selección y evaluación final: `Training` se usa para desarrollar YOLOv7 mediante cinco folds; las 100 imágenes de `Validation` seleccionan el TOP-3 entre 15 checkpoints conservados más GrabCut; las 1000 imágenes de `Test` permanecen selladas hasta el `scientific freeze`; y MSKCC se usa exclusivamente para evaluar la recuperación del tono, no la exactitud de segmentación.
+Este documento explica de forma autocontenida la metodología V2 definida por las decisiones D01–D61 de la guía canónica y presenta los resultados científicos obtenidos en CEDIA. La pregunta central es cómo se comportan distintos métodos de segmentación de lesiones dermatoscópicas y qué tan robustos son ante cambios controlados de tono de piel. La V2 separa estrictamente desarrollo, selección y evaluación final: `Training` se usa para desarrollar YOLOv7 mediante cinco folds; las 100 imágenes de `Validation` seleccionan el TOP-3 entre 15 checkpoints conservados más GrabCut; las 1000 imágenes de `Test` permanecen selladas hasta el `scientific freeze`; y MSKCC se usa exclusivamente para evaluar la recuperación del tono, no la exactitud de segmentación. D61 es una extensión estadística posterior que no altera ninguna predicción ni selección previa.
 
-Los modelos seleccionados fueron **AViT**, **DeLightSAM-Dermoscopy** y **VM-UNet ISIC17**. En Test original, AViT obtuvo el mayor Jaccard umbralizado medio (0.7667), seguido de VM-UNet ISIC17 (0.7545) y DeLightSAM-Dermoscopy (0.7425). El experimento sintético MST mostró tres perfiles diferentes: AViT presentó degradaciones medias pequeñas pero persistentes; DeLightSAM se mantuvo cerca de cero en los tonos finales; y VM-UNet ISIC17 sufrió una caída pronunciada desde MST 06 hasta MST 10, llegando a un cambio medio de Jaccard de −0.3405 en MST 10. En MSKCC, VM-UNet ISIC17 produjo la mayor concordancia absoluta de ITA con el colorímetro (ICC=0.5145), aunque los errores siguieron siendo grandes. Estos resultados describen robustez del pipeline respecto del color observado o sintetizado; no demuestran fairness demográfica ni equivalencia clínica.
+Los modelos seleccionados fueron **AViT**, **DeLightSAM-Dermoscopy** y **VM-UNet ISIC17**. En Test original, AViT obtuvo el mayor Jaccard umbralizado medio (0.7667), seguido de VM-UNet ISIC17 (0.7545) y DeLightSAM-Dermoscopy (0.7425). El experimento sintético MST mostró tres perfiles diferentes: AViT presentó degradaciones medias pequeñas pero persistentes; DeLightSAM se mantuvo cerca de cero en los tonos finales; y VM-UNet ISIC17 sufrió una caída pronunciada desde MST 06 hasta MST 10, llegando a un cambio medio de Jaccard de −0.3405 en MST 10. En MSKCC, VM-UNet ISIC17 produjo la mayor concordancia absoluta según la métrica primaria ICC(2,1)/ICC(A,1), con 0.5145; su ICC(3,1)/ICC(C,1) secundario fue 0.5237. La diferencia de 0.0092 fue pequeña frente al error observado (MAE 47.6528), por lo que el desacuerdo no se explica únicamente por un desplazamiento constante. Estos resultados describen robustez del pipeline respecto del color observado o sintetizado; no demuestran fairness demográfica ni equivalencia clínica.
 
 ## Alcance, gobernanza y trazabilidad
 
-La fuente normativa es `10_METHODOLOGY_V2_FROM_ZERO.md`. Este informe no introduce decisiones nuevas: resume D01–D60 y sus resultados. Todo entrenamiento, inferencia y generación de resultados científicos se ejecutó mediante Slurm en CEDIA, únicamente en `compute-0-2`, con `compute-0-1` excluido. No hubo revisión manual de imágenes. Los checkpoints de los 15 modelos históricos y GrabCut se conservaron; se repitieron las evaluaciones y no se heredaron predicciones, ranking ni TOP-3 V1.
+La fuente normativa es `10_METHODOLOGY_V2_FROM_ZERO.md`. Este informe no introduce decisiones nuevas: resume D01–D61 y sus resultados. Todo entrenamiento, inferencia y generación de resultados científicos se ejecutó mediante Slurm en CEDIA, únicamente en `compute-0-2`, con `compute-0-1` excluido. No hubo revisión manual de imágenes. Los checkpoints de los 15 modelos históricos y GrabCut se conservaron; se repitieron las evaluaciones y no se heredaron predicciones, ranking ni TOP-3 V1. La extensión D61 reutilizó los pares MSKCC existentes y solo recalculó estadística en el job 25663.
 
 | Elemento de trazabilidad | Valor verificado |
 |---|---|
 | Repositorio | `magicsistem/Bench_Fairness_V2` |
 | Commit científico final | `56c1447b0f3d2cb2b3246910aac0b4fcf333eb93` |
 | Commit que cierra G1–G8 | `0e61764577c2b2793e169fe8b64b8b530b362404` |
+| Commit científico de implementación D61 | `f9f3d6d8956e8b36ba22402bee8c4f8c924d81e9` |
 | Nodo científico | `compute-0-2` |
 | Finalizador Slurm | job `25037`, `COMPLETED`, `ExitCode=0:0` |
+| Extensión D61 | job `25663`, `COMPLETED`, `ExitCode=0:0`, `compute-0-2` |
 | Resultado del finalizador | `V2_COMPLETE` |
 | Bootstrap | 10 000 réplicas; semilla `20260828` |
 | Revisión manual de imágenes | Ninguna |
@@ -36,6 +38,10 @@ Las ecuaciones usan el formato matemático de GitHub/MathJax: un signo `$` para 
 | ITA | `ITA = (180/pi) × atan((L* - 50) / b*)` |
 | Error absoluto medio | `MAE = mean(abs(ITApipe - ITAref))` |
 | Error cuadrático medio | `RMSE = sqrt(mean((ITApipe - ITAref)^2))` |
+| ICC(1,1), exploratorio | `ICC1 = (MSB - MSW) / (MSB + (k - 1)MSW)` |
+| ICC(2,1)/ICC(A,1), primario | `ICC2 = (MSR - MSE) / (MSR + (k - 1)MSE + (k/n)(MSC - MSE))` |
+| ICC(3,1)/ICC(C,1), secundario | `ICC3 = (MSR - MSE) / (MSR + (k - 1)MSE)` |
+| Diferencia descriptiva | `DeltaICC = ICC3 - ICC2` |
 
 ## Metodología paso a paso
 
@@ -262,14 +268,57 @@ YOLOv7 produjo una ROI dinámica por imagen. Si no detectó, se aplicó el mismo
 
 ### Paso 13. Concordancia MSKCC
 
-La medida primaria fue ICC de acuerdo absoluto entre el ITA del pipeline y el ITA del colorímetro, con bootstrap por paciente. En forma general, para un modelo de dos vías de acuerdo absoluto:
+La medida primaria original se conserva sin cambios y se nombra de forma explícita: **ICC(2,1)/ICC(A,1), acuerdo absoluto**, entre `ITA_pipeline` y `ITA_colorimeter`. D61 añade **ICC(3,1)/ICC(C,1), consistencia**, como análisis secundario e **ICC(1,1), one-way random**, como análisis exploratorio. Shrout y Fleiss definen las formas ICC según el modelo de efectos y el número de mediciones [38]; McGraw y Wong distinguen además acuerdo absoluto de consistencia [39]. No son nombres intercambiables y nunca se presenta un valor sin indicar el modelo.
+
+Para cada target $i=1,\ldots,n$ y método de medición $j=1,\ldots,k$, sea $x_{ij}$ el ITA. En esta tesis $k=2$: columna 1 = `ITA_pipeline` y columna 2 = `ITA_colorimeter`. Sean $\bar{x}_{i\cdot}$ la media del target $i$, $\bar{x}_{\cdot j}$ la media de la columna $j$ y $\bar{x}_{\cdot\cdot}$ la media global. La descomposición ANOVA de dos vías es:
 
 $$
-ICC(A,1)=\frac{MS_R-MS_E}
+MS_R=\frac{k\sum_{i=1}^{n}(\bar{x}_{i\cdot}-\bar{x}_{\cdot\cdot})^2}{n-1},
+$$
+
+$$
+MS_C=\frac{n\sum_{j=1}^{k}(\bar{x}_{\cdot j}-\bar{x}_{\cdot\cdot})^2}{k-1},
+$$
+
+$$
+MS_E=\frac{\sum_{i=1}^{n}\sum_{j=1}^{k}(x_{ij}-\bar{x}_{i\cdot}-\bar{x}_{\cdot j}+\bar{x}_{\cdot\cdot})^2}{(n-1)(k-1)}.
+$$
+
+Aquí $MS_R$ mide variación entre targets, $MS_C$ el desplazamiento medio entre pipeline y colorímetro y $MS_E$ la variación residual no explicada. El ICC primario es:
+
+$$
+ICC(2,1)=ICC(A,1)=\frac{MS_R-MS_E}
 {MS_R+(k-1)MS_E+\frac{k}{n}(MS_C-MS_E)},
 $$
 
-donde $MS_R$, $MS_C$ y $MS_E$ son cuadrados medios de filas, columnas y error; $n$ es el número de unidades y $k$ el número de mediciones. Cada réplica remuestreó pacientes completos.
+que penaliza tanto dispersión residual como diferencias sistemáticas de nivel. El ICC de consistencia es:
+
+$$
+ICC(3,1)=ICC(C,1)=\frac{MS_R-MS_E}{MS_R+(k-1)MS_E}.
+$$
+
+Al omitir el término de columna, ICC(3,1) responde si ambos métodos preservan diferencias relativas aunque exista un offset. Para ICC(1,1), sea:
+
+$$
+MS_B=\frac{k\sum_{i=1}^{n}(\bar{x}_{i\cdot}-\bar{x}_{\cdot\cdot})^2}{n-1},\qquad
+MS_W=\frac{\sum_{i=1}^{n}\sum_{j=1}^{k}(x_{ij}-\bar{x}_{i\cdot})^2}{n(k-1)}.
+$$
+
+Entonces:
+
+$$
+ICC(1,1)=\frac{MS_B-MS_W}{MS_B+(k-1)MS_W}.
+$$
+
+Este modelo one-way random no separa explícitamente el efecto sistemático de las columnas y por eso no sustituye la validez frente al colorímetro [38], [39]. La diferencia puramente descriptiva fue:
+
+$$
+\Delta ICC=ICC(3,1)-ICC(2,1).
+$$
+
+Un $\Delta ICC$ positivo grande junto a un bias sostenido es compatible con una contribución de diferencias de nivel; si ambos ICC son bajos y similares, el offset por sí solo no explica la discordancia. La interpretación siempre se contrastó con Bias, MAE, RMSE y Bland–Altman, sin atribuir causalidad únicamente al ICC.
+
+Los tres ICC se calcularon globalmente y por cada valor oficial de `anatomic_site`, sin renombrar ni combinar categorías. Cada IC95% usó 10 000 réplicas: se remuestrearon con reemplazo los `patient_id` elegibles y se incorporaron todas sus observaciones válidas dentro del alcance global o del sitio. Cada ICC conservó por separado réplicas calculables y registró las inválidas. Si había menos de dos pacientes, varianza entre targets aproximadamente nula, ANOVA degenerado o denominador no calculable, se guardó `NA` con `icc_status` y razón; nunca se imputó cero.
 
 Los errores secundarios fueron:
 
@@ -283,13 +332,17 @@ MAE=\frac{1}{N}\sum_i|ITA_{pipe,i}-ITA_{ref,i}|,
 RMSE=\sqrt{\frac{1}{N}\sum_i(ITA_{pipe,i}-ITA_{ref,i})^2}.
 $$
 
-Los límites de Bland–Altman fueron [35]:
+Para $d_i=ITA_{pipe,i}-ITA_{ref,i}$, los límites de Bland–Altman globales y por sitio fueron [35]:
 
 $$
-LoA=Bias\pm1.96\,SD(ITA_{pipe}-ITA_{ref}).
+LoA_{inferior}=Bias-1.96\,SD(d),\qquad LoA_{superior}=Bias+1.96\,SD(d),
 $$
 
-Para la referencia MST ordinal se usaron Kendall $\tau_b$ y Spearman $\rho$, sin convertir ITA a una categoría MST [33], [36], [37].
+donde $SD(d)$ usa $N-1$ grados de libertad. Un ICC alto no implica intercambiabilidad clínica cuando el bias o los límites son materialmente amplios [35].
+
+La implementación manual se cruzó con `pingouin.intraclass_corr` 0.5.5: `ICC1→ICC(1,1)`, `ICC2→ICC(2,1)` e `ICC3→ICC(3,1)`. Los tests de identidad, offset, ruido y degeneración se ejecutaron antes del análisis CEDIA. Benčević *et al.* se utiliza solamente como antecedente de aplicación en tono de piel y como motivación para reportar ICC(3,1) [23]; las fórmulas proceden de [38], [39]. Nuestro análisis primario sigue siendo ICC(2,1), mientras ICC(3,1) permite una comparación secundaria más cercana con literatura de consistencia. No se comparan ambos como si fueran la misma estadística.
+
+Para la referencia MST ordinal se mantuvieron Kendall $\tau_b$ y Spearman $\rho$, sin convertir ITA a una categoría MST [33], [36], [37].
 
 ### Paso 14. Reanudación, hashes y cierre
 
@@ -316,7 +369,7 @@ Esta tabla responde explícitamente qué valor se adoptó —y no solo qué se c
 | Test original | 983 detecciones; 17 `valid_no_detection` | Las 17 usaron imagen completa |
 | Universo MST | 975 fuentes válidas; 25 no disponibles | 9750 variantes y 250 condiciones indisponibles |
 | Codificación MST | imagen completa, PNG sin pérdida, `compress_level=6` | Evita el parche rectangular y reduce tamaño sin cambiar píxeles |
-| Análisis MSKCC | censo completo de 4879 imágenes | Concordancia de ITA, no exactitud de segmentación |
+| Análisis MSKCC | censo completo de 4879 imágenes; D61 retiene ICC(1,1), ICC(2,1)/ICC(A,1) e ICC(3,1)/ICC(C,1), globales y por sitio | Concordancia de ITA, no exactitud de segmentación; ICC(2,1) continúa primario |
 
 ### Tabla general del pipeline
 
@@ -502,7 +555,7 @@ En estas tablas, el valor conservado para interpretar robustez es el cambio pare
 
 ### Concordancia cromática MSKCC
 
-Los denominadores difieren porque D36–D37 conservan como `NA` los casos sin soporte válido y porque no todas las imágenes tienen la referencia requerida. Los IC95% del ICC remuestrean pacientes completos.
+Los denominadores difieren porque D36–D37 conservan como `NA` los casos sin soporte válido y porque no todas las imágenes tienen referencia colorimétrica. D61 no cambió esos pares: únicamente añadió modelos ICC y estratificación por el valor oficial `anatomic_site`. Los IC95% de los tres ICC remuestrean bloques completos de pacientes, nunca imágenes independientes. En las tablas global y anatómica, `N pares efectivos = N imágenes` porque cada fila admitida contiene exactamente un par `ITA_pipeline`–`ITA_colorimeter`; ambos conteos permanecen además como campos independientes en los CSV.
 
 | Flujo MSKCC | Imágenes |
 |---|---:|
@@ -510,17 +563,202 @@ Los denominadores difieren porque D36–D37 conservan como `NA` los casos sin so
 | YOLOv7 detectó lesión | 2825 |
 | `valid_no_detection`, imagen completa | 2054 |
 
-| Método | N continuo | Pacientes | ICC absoluto (IC95%) | Bias ITA | MAE | RMSE | Bland–Altman LoA |
-|---|---:|---:|---:|---:|---:|---:|---:|
-| AViT | 1168 | 46 | 0.3357 [0.2367, 0.4247] | −4.0891 | 60.2784 | 75.7678 | [−152.4409, 144.2628] |
-| DeLightSAM-Dermoscopy | 699 | 46 | 0.4490 [0.3590, 0.5216] | 14.7545 | 47.9649 | 61.3627 | [−102.0714, 131.5804] |
-| VM-UNet ISIC17 | 1396 | 46 | 0.5145 [0.4146, 0.5894] | 11.5159 | 47.6528 | 59.8357 | [−103.6108, 126.6426] |
+#### Tabla A — MSKCC global
+
+| Método | N imágenes | N pacientes | ICC(1,1) [IC95%] | ICC(2,1)/ICC(A,1) [IC95%] — primario | ICC(3,1)/ICC(C,1) [IC95%] — secundario | ΔICC3−ICC2 | Bias ITA | MAE | RMSE | SD diferencias | Bland–Altman LoA |
+|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| AViT | 1168 | 46 | 0.335196 [0.235051, 0.423231] | 0.335650 [0.236583, 0.424347] | 0.336110 [0.237430, 0.425938] | 0.000460 | -4.089053 | 60.278374 | 75.767751 | 75.689740 | [-152.440942, 144.262837] |
+| DeLightSAM-Dermoscopy | 699 | 46 | 0.440260 [0.347335, 0.513372] | 0.448968 [0.359365, 0.520682] | 0.463385 [0.372835, 0.541093] | 0.014418 | 14.754514 | 47.964916 | 61.362659 | 59.605057 | [-102.071398, 131.580427] |
+| VM-UNet ISIC17 | 1396 | 46 | 0.510152 [0.403483, 0.586383] | 0.514475 [0.415690, 0.588805] | 0.523718 [0.430715, 0.595412] | 0.009243 | 11.515923 | 47.652770 | 59.835706 | 58.738120 | [-103.610792, 126.642638] |
+
+El ICC(2,1)/ICC(A,1) puntual reprodujo exactamente el artefacto histórico para AViT (`0.3356501648804588`), DeLightSAM-Dermoscopy (`0.44896757002331095`) y VM-UNet ISIC17 (`0.5144750357866749`): la diferencia numérica registrada fue 0.0 en los tres casos. Los intervalos de esta tabla son los 10 000 remuestreos D61 conjuntos de los tres modelos ICC. Todas las 30 000 estimaciones globales por tipo de ICC fueron calculables.
 
 | Método | N con MST | Kendall $\tau_b$ | Spearman $\rho$ |
 |---|---:|---:|---:|
 | AViT | 3735 | −0.5500 | −0.6793 |
 | DeLightSAM-Dermoscopy | 3092 | −0.6237 | −0.7786 |
 | VM-UNet ISIC17 | 3873 | −0.6251 | −0.7770 |
+
+#### Concordancia MSKCC por sitio anatómico
+
+La Tabla B contiene los 12 rótulos oficiales observados, incluidos los estratos sin pares válidos. `NA` significa no estimable por `insufficient_patients`; no representa cero y no se fusionaron sitios.
+
+| Método | Sitio anatómico | N imágenes | N pacientes | ICC(1,1) [IC95%] | ICC(2,1)/ICC(A,1) [IC95%] | ICC(3,1)/ICC(C,1) [IC95%] | ΔICC | Bias | MAE | RMSE | LoA inferior | LoA superior |
+|---|---|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|---:|
+| AViT | abdomen | 103 | 44 | 0.526081 [0.354659, 0.659300] | 0.536267 [0.369291, 0.668638] | 0.560353 [0.382504, 0.721705] | 0.024086 | 18.995294 | 48.864646 | 59.622650 | -92.317405 | 130.307993 |
+| AViT | dorsal forearm | 107 | 42 | 0.400806 [0.235330, 0.581288] | 0.399216 [0.235026, 0.582878] | 0.397108 [0.235231, 0.585356] | -0.002107 | 1.591776 | 50.799747 | 65.270264 | -126.901739 | 130.085291 |
+| AViT | head/neck | 116 | 43 | 0.239824 [0.055602, 0.403676] | 0.251703 [0.091018, 0.408041] | 0.259824 [0.097629, 0.418630] | 0.008121 | -17.570242 | 59.777881 | 78.554199 | -168.286762 | 133.146278 |
+| AViT | lateral torso | 0 | 0 | NA | NA | NA | NA | NA | NA | NA | NA | NA |
+| AViT | lower back | 85 | 39 | 0.667963 [0.518124, 0.754887] | 0.680278 [0.555961, 0.759976] | 0.734782 [0.636461, 0.805981] | 0.054504 | 23.307235 | 41.854876 | 47.472816 | -58.234500 | 104.848971 |
+| AViT | lower leg | 235 | 45 | 0.373740 [0.205994, 0.521500] | 0.372903 [0.209327, 0.521850] | 0.371908 [0.211927, 0.525500] | -0.000995 | -0.231032 | 63.363130 | 79.182002 | -155.758357 | 155.296293 |
+| AViT | palms/soles | 138 | 40 | 0.016358 [-0.109684, 0.110483] | 0.059419 [-0.014866, 0.129300] | 0.065121 [-0.017153, 0.137156] | 0.005702 | -34.374000 | 97.954353 | 108.886454 | -237.615751 | 168.867750 |
+| AViT | upper arm | 0 | 0 | NA | NA | NA | NA | NA | NA | NA | NA | NA |
+| AViT | upper back | 84 | 40 | 0.490744 [0.323849, 0.639902] | 0.489622 [0.325901, 0.640316] | 0.487473 [0.326296, 0.639808] | -0.002148 | -3.278945 | 45.173566 | 56.462456 | -114.422140 | 107.864249 |
+| AViT | upper chest | 122 | 46 | 0.445281 [0.298048, 0.550737] | 0.444072 [0.301815, 0.552304] | 0.442144 [0.304481, 0.557747] | -0.001928 | 1.122333 | 45.863410 | 54.991253 | -107.082448 | 109.327114 |
+| AViT | upper leg | 0 | 0 | NA | NA | NA | NA | NA | NA | NA | NA | NA |
+| AViT | ventral forearm | 178 | 42 | 0.257500 [0.116158, 0.403087] | 0.260548 [0.130920, 0.403814] | 0.262704 [0.135417, 0.404842] | 0.002157 | -10.726991 | 65.430665 | 83.111732 | -172.719152 | 151.265170 |
+| DeLightSAM-Dermoscopy | abdomen | 52 | 29 | 0.549380 [0.331594, 0.704934] | 0.554350 [0.334042, 0.713338] | 0.566854 [0.333960, 0.784129] | 0.012504 | 14.161866 | 43.882618 | 54.397149 | -89.784300 | 118.108032 |
+| DeLightSAM-Dermoscopy | dorsal forearm | 61 | 30 | 0.348080 [0.064560, 0.622137] | 0.344688 [0.074455, 0.627847] | 0.341137 [0.076433, 0.651631] | -0.003551 | 1.688558 | 45.135566 | 60.840702 | -118.502526 | 121.879642 |
+| DeLightSAM-Dermoscopy | head/neck | 68 | 32 | 0.336270 [0.165068, 0.526913] | 0.333158 [0.168047, 0.527269] | 0.330063 [0.168511, 0.528512] | -0.003095 | -1.954680 | 48.889345 | 67.012194 | -134.218825 | 130.309465 |
+| DeLightSAM-Dermoscopy | lateral torso | 0 | 0 | NA | NA | NA | NA | NA | NA | NA | NA | NA |
+| DeLightSAM-Dermoscopy | lower back | 45 | 24 | 0.608058 [0.337143, 0.714156] | 0.634094 [0.418905, 0.728685] | 0.731242 [0.533208, 0.850130] | 0.097149 | 27.998798 | 40.192293 | 45.586114 | -43.307873 | 99.305469 |
+| DeLightSAM-Dermoscopy | lower leg | 170 | 44 | 0.458847 [0.320220, 0.586935] | 0.467331 [0.329989, 0.596250] | 0.482458 [0.337282, 0.631910] | 0.015127 | 16.441610 | 50.853299 | 64.789693 | -106.752095 | 139.635316 |
+| DeLightSAM-Dermoscopy | palms/soles | 79 | 32 | 0.239557 [0.086769, 0.361132] | 0.273887 [0.140404, 0.390380] | 0.301069 [0.150967, 0.453033] | 0.027183 | 31.516146 | 73.356742 | 85.640512 | -125.557097 | 188.589389 |
+| DeLightSAM-Dermoscopy | upper arm | 0 | 0 | NA | NA | NA | NA | NA | NA | NA | NA | NA |
+| DeLightSAM-Dermoscopy | upper back | 54 | 33 | 0.664720 [0.526583, 0.746668] | 0.671603 [0.539777, 0.750981] | 0.700363 [0.562867, 0.796189] | 0.028759 | 14.928603 | 35.323310 | 39.722103 | -57.896619 | 87.753826 |
+| DeLightSAM-Dermoscopy | upper chest | 90 | 37 | 0.520182 [0.391788, 0.618035] | 0.525943 [0.394464, 0.626521] | 0.538884 [0.395591, 0.672110] | 0.012941 | 11.701711 | 38.461488 | 47.299666 | -78.627022 | 102.030444 |
+| DeLightSAM-Dermoscopy | upper leg | 0 | 0 | NA | NA | NA | NA | NA | NA | NA | NA | NA |
+| DeLightSAM-Dermoscopy | ventral forearm | 80 | 33 | 0.446947 [0.164073, 0.655056] | 0.455115 [0.183544, 0.660333] | 0.468967 [0.189631, 0.698889] | 0.013852 | 15.035136 | 44.374323 | 58.510327 | -96.493454 | 126.563726 |
+| VM-UNet ISIC17 | abdomen | 128 | 43 | 0.665558 [0.568075, 0.717872] | 0.672536 [0.589773, 0.721176] | 0.701823 [0.637010, 0.753942] | 0.029287 | 17.375577 | 41.469203 | 47.422212 | -69.447906 | 104.199061 |
+| VM-UNet ISIC17 | dorsal forearm | 133 | 40 | 0.530384 [0.378551, 0.663503] | 0.533220 [0.383018, 0.666534] | 0.539741 [0.387353, 0.682832] | 0.006521 | 9.951103 | 42.767267 | 54.608024 | -95.686403 | 115.588608 |
+| VM-UNet ISIC17 | head/neck | 109 | 40 | 0.273876 [0.162567, 0.391707] | 0.278340 [0.172488, 0.396331] | 0.281805 [0.175441, 0.405309] | 0.003465 | -11.662832 | 55.127351 | 72.253240 | -152.067631 | 128.741967 |
+| VM-UNet ISIC17 | lateral torso | 0 | 0 | NA | NA | NA | NA | NA | NA | NA | NA | NA |
+| VM-UNet ISIC17 | lower back | 121 | 39 | 0.714454 [0.588245, 0.783887] | 0.720099 [0.607536, 0.785782] | 0.749744 [0.662266, 0.811004] | 0.029645 | 16.779978 | 37.300883 | 43.564279 | -62.345484 | 95.905441 |
+| VM-UNet ISIC17 | lower leg | 287 | 44 | 0.454591 [0.319965, 0.571080] | 0.457434 [0.325259, 0.573300] | 0.462252 [0.330699, 0.579463] | 0.004818 | 10.530906 | 54.263379 | 70.005540 | -125.355535 | 146.417346 |
+| VM-UNet ISIC17 | palms/soles | 110 | 38 | 0.268803 [0.123317, 0.389359] | 0.289023 [0.149295, 0.414986] | 0.305944 [0.155036, 0.466793] | 0.016921 | 25.966932 | 77.963499 | 88.456728 | -140.528237 | 192.462101 |
+| VM-UNet ISIC17 | upper arm | 0 | 0 | NA | NA | NA | NA | NA | NA | NA | NA | NA |
+| VM-UNet ISIC17 | upper back | 127 | 43 | 0.712843 [0.616934, 0.769364] | 0.715283 [0.625185, 0.770583] | 0.727650 [0.645464, 0.784435] | 0.012367 | 10.509961 | 35.413911 | 40.573940 | -66.604871 | 87.624794 |
+| VM-UNet ISIC17 | upper chest | 153 | 46 | 0.558854 [0.443520, 0.639935] | 0.560986 [0.446880, 0.643063] | 0.566459 [0.451395, 0.654340] | 0.005473 | 8.209835 | 40.670821 | 48.714746 | -86.214461 | 102.634131 |
+| VM-UNet ISIC17 | upper leg | 0 | 0 | NA | NA | NA | NA | NA | NA | NA | NA | NA |
+| VM-UNet ISIC17 | ventral forearm | 228 | 42 | 0.545637 [0.403598, 0.641965] | 0.552409 [0.422090, 0.646118] | 0.569383 [0.447446, 0.665084] | 0.016974 | 14.473366 | 44.452180 | 54.434213 | -88.603548 | 117.550280 |
+
+Entre las 27 combinaciones método–sitio estimables, la mayor concordancia absoluta fue VM-UNet ISIC17 en `lower back`, ICC(2,1)=0.720099, y la menor fue AViT en `palms/soles`, 0.059419. Los extremos de consistencia ocurrieron en los mismos pares: ICC(3,1)=0.749744 y 0.065121. La mayor diferencia ICC(3,1)−ICC(2,1) fue DeLightSAM-Dermoscopy en `lower back`, 0.097149; la menor fue DeLightSAM-Dermoscopy en `dorsal forearm`, −0.003551.
+
+DeLightSAM-Dermoscopy en `upper back` obtuvo el menor MAE, 35.323310 ITA. AViT en `palms/soles` tuvo el mayor MAE, 97.954353, y también los límites más amplios: amplitud 406.483501 ITA. Los límites más estrechos fueron los de DeLightSAM-Dermoscopy en `lower back`, amplitud 142.613341 ITA. Estos contrastes describen heterogeneidad anatómica de concordancia y error; no establecen fairness, raza, etnia ni causalidad.
+
+#### Acuerdo absoluto frente a consistencia
+
+Para AViT, ICC(2,1)=0.335650 e ICC(3,1)=0.336110, con ΔICC=0.000460, bias −4.089053, MAE 60.278374, RMSE 75.767751 y LoA [−152.440942, 144.262837]. La casi igualdad entre acuerdo y consistencia, junto con el error y la dispersión altos, indica que un simple desplazamiento medio no basta para describir el desacuerdo.
+
+Para DeLightSAM-Dermoscopy, ICC(2,1)=0.448968 e ICC(3,1)=0.463385, con ΔICC=0.014418, bias 14.754514, MAE 47.964916, RMSE 61.362659 y LoA [−102.071398, 131.580427]. La consistencia algo mayor y el bias positivo son compatibles con una contribución de diferencias de nivel, pero la amplitud de los LoA muestra variación muestra-a-muestra adicional.
+
+Para VM-UNet ISIC17, ICC(2,1)=0.514475 e ICC(3,1)=0.523718, con ΔICC=0.009243, bias 11.515923, MAE 47.652770, RMSE 59.835706 y LoA [−103.610792, 126.642638]. Fue el mayor valor global en ambos modelos, pero la pequeña diferencia entre ellos y los LoA amplios impiden atribuir el desacuerdo únicamente a un offset.
+
+Benčević *et al.* reportan ICC(3,1) en su aplicación de estimación de tono [23]. Por ello, nuestro ICC(3,1) permite una comparación secundaria más cercana; el resultado principal de esta tesis sigue siendo ICC(2,1)/ICC(A,1). No se contrasta el ICC(2,1) propio con el ICC(3,1) externo como si fueran la misma estadística [38], [39].
+
+#### Tabla C — Diagnóstico ICC y bootstrap
+
+Esta tabla reconcilia cada estimación e intervalo con su número de réplicas. En 90 análisis estimables hubo 10 000 réplicas válidas y 0 inválidas. Los nueve estratos método–sitio sin pares válidos generan 27 ICC no estimables, cada uno con 0 réplicas válidas, 10 000 inválidas y razón `insufficient_patients`.
+
+| Método | Alcance | Sitio anatómico | Tipo ICC | Estimación | IC bajo | IC alto | Bootstrap válido | Bootstrap inválido | Estado | Razón |
+|---|---|---|---|---:|---:|---:|---:|---:|---|---|
+| AViT | global | NA | ICC(1,1) | 0.335196 | 0.235051 | 0.423231 | 10000 | 0 | complete | NA |
+| AViT | global | NA | ICC(2,1)/ICC(A,1) | 0.335650 | 0.236583 | 0.424347 | 10000 | 0 | complete | NA |
+| AViT | global | NA | ICC(3,1)/ICC(C,1) | 0.336110 | 0.237430 | 0.425938 | 10000 | 0 | complete | NA |
+| AViT | sitio | abdomen | ICC(1,1) | 0.526081 | 0.354659 | 0.659300 | 10000 | 0 | complete | NA |
+| AViT | sitio | abdomen | ICC(2,1)/ICC(A,1) | 0.536267 | 0.369291 | 0.668638 | 10000 | 0 | complete | NA |
+| AViT | sitio | abdomen | ICC(3,1)/ICC(C,1) | 0.560353 | 0.382504 | 0.721705 | 10000 | 0 | complete | NA |
+| AViT | sitio | dorsal forearm | ICC(1,1) | 0.400806 | 0.235330 | 0.581288 | 10000 | 0 | complete | NA |
+| AViT | sitio | dorsal forearm | ICC(2,1)/ICC(A,1) | 0.399216 | 0.235026 | 0.582878 | 10000 | 0 | complete | NA |
+| AViT | sitio | dorsal forearm | ICC(3,1)/ICC(C,1) | 0.397108 | 0.235231 | 0.585356 | 10000 | 0 | complete | NA |
+| AViT | sitio | head/neck | ICC(1,1) | 0.239824 | 0.055602 | 0.403676 | 10000 | 0 | complete | NA |
+| AViT | sitio | head/neck | ICC(2,1)/ICC(A,1) | 0.251703 | 0.091018 | 0.408041 | 10000 | 0 | complete | NA |
+| AViT | sitio | head/neck | ICC(3,1)/ICC(C,1) | 0.259824 | 0.097629 | 0.418630 | 10000 | 0 | complete | NA |
+| AViT | sitio | lateral torso | ICC(1,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| AViT | sitio | lateral torso | ICC(2,1)/ICC(A,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| AViT | sitio | lateral torso | ICC(3,1)/ICC(C,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| AViT | sitio | lower back | ICC(1,1) | 0.667963 | 0.518124 | 0.754887 | 10000 | 0 | complete | NA |
+| AViT | sitio | lower back | ICC(2,1)/ICC(A,1) | 0.680278 | 0.555961 | 0.759976 | 10000 | 0 | complete | NA |
+| AViT | sitio | lower back | ICC(3,1)/ICC(C,1) | 0.734782 | 0.636461 | 0.805981 | 10000 | 0 | complete | NA |
+| AViT | sitio | lower leg | ICC(1,1) | 0.373740 | 0.205994 | 0.521500 | 10000 | 0 | complete | NA |
+| AViT | sitio | lower leg | ICC(2,1)/ICC(A,1) | 0.372903 | 0.209327 | 0.521850 | 10000 | 0 | complete | NA |
+| AViT | sitio | lower leg | ICC(3,1)/ICC(C,1) | 0.371908 | 0.211927 | 0.525500 | 10000 | 0 | complete | NA |
+| AViT | sitio | palms/soles | ICC(1,1) | 0.016358 | -0.109684 | 0.110483 | 10000 | 0 | complete | NA |
+| AViT | sitio | palms/soles | ICC(2,1)/ICC(A,1) | 0.059419 | -0.014866 | 0.129300 | 10000 | 0 | complete | NA |
+| AViT | sitio | palms/soles | ICC(3,1)/ICC(C,1) | 0.065121 | -0.017153 | 0.137156 | 10000 | 0 | complete | NA |
+| AViT | sitio | upper arm | ICC(1,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| AViT | sitio | upper arm | ICC(2,1)/ICC(A,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| AViT | sitio | upper arm | ICC(3,1)/ICC(C,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| AViT | sitio | upper back | ICC(1,1) | 0.490744 | 0.323849 | 0.639902 | 10000 | 0 | complete | NA |
+| AViT | sitio | upper back | ICC(2,1)/ICC(A,1) | 0.489622 | 0.325901 | 0.640316 | 10000 | 0 | complete | NA |
+| AViT | sitio | upper back | ICC(3,1)/ICC(C,1) | 0.487473 | 0.326296 | 0.639808 | 10000 | 0 | complete | NA |
+| AViT | sitio | upper chest | ICC(1,1) | 0.445281 | 0.298048 | 0.550737 | 10000 | 0 | complete | NA |
+| AViT | sitio | upper chest | ICC(2,1)/ICC(A,1) | 0.444072 | 0.301815 | 0.552304 | 10000 | 0 | complete | NA |
+| AViT | sitio | upper chest | ICC(3,1)/ICC(C,1) | 0.442144 | 0.304481 | 0.557747 | 10000 | 0 | complete | NA |
+| AViT | sitio | upper leg | ICC(1,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| AViT | sitio | upper leg | ICC(2,1)/ICC(A,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| AViT | sitio | upper leg | ICC(3,1)/ICC(C,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| AViT | sitio | ventral forearm | ICC(1,1) | 0.257500 | 0.116158 | 0.403087 | 10000 | 0 | complete | NA |
+| AViT | sitio | ventral forearm | ICC(2,1)/ICC(A,1) | 0.260548 | 0.130920 | 0.403814 | 10000 | 0 | complete | NA |
+| AViT | sitio | ventral forearm | ICC(3,1)/ICC(C,1) | 0.262704 | 0.135417 | 0.404842 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | global | NA | ICC(1,1) | 0.440260 | 0.347335 | 0.513372 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | global | NA | ICC(2,1)/ICC(A,1) | 0.448968 | 0.359365 | 0.520682 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | global | NA | ICC(3,1)/ICC(C,1) | 0.463385 | 0.372835 | 0.541093 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | abdomen | ICC(1,1) | 0.549380 | 0.331594 | 0.704934 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | abdomen | ICC(2,1)/ICC(A,1) | 0.554350 | 0.334042 | 0.713338 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | abdomen | ICC(3,1)/ICC(C,1) | 0.566854 | 0.333960 | 0.784129 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | dorsal forearm | ICC(1,1) | 0.348080 | 0.064560 | 0.622137 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | dorsal forearm | ICC(2,1)/ICC(A,1) | 0.344688 | 0.074455 | 0.627847 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | dorsal forearm | ICC(3,1)/ICC(C,1) | 0.341137 | 0.076433 | 0.651631 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | head/neck | ICC(1,1) | 0.336270 | 0.165068 | 0.526913 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | head/neck | ICC(2,1)/ICC(A,1) | 0.333158 | 0.168047 | 0.527269 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | head/neck | ICC(3,1)/ICC(C,1) | 0.330063 | 0.168511 | 0.528512 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | lateral torso | ICC(1,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| DeLightSAM-Dermoscopy | sitio | lateral torso | ICC(2,1)/ICC(A,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| DeLightSAM-Dermoscopy | sitio | lateral torso | ICC(3,1)/ICC(C,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| DeLightSAM-Dermoscopy | sitio | lower back | ICC(1,1) | 0.608058 | 0.337143 | 0.714156 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | lower back | ICC(2,1)/ICC(A,1) | 0.634094 | 0.418905 | 0.728685 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | lower back | ICC(3,1)/ICC(C,1) | 0.731242 | 0.533208 | 0.850130 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | lower leg | ICC(1,1) | 0.458847 | 0.320220 | 0.586935 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | lower leg | ICC(2,1)/ICC(A,1) | 0.467331 | 0.329989 | 0.596250 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | lower leg | ICC(3,1)/ICC(C,1) | 0.482458 | 0.337282 | 0.631910 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | palms/soles | ICC(1,1) | 0.239557 | 0.086769 | 0.361132 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | palms/soles | ICC(2,1)/ICC(A,1) | 0.273887 | 0.140404 | 0.390380 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | palms/soles | ICC(3,1)/ICC(C,1) | 0.301069 | 0.150967 | 0.453033 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | upper arm | ICC(1,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| DeLightSAM-Dermoscopy | sitio | upper arm | ICC(2,1)/ICC(A,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| DeLightSAM-Dermoscopy | sitio | upper arm | ICC(3,1)/ICC(C,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| DeLightSAM-Dermoscopy | sitio | upper back | ICC(1,1) | 0.664720 | 0.526583 | 0.746668 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | upper back | ICC(2,1)/ICC(A,1) | 0.671603 | 0.539777 | 0.750981 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | upper back | ICC(3,1)/ICC(C,1) | 0.700363 | 0.562867 | 0.796189 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | upper chest | ICC(1,1) | 0.520182 | 0.391788 | 0.618035 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | upper chest | ICC(2,1)/ICC(A,1) | 0.525943 | 0.394464 | 0.626521 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | upper chest | ICC(3,1)/ICC(C,1) | 0.538884 | 0.395591 | 0.672110 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | upper leg | ICC(1,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| DeLightSAM-Dermoscopy | sitio | upper leg | ICC(2,1)/ICC(A,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| DeLightSAM-Dermoscopy | sitio | upper leg | ICC(3,1)/ICC(C,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| DeLightSAM-Dermoscopy | sitio | ventral forearm | ICC(1,1) | 0.446947 | 0.164073 | 0.655056 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | ventral forearm | ICC(2,1)/ICC(A,1) | 0.455115 | 0.183544 | 0.660333 | 10000 | 0 | complete | NA |
+| DeLightSAM-Dermoscopy | sitio | ventral forearm | ICC(3,1)/ICC(C,1) | 0.468967 | 0.189631 | 0.698889 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | global | NA | ICC(1,1) | 0.510152 | 0.403483 | 0.586383 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | global | NA | ICC(2,1)/ICC(A,1) | 0.514475 | 0.415690 | 0.588805 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | global | NA | ICC(3,1)/ICC(C,1) | 0.523718 | 0.430715 | 0.595412 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | abdomen | ICC(1,1) | 0.665558 | 0.568075 | 0.717872 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | abdomen | ICC(2,1)/ICC(A,1) | 0.672536 | 0.589773 | 0.721176 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | abdomen | ICC(3,1)/ICC(C,1) | 0.701823 | 0.637010 | 0.753942 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | dorsal forearm | ICC(1,1) | 0.530384 | 0.378551 | 0.663503 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | dorsal forearm | ICC(2,1)/ICC(A,1) | 0.533220 | 0.383018 | 0.666534 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | dorsal forearm | ICC(3,1)/ICC(C,1) | 0.539741 | 0.387353 | 0.682832 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | head/neck | ICC(1,1) | 0.273876 | 0.162567 | 0.391707 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | head/neck | ICC(2,1)/ICC(A,1) | 0.278340 | 0.172488 | 0.396331 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | head/neck | ICC(3,1)/ICC(C,1) | 0.281805 | 0.175441 | 0.405309 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | lateral torso | ICC(1,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| VM-UNet ISIC17 | sitio | lateral torso | ICC(2,1)/ICC(A,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| VM-UNet ISIC17 | sitio | lateral torso | ICC(3,1)/ICC(C,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| VM-UNet ISIC17 | sitio | lower back | ICC(1,1) | 0.714454 | 0.588245 | 0.783887 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | lower back | ICC(2,1)/ICC(A,1) | 0.720099 | 0.607536 | 0.785782 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | lower back | ICC(3,1)/ICC(C,1) | 0.749744 | 0.662266 | 0.811004 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | lower leg | ICC(1,1) | 0.454591 | 0.319965 | 0.571080 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | lower leg | ICC(2,1)/ICC(A,1) | 0.457434 | 0.325259 | 0.573300 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | lower leg | ICC(3,1)/ICC(C,1) | 0.462252 | 0.330699 | 0.579463 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | palms/soles | ICC(1,1) | 0.268803 | 0.123317 | 0.389359 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | palms/soles | ICC(2,1)/ICC(A,1) | 0.289023 | 0.149295 | 0.414986 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | palms/soles | ICC(3,1)/ICC(C,1) | 0.305944 | 0.155036 | 0.466793 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | upper arm | ICC(1,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| VM-UNet ISIC17 | sitio | upper arm | ICC(2,1)/ICC(A,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| VM-UNet ISIC17 | sitio | upper arm | ICC(3,1)/ICC(C,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| VM-UNet ISIC17 | sitio | upper back | ICC(1,1) | 0.712843 | 0.616934 | 0.769364 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | upper back | ICC(2,1)/ICC(A,1) | 0.715283 | 0.625185 | 0.770583 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | upper back | ICC(3,1)/ICC(C,1) | 0.727650 | 0.645464 | 0.784435 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | upper chest | ICC(1,1) | 0.558854 | 0.443520 | 0.639935 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | upper chest | ICC(2,1)/ICC(A,1) | 0.560986 | 0.446880 | 0.643063 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | upper chest | ICC(3,1)/ICC(C,1) | 0.566459 | 0.451395 | 0.654340 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | upper leg | ICC(1,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| VM-UNet ISIC17 | sitio | upper leg | ICC(2,1)/ICC(A,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| VM-UNet ISIC17 | sitio | upper leg | ICC(3,1)/ICC(C,1) | NA | NA | NA | 0 | 10000 | not_estimable | insufficient_patients |
+| VM-UNet ISIC17 | sitio | ventral forearm | ICC(1,1) | 0.545637 | 0.403598 | 0.641965 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | ventral forearm | ICC(2,1)/ICC(A,1) | 0.552409 | 0.422090 | 0.646118 | 10000 | 0 | complete | NA |
+| VM-UNet ISIC17 | sitio | ventral forearm | ICC(3,1)/ICC(C,1) | 0.569383 | 0.447446 | 0.665084 | 10000 | 0 | complete | NA |
 
 ### Integridad de los artefactos finales
 
@@ -536,12 +774,18 @@ Los denominadores difieren porque D36–D37 conservan como `NA` los casos sin so
 | `artifacts/mskcc/rois.json` | `d95fdb9bb331f7cadc82d501790bc48cda9b5c85222f1ec149c5eb5ef1a2fe17` |
 | `results/mskcc_analysis.json` | `4d3559ecaa93655f9298094bd6e2ddfc1cb9e8c0044842677f5e9def4177e542` |
 | `artifacts/final/provenance.json` | `581c1f26126477104e91dce592b2a45b093bd2bfcf93a87ca81feb2eb46872e5` |
+| `results/mskcc_icc_d61.json` | `459c13295ed179f99d7dc424a0b1aafdeaed7e8abafb82ec177833648c0d961e` |
+| `results/mskcc_icc_d61_global.csv` | `bc150a0488df563833d05880176437a9eaf79cf3801f1251ffc5f88360a42a89` |
+| `results/mskcc_icc_d61_by_anatomical_site.csv` | `c2581c2e3d61bf6dd1361344f124ff4c27c97528b8fdf1c6dca38e78abb72a00` |
+| `results/mskcc_icc_d61_diagnostics.csv` | `2c6511b65cff1bb3f24ab40254672824a041133fb398e507b605dcefe2c4d62f` |
+| `artifacts/mskcc/icc_d61_manifest.json` | `33430db4c07080b7a11ef82a5e07f0b25956ec1debcd8b161906352e3947e8c6` |
+| `artifacts/final/provenance_d61.json` | `8f323f5e6fcc8cf752c8d44e905c507ee7d6e3a2f1361ece892220b3edba01a0` |
 
 ## Auditoría exhaustiva del canon y de la ejecución
 
-Esta sección complementa el recorrido narrativo anterior con matrices de cobertura. Distingue: **canon** (D01–D60 y `methodology_v2.json`), **implementación** (código versionado), **evidencia** (JSON finales de CEDIA) y **valor retenido** (parámetro que pasó al siguiente gate). Que una referencia justifique una familia de métodos no significa que prescriba el valor numérico adoptado: esos valores son decisiones explícitas del canon.
+Esta sección complementa el recorrido narrativo anterior con matrices de cobertura. Distingue: **canon** (D01–D61 y `methodology_v2.json`), **implementación** (código versionado), **evidencia** (JSON finales de CEDIA) y **valor retenido** (parámetro que pasó al siguiente gate). Que una referencia justifique una familia de métodos no significa que prescriba el valor numérico adoptado: esos valores son decisiones explícitas del canon.
 
-### Matriz completa D01–D60
+### Matriz completa D01–D61
 
 | Decisión | Bloque | Regla normativa resumida |
 |---|---|---|
@@ -597,7 +841,7 @@ Esta sección complementa el recorrido narrativo anterior con matrices de cobert
 | D50 | MSKCC | Cohorte MSKCC: utilizarla exclusivamente para evaluar **qué tan bien el pipeline completo recupera el tono de piel** frente a sus referencias MST/colorimétricas; no realizar validación externa del segmentador, no usar IMA++ y no modificar el TOP-3 |
 | D51 | MSKCC | Censo MSKCC: procesar **todas las imágenes disponibles y todos los pacientes**, sin muestra objetivo ni límite por paciente; conservar como mediciones repetidas las distintas tomas de un mismo sitio y analizar los resultados por MST, posición anatómica y tipo de toma |
 | D52 | MSKCC | Ejecución V2: desarrollar en el repositorio nuevo **`Bench_Fairness_V2`**, reutilizar de forma trazable solo los archivos necesarios del repositorio reparado, ejecutar todo resultado científico exclusivamente en CEDIA sobre `compute-0-2` excluyendo `compute-0-1`, versionar mediante commit/push, disponer de scripts por  |
-| D53 | aprobaciones/ejecución | Concordancia MSKCC: usar como análisis primario el **ICC de acuerdo absoluto** entre `ita_degrees` del pipeline y el ITA del colorímetro, con IC95% por bootstrap de pacientes; reportar sesgo, MAE, RMSE y Bland–Altman como secundarios, desagregar por método/sitio/dispositivo/modo y evaluar MST solo mediante asociación o |
+| D53 | aprobaciones/ejecución | Concordancia MSKCC: usar como análisis primario el **ICC(2,1)/ICC(A,1) de acuerdo absoluto** entre `ita_degrees` del pipeline y el ITA del colorímetro, con IC95% por bootstrap de pacientes; reportar sesgo, MAE, RMSE y Bland–Altman como secundarios, desagregar por método/sitio/dispositivo/modo y evaluar MST solo mediante asociación ordinal |
 | D54 | aprobaciones/ejecución | Robustez real y límites de fairness: sobre ISIC 2018 Test `ORIGINAL`, después del freeze, relacionar el ITA continuo estimado independientemente de los modelos mediante soporte GT con Jaccard, Dice y Boundary F1 del TOP-3 usando Spearman y diferencias bootstrap; en MSKCC limitarse a errores cromáticos D53 desagregados; |
 | D55 | aprobaciones/ejecución | `Scientific freeze`: congelar antes de abrir Test un artefacto JSON versionado y un tag Git anotado que fijen commit, hashes de código/configuraciones/manifiestos permitidos/checkpoints/contenedor/dependencias, TOP-3, márgenes, seeds, métricas, paleta y análisis; exigir gates pre-Test, repositorio limpio/publicado y pr |
 | D56 | aprobaciones/ejecución | Test sellado: abrirlo una sola vez después de verificar D55 mediante un comando versionado en CEDIA; ejecutar sin pausas decisorias un DAG Slurm `afterok` para validación, YOLOv7/TOP-3 `ORIGINAL`, métricas/D54, síntesis MST de imagen completa/QC, **YOLOv7 independiente y TOP-3 por cada condición MST**, y D47–D49; separ |
@@ -605,6 +849,7 @@ Esta sección complementa el recorrido narrativo anterior con matrices de cobert
 | D58 | aprobaciones/ejecución | Runbook CEDIA: usar `$HOME/Bench_Fairness_V2`, Git `main` para código, copias V2 no destructivas con `rsync -a --ignore-existing` para datos/checkpoints, SIF histórica verificada en solo lectura, `.cedia/venv`, jobs fijados a `compute-0-2`/exclusión de `compute-0-1`, recursos base 1×A100+32 CPU+60 GB≤48 h, arrays `%1`, |
 | D59 | MST revisado | Reinicio MST aprobado después de los intentos 24269/24297: antes de la nueva ejecución borrar **solo las imágenes y resultados MST derivados de ambos intentos**, sin tocar originales, checkpoints, logs, ledger ni la bitácora; reconstruir desde cero sobre imagen completa, exigir `max(256, ceil(0.005 × área_imagen_comple |
 | D60 | MST revisado | Reanudación eficiente MST aprobada durante 24336: conservar los PNG completos producidos por la **misma revisión científica**, recalcular automáticamente cada variante y reutilizarla solo si dimensiones y SHA-256 de píxeles decodificados coinciden; reemplazar atómicamente parciales inválidos, procesar cuatro fuentes co |
+| D61 | MSKCC/ICC | Extender sin reemplazar D53: ICC(1,1) exploratorio, ICC(2,1)/ICC(A,1) primario e ICC(3,1)/ICC(C,1) secundario, globales y por `anatomic_site`, con 10 000 bootstrap por `patient_id`, métricas de error/LoA, estados `NA`, tablas y provenance; no alterar pares, TOP-3, freeze ni resultados previos |
 
 ### Canon ejecutable completo
 
@@ -723,7 +968,7 @@ En bootstrap pareado, un vector común $I_b=(I_{b1},\ldots,I_{bN})$ remuestrea i
 
 #### Correlación y acuerdo
 
-Spearman es la correlación de Pearson entre rangos; Kendall $\tau_b=(C-D)/\sqrt{(C+D+T_x)(C+D+T_y)}$, donde $C,D$ son pares concordantes/discordantes y $T_x,T_y$ empates exclusivos. El ICC usado es de acuerdo absoluto y sus réplicas remuestrean pacientes completos. Correlación no sustituye acuerdo: Bias y límites de Bland–Altman describen diferencias, mientras ICC describe acuerdo absoluto [35], [36].
+Spearman es la correlación de Pearson entre rangos; Kendall $\tau_b=(C-D)/\sqrt{(C+D+T_x)(C+D+T_y)}$, donde $C,D$ son pares concordantes/discordantes y $T_x,T_y$ empates exclusivos. El resultado histórico de esta tabla es ICC(2,1)/ICC(A,1), acuerdo absoluto, y sus réplicas remuestrean pacientes completos. Correlación no sustituye acuerdo: Bias y límites de Bland–Altman describen diferencias, mientras ICC(2,1) describe acuerdo absoluto [35], [38], [39].
 
 ### Matriz de ramas operativas
 
@@ -983,7 +1228,7 @@ Para cada métrica se reportan media, mediana, Q1, Q3, IC95% pareado y peor delt
 
 Los estratos `insufficient` permanecen explícitamente `NA`; no se fusionaron ni imputaron. Los IC95% se omiten de esta tabla ancha solo cuando el estrato es insuficiente; para estratos completos se conserva el estimador puntual y las métricas de error.
 
-| Método | Familia | Estrato | Estado | N | Pacientes | ICC | Bias | MAE | RMSE | LoA |
+| Método | Familia | Estrato | Estado | N | Pacientes | ICC(2,1)/ICC(A,1) | Bias | MAE | RMSE | LoA |
 |---|---|---|---|---|---|---|---|---|---|---|
 | avit | global | all | complete | 1168 | 46 | 0.335650 | -4.089053 | 60.278374 | 75.767751 | [-152.44094214157275, 144.26283677125957] |
 | avit | anatom_site_general | anterior torso | complete | 225 | 46 | 0.504484 | 9.304177 | 47.237309 | 57.157997 | [-101.47774579102379, 120.08610041746196] |
@@ -1082,13 +1327,13 @@ Los estratos `insufficient` permanecen explícitamente `NA`; no se fusionaron ni
 | AViT MST | Peor media: MST10 ΔJ=−0.026562 | Degradación moderada, persistente |
 | DeLightSAM MST | MST07–10 alrededor de cero | Mayor estabilidad media en tonos finales; IC incluyen cero |
 | VM-UNet MST | MST10 ΔJ=−0.340518 | Fragilidad cromática marcada desde MST06 |
-| MSKCC global | VM-UNet ICC=0.514475, MAE=47.652770 | Mejor de los tres, pero acuerdo absoluto todavía limitado |
+| MSKCC global | VM-UNet ICC(2,1)=0.514475, ICC(3,1)=0.523718, MAE=47.652770 | Mayor acuerdo y consistencia de los tres, pero errores y LoA todavía amplios |
 | MSKCC estratos | Varios estratos sin observaciones legítimas | Se reportan `NA`; no se agrupan ni imputan |
 | Cierre | Job 25037 emitió `V2_COMPLETE` | G1–G8 y procedencia final verificados |
 
-### Matriz de lectura y uso de las 37 referencias canónicas
+### Matriz de lectura y uso de las 39 referencias canónicas
 
-Las 37 fuentes fueron contrastadas nuevamente con su fuente editorial, repositorio oficial, DOI o registro primario. La última columna evita sobreextender la evidencia.
+Las 39 fuentes fueron contrastadas nuevamente con su fuente editorial, repositorio oficial, DOI o registro primario. La última columna evita sobreextender la evidencia.
 
 | Ref. | Uso científico en V2 | Límite de la cita |
 |---|---|---|
@@ -1129,10 +1374,12 @@ Las 37 fuentes fueron contrastadas nuevamente con su fuente editorial, repositor
 | 35 | Bias y límites de acuerdo | Correlación no es acuerdo |
 | 36 | Concordancia reproducible | No es el ICC implementado |
 | 37 | Acuerdo ordinal ponderado | Kappa quedó planificado/no ejecutado |
+| 38 | Taxonomía ICC(1), ICC(2) e ICC(3) de Shrout y Fleiss | No convierte consistencia en acuerdo absoluto |
+| 39 | Distinción de McGraw y Wong entre acuerdo absoluto y consistencia | No prescribe el modelo primario de esta tesis |
 
-### Cobertura completa de la bitácora de ejecución 19.1–19.189
+### Cobertura completa de la bitácora de ejecución 19.1–19.192
 
-La bitácora canónica es append-only. Se agrupa aquí por fase para no confundir cientos de observaciones operativas con resultados científicos, pero la columna final enumera los 189 encabezados sin omitir intentos fallidos.
+La bitácora canónica es append-only. Se agrupa aquí por fase para no confundir cientos de observaciones operativas con resultados científicos, pero la columna final cubre los 192 encabezados sin omitir intentos fallidos.
 
 | Rango | Fase | Eventos incluidos |
 |---|---|---|
@@ -1145,6 +1392,7 @@ La bitácora canónica es append-only. Se agrupa aquí por fase para no confundi
 | 19.159–19.173 | MST inicial, fallos D45 y rediseño D59–D60 | 19.159 Generación MST activa sobre las 1000 fuentes Test; 19.160 Seguimiento de generación MST: 572 variantes; 19.161 Generación MST alcanza 690/10000; 19.162 Generación MST alcanza 815 variantes; 19.163 Fallo D45 y detención por invalidez del código científico congelado; 19.164 Aprobación y controles de la corrección D37/D45; 19.165 Publicación, validación CEDIA y reinicio desde cero de MST; 19.166 Detención total solicitada para rediseñar el flujo MST/YOLO; 19.167 Aprobación del rediseño MST end-to-end sobre imagen completa; 19.168 Implementación local del rediseño MST end-to-end; 19.169 Publicación, validación CEDIA y limpieza D59; 19.170 Fallo de orquestación 24326 y reinicio aislado 24336; 19.171 Detención solicitada de 24336 y aprobación de reanudación paralela D60; 19.172 Validación D60, colisión 24349 y relanzamiento 24359; 19.173 Corrección de paralelismo efectivo y reanudación 24476 |
 | 19.174–19.186 | MST reanudado, MSKCC y cierre | 19.174 Progreso verificado de la generación MST 24476; 19.175 Progreso mayoritario de MST 24476; 19.176 Generación MST completa e inicio de YOLOv7 por condición; 19.177 YOLOv7 MST completo y segmentación iniciada; 19.178 Fallo externo AViT 24478_0 y reanudación verificable; 19.179 Relanzamiento segmentación MST 24521–24529; 19.180 Segundo SIGKILL AViT y preservación efectiva del checkpoint; 19.181 DeLightSAM MST completo e inicio de VM-UNet; 19.182 Cierre de VM-UNet MST y diagnóstico del fallo de AViT; 19.183 Reanudación de AViT MST y reconstrucción de la cadena afterok; 19.184 Cierre de MST y fallo reproducible en la entrada YOLO de MSKCC; 19.185 Corrección MSKCC sin ground truth y relanzamiento desde la etapa fallida; 19.186 Finalización end-to-end de la metodología V2 |
 | 19.187–19.189 | documentación | 19.187 Informe integrado de metodología y resultados; 19.188 Ampliación tabular y corrección de fórmulas del informe; 19.189 Auditoría exhaustiva y reconstrucción trazable del informe V2 |
+| 19.190–19.192 | extensión D61 | 19.190 Inicio controlado de la extensión D61 de concordancia MSKCC; 19.191 Implementación y validación matemática previa al job D61; 19.192 Ejecución científica y recuperación de artefactos D61 |
 
 
 
@@ -1174,9 +1422,9 @@ El experimento MST altera toda la imagen, incluida la lesión, y vuelve a ejecut
 
 ### Recuperación de tono en MSKCC
 
-VM-UNet ISIC17 logró la mayor concordancia absoluta con el colorímetro y los menores MAE/RMSE de los tres, seguido de DeLightSAM. AViT, pese a ser el mejor segmentador en ISIC, produjo el ICC cromático más bajo y el mayor error. Esto indica que la calidad de segmentación y la calidad de la región de piel usada para colorimetría son objetivos relacionados pero no equivalentes.
+VM-UNet ISIC17 logró la mayor concordancia absoluta según ICC(2,1)/ICC(A,1) (`0.514475`) y la mayor consistencia según ICC(3,1)/ICC(C,1) (`0.523718`), además de los menores MAE/RMSE de los tres. DeLightSAM-Dermoscopy obtuvo `0.448968` y `0.463385`, respectivamente. AViT, pese a ser el mejor segmentador en ISIC, produjo los valores globales más bajos, `0.335650` y `0.336110`, y el mayor error. Esto indica que la calidad de segmentación y la calidad de la región de piel usada para colorimetría son objetivos relacionados pero no equivalentes.
 
-Ningún ICC se acercó a 1 y los límites de Bland–Altman fueron amplios. El resultado concuerda con la advertencia de que color extraído de dermatoscopía depende del dispositivo, iluminación y modo de captura, y no es intercambiable automáticamente con una medición instrumental [33], [35]. La mayor disponibilidad de VM-UNet (1396 observaciones continuas) también muestra que su geometría dejó soporte válido con mayor frecuencia que DeLightSAM (699); los denominadores deben acompañar siempre las métricas.
+Ninguno de los tres modelos ICC globales se acercó a 1 y los límites de Bland–Altman fueron amplios. La diferencia ICC(3,1)−ICC(2,1) fue `0.000460` para AViT, `0.014418` para DeLightSAM-Dermoscopy y `0.009243` para VM-UNet ISIC17. Estas diferencias pequeñas, interpretadas junto con bias, MAE, RMSE y límites de acuerdo, indican que el desacuerdo no se explica únicamente por un desplazamiento constante entre métodos. El resultado concuerda con la advertencia de que el color extraído de dermatoscopía depende del dispositivo, iluminación y modo de captura, y no es intercambiable automáticamente con una medición instrumental [33], [35], [38], [39]. La mayor disponibilidad de VM-UNet (1396 observaciones continuas) también muestra que su geometría dejó soporte válido con mayor frecuencia que DeLightSAM (699); los denominadores deben acompañar siempre las métricas.
 
 Las asociaciones MST–ITA fueron negativas y fuertes en magnitud relativa. El signo es coherente con el orden de la escala: tonos MST numéricamente más altos corresponden a menor ITA. Esto es asociación ordinal, no exactitud categórica. No se predijo MST desde ITA y no se calcularon categorías artificiales [33], [37].
 
@@ -1271,6 +1519,10 @@ La V2 muestra que AViT ofrece el mejor desempeño regional general en ISIC 2018 
 
 [37] J. Cohen, “Weighted Kappa: Nominal Scale Agreement with Provision for Scaled Disagreement or Partial Credit,” *Psychological Bulletin*, vol. 70, no. 4, pp. 213–220, 1968, doi: 10.1037/h0026256.
 
+[38] P. E. Shrout and J. L. Fleiss, “Intraclass Correlations: Uses in Assessing Rater Reliability,” *Psychological Bulletin*, vol. 86, no. 2, pp. 420–428, 1979, doi: 10.1037/0033-2909.86.2.420.
+
+[39] K. O. McGraw and S. P. Wong, “Forming Inferences About Some Intraclass Correlation Coefficients,” *Psychological Methods*, vol. 1, no. 1, pp. 30–46, 1996, doi: 10.1037/1082-989X.1.1.30.
+
 ## Fuentes internas de resultados
 
 - `artifacts/yolov7/roi_margin.json`
@@ -1287,4 +1539,10 @@ La V2 muestra que AViT ofrece el mejor desempeño regional general en ISIC 2018 
 - `artifacts/mskcc/rois.json`
 - `results/mskcc_analysis.json`
 - `artifacts/final/provenance.json`
+- `results/mskcc_icc_d61.json`
+- `results/mskcc_icc_d61_global.csv`
+- `results/mskcc_icc_d61_by_anatomical_site.csv`
+- `results/mskcc_icc_d61_diagnostics.csv`
+- `artifacts/mskcc/icc_d61_manifest.json`
+- `artifacts/final/provenance_d61.json`
 - Sección 19 de `10_METHODOLOGY_V2_FROM_ZERO.md`.

@@ -1,0 +1,19 @@
+{
+  "anatomical_site_count": 36,
+  "decision": "D61",
+  "diagnostic_row_count": 117,
+  "inputs": {
+    "artifacts/mskcc/census.json": "d2c1b142755f8debd856d26dd40c95d82e32e813b0f314d5647c4f914bd9fa6a",
+    "results/mskcc_analysis.json": "4d3559ecaa93655f9298094bd6e2ddfc1cb9e8c0044842677f5e9def4177e542",
+    "results/mskcc_color/colorimetry.json": "8feb863d56a235f10cf54589e4ce0bafe564bae22225f643f62e90b2857db2d2"
+  },
+  "method_count": 3,
+  "outputs": {
+    "results/mskcc_icc_d61.json": "459c13295ed179f99d7dc424a0b1aafdeaed7e8abafb82ec177833648c0d961e",
+    "results/mskcc_icc_d61_by_anatomical_site.csv": "c2581c2e3d61bf6dd1361344f124ff4c27c97528b8fdf1c6dca38e78abb72a00",
+    "results/mskcc_icc_d61_diagnostics.csv": "2c6511b65cff1bb3f24ab40254672824a041133fb398e507b605dcefe2c4d62f",
+    "results/mskcc_icc_d61_global.csv": "bc150a0488df563833d05880176437a9eaf79cf3801f1251ffc5f88360a42a89"
+  },
+  "schema_version": 1,
+  "status": "complete"
+}
