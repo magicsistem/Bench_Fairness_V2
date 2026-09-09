@@ -134,12 +134,12 @@ Scope: implementar, ejecutar y verificar de extremo a extremo la metodología ca
   EXPECT: V2 methodology report gate passed
   EVIDENCE: exit=0; shell=/bin/sh; cwd=/run/media/miguel/Data/12. DECIMO PRIMER SEMESTRE/Tesis/Bench_Fairness_V2; path=5e95aee1592f/15 entries; EXPECT=matched; output-sha256=1e2cc856ef461076fb4dd9826a8102610d638ff8bec42f8f2089aaced06c75c5; output-bytes=79
 
-- [x] G11: existe un inventario trazable de todas las decisiones D01–D60, etapas, subpasos, ramas, ablaciones y variaciones canónicas y ejecutadas
+- [x] G11: existe un inventario trazable de todas las decisiones D01–D61, etapas, subpasos, ramas, ablaciones y variaciones canónicas y ejecutadas
   CHECK: python scripts/verify_methodology_report.py
   EXPECT: V2 exhaustive methodology report gate passed
   EVIDENCE: exit=0; shell=/bin/sh; cwd=/run/media/miguel/Data/12. DECIMO PRIMER SEMESTRE/Tesis/Bench_Fairness_V2; path=5e95aee1592f/15 entries; EXPECT=matched; output-sha256=1e2cc856ef461076fb4dd9826a8102610d638ff8bec42f8f2089aaced06c75c5; output-bytes=79
 
-- [x] G12: las 37 referencias canónicas fueron releídas y el informe contiene una matriz que delimita su uso científico
+- [x] G12: las 39 referencias canónicas fueron releídas y el informe contiene una matriz que delimita su uso científico
   CHECK: python scripts/verify_methodology_report.py
   EXPECT: V2 exhaustive methodology report gate passed
   EVIDENCE: exit=0; shell=/bin/sh; cwd=/run/media/miguel/Data/12. DECIMO PRIMER SEMESTRE/Tesis/Bench_Fairness_V2; path=5e95aee1592f/15 entries; EXPECT=matched; output-sha256=1e2cc856ef461076fb4dd9826a8102610d638ff8bec42f8f2089aaced06c75c5; output-bytes=79

@@ -24,4 +24,4 @@ Contrato: conservar intactos D01–D60, TOP-3, scientific freeze y todos los res
 | R61.3 | Probar fórmulas, offset, ruido, degeneración y reproducción del ICC(2,1) histórico | completed | G61.2, G61.14 |
 | R61.4 | Ejecutar en CEDIA el análisis global y por sitio anatómico sin repetir inferencia | completed | G61.3–G61.9 |
 | R61.5 | Generar JSON, CSV, tablas, hashes y provenance D61 sin sobrescribir históricos | completed | G61.13, G61.15 |
-| R61.6 | Actualizar el informe completo, auditar invariantes, gates, commit y push | in_progress | G61.11, G61.16 |
+| R61.6 | Actualizar el informe completo, auditar invariantes, gates, commit y push | completed | G61.11, G61.16 |

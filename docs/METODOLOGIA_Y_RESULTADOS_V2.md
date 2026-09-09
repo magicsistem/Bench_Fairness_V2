@@ -16,6 +16,7 @@ La fuente normativa es `10_METHODOLOGY_V2_FROM_ZERO.md`. Este informe no introdu
 | Commit científico final | `56c1447b0f3d2cb2b3246910aac0b4fcf333eb93` |
 | Commit que cierra G1–G8 | `0e61764577c2b2793e169fe8b64b8b530b362404` |
 | Commit científico de implementación D61 | `f9f3d6d8956e8b36ba22402bee8c4f8c924d81e9` |
+| Commit de resultados y artefactos D61 | `d3daf255fe71274133325791c98c89c34c08c4ae` |
 | Nodo científico | `compute-0-2` |
 | Finalizador Slurm | job `25037`, `COMPLETED`, `ExitCode=0:0` |
 | Extensión D61 | job `25663`, `COMPLETED`, `ExitCode=0:0`, `compute-0-2` |
@@ -1377,9 +1378,9 @@ Las 39 fuentes fueron contrastadas nuevamente con su fuente editorial, repositor
 | 38 | Taxonomía ICC(1), ICC(2) e ICC(3) de Shrout y Fleiss | No convierte consistencia en acuerdo absoluto |
 | 39 | Distinción de McGraw y Wong entre acuerdo absoluto y consistencia | No prescribe el modelo primario de esta tesis |
 
-### Cobertura completa de la bitácora de ejecución 19.1–19.192
+### Cobertura completa de la bitácora de ejecución 19.1–19.193
 
-La bitácora canónica es append-only. Se agrupa aquí por fase para no confundir cientos de observaciones operativas con resultados científicos, pero la columna final cubre los 192 encabezados sin omitir intentos fallidos.
+La bitácora canónica es append-only. Se agrupa aquí por fase para no confundir cientos de observaciones operativas con resultados científicos, pero la columna final cubre los 193 encabezados sin omitir intentos fallidos.
 
 | Rango | Fase | Eventos incluidos |
 |---|---|---|
@@ -1392,7 +1393,7 @@ La bitácora canónica es append-only. Se agrupa aquí por fase para no confundi
 | 19.159–19.173 | MST inicial, fallos D45 y rediseño D59–D60 | 19.159 Generación MST activa sobre las 1000 fuentes Test; 19.160 Seguimiento de generación MST: 572 variantes; 19.161 Generación MST alcanza 690/10000; 19.162 Generación MST alcanza 815 variantes; 19.163 Fallo D45 y detención por invalidez del código científico congelado; 19.164 Aprobación y controles de la corrección D37/D45; 19.165 Publicación, validación CEDIA y reinicio desde cero de MST; 19.166 Detención total solicitada para rediseñar el flujo MST/YOLO; 19.167 Aprobación del rediseño MST end-to-end sobre imagen completa; 19.168 Implementación local del rediseño MST end-to-end; 19.169 Publicación, validación CEDIA y limpieza D59; 19.170 Fallo de orquestación 24326 y reinicio aislado 24336; 19.171 Detención solicitada de 24336 y aprobación de reanudación paralela D60; 19.172 Validación D60, colisión 24349 y relanzamiento 24359; 19.173 Corrección de paralelismo efectivo y reanudación 24476 |
 | 19.174–19.186 | MST reanudado, MSKCC y cierre | 19.174 Progreso verificado de la generación MST 24476; 19.175 Progreso mayoritario de MST 24476; 19.176 Generación MST completa e inicio de YOLOv7 por condición; 19.177 YOLOv7 MST completo y segmentación iniciada; 19.178 Fallo externo AViT 24478_0 y reanudación verificable; 19.179 Relanzamiento segmentación MST 24521–24529; 19.180 Segundo SIGKILL AViT y preservación efectiva del checkpoint; 19.181 DeLightSAM MST completo e inicio de VM-UNet; 19.182 Cierre de VM-UNet MST y diagnóstico del fallo de AViT; 19.183 Reanudación de AViT MST y reconstrucción de la cadena afterok; 19.184 Cierre de MST y fallo reproducible en la entrada YOLO de MSKCC; 19.185 Corrección MSKCC sin ground truth y relanzamiento desde la etapa fallida; 19.186 Finalización end-to-end de la metodología V2 |
 | 19.187–19.189 | documentación | 19.187 Informe integrado de metodología y resultados; 19.188 Ampliación tabular y corrección de fórmulas del informe; 19.189 Auditoría exhaustiva y reconstrucción trazable del informe V2 |
-| 19.190–19.192 | extensión D61 | 19.190 Inicio controlado de la extensión D61 de concordancia MSKCC; 19.191 Implementación y validación matemática previa al job D61; 19.192 Ejecución científica y recuperación de artefactos D61 |
+| 19.190–19.193 | extensión D61 | 19.190 Inicio controlado de la extensión D61 de concordancia MSKCC; 19.191 Implementación y validación matemática previa al job D61; 19.192 Ejecución científica y recuperación de artefactos D61; 19.193 Validación integral, gates y publicación D61 |
 
 
 
