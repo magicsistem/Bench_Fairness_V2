@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "captured_at_utc": "2026-09-09T00:00:00Z",
+  "source": "CEDIA checkout at pre-D61 scientific commit 0e61764577c2b2793e169fe8b64b8b530b362404",
+  "sha256": {
+    "scientific_freeze.json": "7a844c7c1909822db98d0ee15696e909cb6a8011bdf0dcb66457e1b5565eb41b",
+    "artifacts/selection/top3.json": "0cb2513bd59c231b40ce8c909f523e9ad2695005b7b3e388512531b26b262ecf",
+    "artifacts/yolov7/final/weights/best.pt": "193478997be3a81339e42a3dc3c185729111f48ed4756d7743060b4ab6204efc",
+    "results/test_original/avit/results.json": "dfb072b3471d9adc8790b278ebd7fdb11ebe081c6f8f522c2b652bb6a022d6ba",
+    "results/test_original/delightsam-dermoscopy/results.json": "bbe6923f531fbad2ecf675e892998a877976cfc3a4f89c24db3e5a885ffbcf77",
+    "results/test_original/vmunet-isic17/results.json": "8cb6462c9a5a97fef073e4c86eb12252f7dc9a3ecd83a06b5051a7feeebd5e1b",
+    "results/test_mst/analysis.json": "9ec78ea56d2bc7e4315cc6fc70a9584fc7096c7173233175c208329a2fe59786",
+    "results/mskcc_analysis.json": "4d3559ecaa93655f9298094bd6e2ddfc1cb9e8c0044842677f5e9def4177e542"
+  }
+}

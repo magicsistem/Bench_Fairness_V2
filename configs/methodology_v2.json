@@ -43,6 +43,28 @@
     "top_k": 3,
     "tie_breakers": ["jaccard", "dice", "boundary_f1", "negative_hd95_normalized"]
   },
+  "mskcc_icc_d61": {
+    "primary": "icc_2_1_absolute_agreement",
+    "secondary": "icc_3_1_consistency",
+    "exploratory": "icc_1_1_oneway",
+    "aliases": {"icc_a_1": "icc_2_1_absolute_agreement", "icc_c_1": "icc_3_1_consistency"},
+    "measurement_order": ["ita_pipeline", "ita_colorimeter"],
+    "k_measurements": 2,
+    "bootstrap_unit": "patient_id",
+    "bootstrap_repetitions": 10000,
+    "bootstrap_percentiles": [2.5, 97.5],
+    "anatomical_site_field": "anatomic_site",
+    "preserve_official_site_labels": true,
+    "historical_output": "results/mskcc_analysis.json",
+    "historical_invariants": "configs/d61_historical_invariants.json",
+    "extension_output": "results/mskcc_icc_d61.json",
+    "extension_tables": [
+      "results/mskcc_icc_d61_global.csv",
+      "results/mskcc_icc_d61_by_anatomical_site.csv",
+      "results/mskcc_icc_d61_diagnostics.csv"
+    ],
+    "extension_provenance": "artifacts/final/provenance_d61.json"
+  },
   "mst": [
     ["MST_01", 246, 237, 228], ["MST_02", 243, 231, 219],
     ["MST_03", 247, 234, 208], ["MST_04", 234, 218, 186],

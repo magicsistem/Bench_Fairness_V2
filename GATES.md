@@ -49,6 +49,86 @@ Scope: implementar, ejecutar y verificar de extremo a extremo la metodología ca
   EXPECT: V2 methodology report gate passed
   EVIDENCE: exit=0; shell=/bin/sh; cwd=/run/media/miguel/Data/12. DECIMO PRIMER SEMESTRE/Tesis/Bench_Fairness_V2; path=5e95aee1592f/15 entries; EXPECT=matched; output-sha256=1e2cc856ef461076fb4dd9826a8102610d638ff8bec42f8f2089aaced06c75c5; output-bytes=79
 
+- [ ] G61.1: ICC(1,1), ICC(2,1) e ICC(3,1) están implementados con nombres no ambiguos
+  CHECK: python scripts/verify_d61.py
+  EXPECT: D61_MSKCC_ICC_EXTENSION_COMPLETE
+  EVIDENCE: pending
+
+- [ ] G61.2: el ICC(2,1) histórico se reproduce antes de aceptar resultados D61
+  CHECK: python scripts/verify_d61.py
+  EXPECT: D61_MSKCC_ICC_EXTENSION_COMPLETE
+  EVIDENCE: pending
+
+- [ ] G61.3: existen resultados globales para los tres métodos TOP-3
+  CHECK: python scripts/verify_d61.py
+  EXPECT: D61_MSKCC_ICC_EXTENSION_COMPLETE
+  EVIDENCE: pending
+
+- [ ] G61.4: existen resultados para todos los sitios anatómicos oficiales analizables
+  CHECK: python scripts/verify_d61.py
+  EXPECT: D61_MSKCC_ICC_EXTENSION_COMPLETE
+  EVIDENCE: pending
+
+- [ ] G61.5: el bootstrap global remuestrea pacientes completos y registra réplicas válidas e inválidas
+  CHECK: python scripts/verify_d61.py
+  EXPECT: D61_MSKCC_ICC_EXTENSION_COMPLETE
+  EVIDENCE: pending
+
+- [ ] G61.6: el bootstrap por sitio conserva patient_id como unidad de cluster
+  CHECK: python scripts/verify_d61.py
+  EXPECT: D61_MSKCC_ICC_EXTENSION_COMPLETE
+  EVIDENCE: pending
+
+- [ ] G61.7: bias, MAE, RMSE, SD y límites de Bland–Altman están presentes globalmente
+  CHECK: python scripts/verify_d61.py
+  EXPECT: D61_MSKCC_ICC_EXTENSION_COMPLETE
+  EVIDENCE: pending
+
+- [ ] G61.8: bias, MAE, RMSE, SD y límites de Bland–Altman están presentes por sitio
+  CHECK: python scripts/verify_d61.py
+  EXPECT: D61_MSKCC_ICC_EXTENSION_COMPLETE
+  EVIDENCE: pending
+
+- [ ] G61.9: cada análisis reporta imágenes, pacientes y pares efectivos
+  CHECK: python scripts/verify_d61.py
+  EXPECT: D61_MSKCC_ICC_EXTENSION_COMPLETE
+  EVIDENCE: pending
+
+- [ ] G61.10: los ICC no estimables son NA con estado y razón explícita, nunca cero imputado
+  CHECK: python scripts/verify_d61.py
+  EXPECT: D61_MSKCC_ICC_EXTENSION_COMPLETE
+  EVIDENCE: pending
+
+- [ ] G61.11: guía, canon ejecutable e informe consolidado documentan D61 sin ambigüedad
+  CHECK: python scripts/verify_d61.py
+  EXPECT: D61_MSKCC_ICC_EXTENSION_COMPLETE
+  EVIDENCE: pending
+
+- [ ] G61.12: Shrout–Fleiss y McGraw–Wong están incorporados como referencias estadísticas fundamentales
+  CHECK: python scripts/verify_d61.py
+  EXPECT: D61_MSKCC_ICC_EXTENSION_COMPLETE
+  EVIDENCE: pending
+
+- [ ] G61.13: JSON, tablas A/B/C en CSV y manifiesto de resultados D61 son machine-readable
+  CHECK: python scripts/verify_d61.py
+  EXPECT: D61_MSKCC_ICC_EXTENSION_COMPLETE
+  EVIDENCE: pending
+
+- [ ] G61.14: pruebas estadísticas de identidad, offset, ruido, degeneración y referencia reconocida aprueban
+  CHECK: python scripts/verify_d61.py
+  EXPECT: D61_MSKCC_ICC_EXTENSION_COMPLETE
+  EVIDENCE: pending
+
+- [ ] G61.15: provenance D61 registra commit, configuración, entradas, outputs, hashes y job Slurm
+  CHECK: python scripts/verify_d61.py
+  EXPECT: D61_MSKCC_ICC_EXTENSION_COMPLETE
+  EVIDENCE: pending
+
+- [ ] G61.16: hashes de TOP-3, ISIC, MST, YOLOv7, freeze y resultados MSKCC históricos permanecen intactos
+  CHECK: python scripts/verify_d61.py
+  EXPECT: D61_MSKCC_ICC_EXTENSION_COMPLETE
+  EVIDENCE: pending
+
 - [x] G10: el informe identifica los valores retenidos en cada etapa, muestra tablas completas por modelo y condición MST, y usa fórmulas renderizables con alternativa textual portable
   CHECK: python scripts/verify_methodology_report.py
   EXPECT: V2 methodology report gate passed
