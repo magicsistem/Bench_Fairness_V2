@@ -63,6 +63,7 @@
       "results/mskcc_icc_d61_by_anatomical_site.csv",
       "results/mskcc_icc_d61_diagnostics.csv"
     ],
+    "extension_manifest": "artifacts/mskcc/icc_d61_manifest.json",
     "extension_provenance": "artifacts/final/provenance_d61.json"
   },
   "mst": [

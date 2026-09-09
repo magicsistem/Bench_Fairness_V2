@@ -20,8 +20,8 @@ Contrato: conservar intactos D01–D60, TOP-3, scientific freeze y todos los res
 | ID | Entregable | Estado | Gate |
 |---|---|---|---|
 | R61.1 | Extender al final el canon documental y ejecutable con D61 y referencias [38]–[39] | completed | G61.11–G61.12 |
-| R61.2 | Implementar ICC(1,1), ICC(2,1), ICC(3,1), estados de estimabilidad y bootstrap por paciente | in_progress | G61.1, G61.5, G61.6, G61.10 |
-| R61.3 | Probar fórmulas, offset, ruido, degeneración y reproducción del ICC(2,1) histórico | pending | G61.2, G61.14 |
-| R61.4 | Ejecutar en CEDIA el análisis global y por sitio anatómico sin repetir inferencia | pending | G61.3–G61.9 |
+| R61.2 | Implementar ICC(1,1), ICC(2,1), ICC(3,1), estados de estimabilidad y bootstrap por paciente | completed | G61.1, G61.5, G61.6, G61.10 |
+| R61.3 | Probar fórmulas, offset, ruido, degeneración y reproducción del ICC(2,1) histórico | completed | G61.2, G61.14 |
+| R61.4 | Ejecutar en CEDIA el análisis global y por sitio anatómico sin repetir inferencia | in_progress | G61.3–G61.9 |
 | R61.5 | Generar JSON, CSV, tablas, hashes y provenance D61 sin sobrescribir históricos | pending | G61.13, G61.15 |
 | R61.6 | Actualizar el informe completo, auditar invariantes, gates, commit y push | pending | G61.11, G61.16 |

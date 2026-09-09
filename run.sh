@@ -146,5 +146,12 @@ case ${1:-} in
         sync_code
         "${ssh_cmd[@]}" "cd \"$REMOTE_ROOT\" && test -f results/test_mst/analysis.json && test -f artifacts/mskcc/census.json && test ! -e artifacts/mskcc/rois.json && test ! -e results/mskcc && test ! -e results/mskcc_color/colorimetry.json && test ! -e results/mskcc_analysis.json && test \"\$(find artifacts/yolov7/mskcc/labels -maxdepth 1 -type f -name '*.txt' 2>/dev/null | wc -l)\" -eq 0 && ! squeue -u \"\$USER\" -h -o '%j' | grep -q '^v2-'"
         post_freeze 9 "$phase" ;;
-    *) echo "Usage: ./run.sh {all|status|resume|mst-resume|segment-mst-resume|mskcc-resume}" >&2; exit 2 ;;
+    d61-mskcc-icc)
+        phase="d61-mskcc-icc-$(date -u +%Y%m%dT%H%M%SZ)"
+        test -z "$(git status --porcelain --untracked-files=no)"
+        sync_code
+        "${ssh_cmd[@]}" "cd \"$REMOTE_ROOT\" && test -f artifacts/mskcc/census.json && test -f results/mskcc_color/colorimetry.json && test -f results/mskcc_analysis.json && test ! -e results/mskcc_icc_d61.json && test ! -e results/mskcc_icc_d61_global.csv && test ! -e results/mskcc_icc_d61_by_anatomical_site.csv && test ! -e results/mskcc_icc_d61_diagnostics.csv && test ! -e artifacts/mskcc/icc_d61_manifest.json && test ! -e artifacts/final/provenance_d61.json && ! squeue -u \"\$USER\" -h -o '%j' | grep -q '^v2-'"
+        job=$(submit "$phase" 25_analyze_mskcc_icc_d61.slurm)
+        wait_job "$phase" "$job" ;;
+    *) echo "Usage: ./run.sh {all|status|resume|mst-resume|segment-mst-resume|mskcc-resume|d61-mskcc-icc}" >&2; exit 2 ;;
 esac
